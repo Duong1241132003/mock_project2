@@ -6,7 +6,7 @@
 
 // Project includes
 #include "PlaybackController.h"
-#include "VideoController.h"
+
 #include "SourceController.h"
 #include "LibraryController.h"
 #include "PlaylistController.h"

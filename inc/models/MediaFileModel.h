@@ -16,6 +16,7 @@ enum class MediaType
 {
     AUDIO,
     VIDEO,
+    UNSUPPORTED,
     UNKNOWN
 };
 
@@ -75,6 +76,17 @@ public:
     bool isVideo() const 
     { 
         return m_type == MediaType::VIDEO; 
+    }
+
+    bool isUnsupported() const
+    {
+        return m_type == MediaType::UNSUPPORTED;
+    }
+    
+    // Helper to check if playable
+    bool isSupported() const
+    {
+        return m_type == MediaType::AUDIO || m_type == MediaType::VIDEO;
     }
     
     // Comparison operators for sorting

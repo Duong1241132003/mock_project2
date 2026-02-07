@@ -400,6 +400,13 @@ bool PlaybackController::selectAndLoadEngine(const models::MediaFileModel& media
     models::MediaType newType = media.getType();
     
     // Video support removed - only audio is supported
+    // Also block unsupported files
+    if (newType == models::MediaType::UNSUPPORTED)
+    {
+        LOG_WARNING("Cannot play unsupported media type");
+        return false;
+    }
+
     if (newType != models::MediaType::AUDIO) 
     {
         LOG_ERROR("Video support removed, only audio files are supported");

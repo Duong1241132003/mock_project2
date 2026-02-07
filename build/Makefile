@@ -750,6 +750,30 @@ src/services/SerialCommunication.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/SerialCommunication.cpp.s
 .PHONY : src/services/SerialCommunication.cpp.s
 
+src/services/VideoMetadataReader.o: src/services/VideoMetadataReader.cpp.o
+.PHONY : src/services/VideoMetadataReader.o
+
+# target to build an object file
+src/services/VideoMetadataReader.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/VideoMetadataReader.cpp.o
+.PHONY : src/services/VideoMetadataReader.cpp.o
+
+src/services/VideoMetadataReader.i: src/services/VideoMetadataReader.cpp.i
+.PHONY : src/services/VideoMetadataReader.i
+
+# target to preprocess a source file
+src/services/VideoMetadataReader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/VideoMetadataReader.cpp.i
+.PHONY : src/services/VideoMetadataReader.cpp.i
+
+src/services/VideoMetadataReader.s: src/services/VideoMetadataReader.cpp.s
+.PHONY : src/services/VideoMetadataReader.s
+
+# target to generate assembly for a file
+src/services/VideoMetadataReader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/VideoMetadataReader.cpp.s
+.PHONY : src/services/VideoMetadataReader.cpp.s
+
 src/ui/ImGuiManager.o: src/ui/ImGuiManager.cpp.o
 .PHONY : src/ui/ImGuiManager.o
 
@@ -1075,6 +1099,9 @@ help:
 	@echo "... src/services/SerialCommunication.o"
 	@echo "... src/services/SerialCommunication.i"
 	@echo "... src/services/SerialCommunication.s"
+	@echo "... src/services/VideoMetadataReader.o"
+	@echo "... src/services/VideoMetadataReader.i"
+	@echo "... src/services/VideoMetadataReader.s"
 	@echo "... src/ui/ImGuiManager.o"
 	@echo "... src/ui/ImGuiManager.i"
 	@echo "... src/ui/ImGuiManager.s"

@@ -13,18 +13,32 @@ AppConfig& AppConfig::getInstance()
 }
 
 // Audio formats - Chỉ hỗ trợ các định dạng ổn định để tránh crash
-const std::vector<std::string> AppConfig::AUDIO_EXTENSIONS = 
+// Audio formats - Formats effectively supported by the playback engine
+const std::vector<std::string> AppConfig::SUPPORTED_AUDIO_EXTENSIONS = 
 {
     ".mp3",
     ".wav"
 };
 
-// Video formats - Chỉ hỗ trợ các định dạng ổn định để tránh crash
-const std::vector<std::string> AppConfig::VIDEO_EXTENSIONS = 
+// Video formats - Formats effectively supported by the video engine
+const std::vector<std::string> AppConfig::SUPPORTED_VIDEO_EXTENSIONS = 
 {
     ".avi",
     ".mp4"
 };
+
+// All formats to scan and show in library (even if not playable)
+const std::vector<std::string> AppConfig::SCANNABLE_EXTENSIONS = 
+{
+    // Supported
+    ".mp3", ".wav",
+    ".avi", ".mp4",
+    
+    // Unsupported but partially scannable (metadata only)
+    ".flac", ".ogg", ".m4a", ".wma", ".aac",
+    ".mkv", ".mov", ".wmv", ".flv", ".webm"
+};
+
 
 // Paths
 const std::string AppConfig::DEFAULT_COVER_PATH = "./assets/default_cover.png";

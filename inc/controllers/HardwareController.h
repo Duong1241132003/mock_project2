@@ -103,7 +103,11 @@ private:
     
     // Buffer để xử lý partial messages từ UART
     std::string m_receiveBuffer;
-    mutable std::mutex m_bufferMutex;
+    mutable std::mutex m_bufferMutex; // Bảo vệ buffer
+    
+    // Async scanning
+    std::atomic<bool> m_isScanning{false};
+    std::mutex m_connectionMutex; // Bảo vệ quá trình kết nối/ngắt kết nối
 };
 
 } // namespace controllers

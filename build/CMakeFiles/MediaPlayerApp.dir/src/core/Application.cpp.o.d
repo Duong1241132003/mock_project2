@@ -365,7 +365,6 @@ CMakeFiles/MediaPlayerApp.dir/src/core/Application.cpp.o: \
  /home/duong/MediaPlayerApp/inc/utils/Observer.h \
  /usr/include/c++/13/algorithm \
  /usr/include/c++/13/pstl/glue_algorithm_defs.h \
- /home/duong/MediaPlayerApp/inc/controllers/VideoController.h \
  /home/duong/MediaPlayerApp/inc/controllers/SourceController.h \
  /home/duong/MediaPlayerApp/inc/services/FileScanner.h \
  /home/duong/MediaPlayerApp/inc/services/IFileScanner.h \

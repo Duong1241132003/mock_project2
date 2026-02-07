@@ -240,7 +240,7 @@ bool VideoMetadataReader::extractThumbnail(const std::string& filePath,
 bool VideoMetadataReader::isSupportedFormat(const std::string& filePath) const 
 {
     std::string extension = getFileExtension(filePath);
-    const auto& videoExts = config::AppConfig::VIDEO_EXTENSIONS;
+    const auto& videoExts = config::AppConfig::SUPPORTED_VIDEO_EXTENSIONS;
     
     return std::find(videoExts.begin(), videoExts.end(), extension) != videoExts.end();
 }

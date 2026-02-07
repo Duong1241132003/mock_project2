@@ -20,8 +20,13 @@ public:
     static constexpr int MAX_SCAN_DEPTH = 10;
     
     // Supported formats
-    static const std::vector<std::string> AUDIO_EXTENSIONS;
-    static const std::vector<std::string> VIDEO_EXTENSIONS;
+    // Supported formats
+    static const std::vector<std::string> SUPPORTED_AUDIO_EXTENSIONS;
+    static const std::vector<std::string> SUPPORTED_VIDEO_EXTENSIONS;
+    
+    // Scannable formats (includes supported + unsupported but visible)
+    static const std::vector<std::string> SCANNABLE_EXTENSIONS;
+
     
     // Paths
     static const std::string DEFAULT_COVER_PATH;

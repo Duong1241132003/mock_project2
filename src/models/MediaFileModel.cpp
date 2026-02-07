@@ -85,9 +85,9 @@ void MediaFileModel::extractFileInfo()
         m_fileName = path.filename().string();
         m_extension = path.extension().string();
         
-        // Convert extension to lowercase
-        std::transform(m_extension.begin(), m_extension.end(), 
-                      m_extension.begin(), ::tolower);
+        // Keep extension case-sensitive for specific checks (like .WAV vs .wav)
+        // std::transform(m_extension.begin(), m_extension.end(), 
+        //               m_extension.begin(), ::tolower);
         
         if (fs::exists(path)) 
         {
@@ -103,20 +103,54 @@ void MediaFileModel::extractFileInfo()
 
 MediaType MediaFileModel::determineMediaType() const 
 {
-    // Check against audio extensions
-    const auto& audioExts = config::AppConfig::AUDIO_EXTENSIONS;
+    // Explicitly block all-uppercase extensions (e.g. .WAV, .MP3) as they might cause crashes
+    // But allow .wav (supported)
+    // We check if the extension has letters and ALL letters are uppercase
+    bool hasLetters = false;
+    bool allUpper = true;
     
-    if (std::find(audioExts.begin(), audioExts.end(), m_extension) != audioExts.end()) 
+    for (char c : m_extension) {
+        if (std::isalpha(c)) {
+            hasLetters = true;
+            if (!std::isupper(c)) {
+                allUpper = false;
+                break;
+            }
+        }
+    }
+    
+    if (hasLetters && allUpper)
+    {
+        return MediaType::UNSUPPORTED;
+    }
+
+    std::string lowerExt = m_extension;
+    std::transform(lowerExt.begin(), lowerExt.end(), lowerExt.begin(), ::tolower);
+
+    // Check against audio extensions
+    const auto& audioExts = config::AppConfig::SUPPORTED_AUDIO_EXTENSIONS;
+    
+    if (std::find(audioExts.begin(), audioExts.end(), lowerExt) != audioExts.end()) 
     {
         return MediaType::AUDIO;
     }
     
     // Check against video extensions
-    const auto& videoExts = config::AppConfig::VIDEO_EXTENSIONS;
+    const auto& videoExts = config::AppConfig::SUPPORTED_VIDEO_EXTENSIONS;
     
-    if (std::find(videoExts.begin(), videoExts.end(), m_extension) != videoExts.end()) 
+    if (std::find(videoExts.begin(), videoExts.end(), lowerExt) != videoExts.end()) 
     {
         return MediaType::VIDEO;
+    }
+    
+    // If we are here, it's likely a scannable but unsupported file (since FileScanner filters by SCANNABLE_EXTENSIONS)
+    // But let's double check against SCANNABLE just to be safe, or just assume UNSUPPORTED
+    const auto& scannableExts = config::AppConfig::SCANNABLE_EXTENSIONS;
+    
+    // Use lowerExt for scannable check too
+    if (std::find(scannableExts.begin(), scannableExts.end(), lowerExt) != scannableExts.end())
+    {
+        return MediaType::UNSUPPORTED;
     }
     
     return MediaType::UNKNOWN;

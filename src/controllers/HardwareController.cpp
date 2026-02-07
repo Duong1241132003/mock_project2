@@ -42,10 +42,11 @@ HardwareController::HardwareController(
         }
     );
     
+    // Use DEBUG level for serial errors to avoid spamming logs during disconnects
     m_serialComm->setErrorCallback(
         [](const std::string& error) 
         {
-            LOG_ERROR("Serial error: " + error);
+            LOG_DEBUG("Serial error: " + error);
         }
     );
     
@@ -75,23 +76,51 @@ bool HardwareController::initialize()
 
 bool HardwareController::autoConnect()
 {
-    LOG_INFO("Auto-connecting to S32K144...");
+    std::lock_guard<std::mutex> lock(m_connectionMutex);
     
-    auto ports = scanAvailablePorts();
-    
-    for (const auto& port : ports)
+    if (m_isScanning)
     {
-        LOG_INFO("Trying port: " + port);
-        
-        if (connect(port, BAUD_RATE_S32K144))
-        {
-            LOG_INFO("Successfully connected to S32K144 on port: " + port);
-            return true;
-        }
+        return false;
     }
     
-    LOG_WARNING("Auto-connect failed, no compatible device found");
-    return false;
+    if (isConnected())
+    {
+        return true;
+    }
+    
+    m_isScanning = true;
+    
+    // Launch scanning in a separate thread to prevent UI blocking
+    std::thread([this]() {
+        LOG_INFO("Starting background hardware scan...");
+        
+        auto ports = scanAvailablePorts();
+        bool connected = false;
+        
+        for (const auto& port : ports)
+        {
+            // Check if we should stop scanning (e.g. app shutdown)
+            if (!m_isScanning) break;
+            
+            LOG_DEBUG("Trying port: " + port);
+            
+            if (connect(port, BAUD_RATE_S32K144))
+            {
+                LOG_INFO("Successfully connected to S32K144 on port: " + port);
+                connected = true;
+                break;
+            }
+        }
+        
+        if (!connected)
+        {
+            LOG_WARNING("Auto-connect failed, no compatible device found");
+        }
+        
+        m_isScanning = false;
+    }).detach();
+    
+    return false; // Return false immediately as connection happens asynchronously
 }
 
 std::vector<std::string> HardwareController::scanAvailablePorts()
@@ -198,6 +227,12 @@ void HardwareController::refreshConnection()
     {
         return;
     }
+    
+    // Don't start a new scan if one is already running
+    if (m_isScanning)
+    {
+        return;
+    }
 
     const auto now = std::chrono::steady_clock::now();
     if (now - m_lastReconnectAttempt < m_reconnectInterval)
@@ -207,18 +242,9 @@ void HardwareController::refreshConnection()
 
     m_lastReconnectAttempt = now;
 
-    // Thử auto connect trước, nếu không được thì fallback port mặc định
-    LOG_INFO("Hardware not connected, attempting reconnect...");
-    if (autoConnect())
-    {
-        return;
-    }
-
-    const std::string defaultPort = config::AppConfig::SERIAL_PORT_DEFAULT;
-    if (!defaultPort.empty())
-    {
-        connect(defaultPort, BAUD_RATE_S32K144);
-    }
+    // Trigger async auto connect
+    LOG_DEBUG("Hardware not connected, triggering background reconnect...");
+    autoConnect();
 }
 
 void HardwareController::sendCurrentSongInfo(const std::string& title, const std::string& artist) 
@@ -274,8 +300,8 @@ void HardwareController::setVolumeCallback(HardwareVolumeCallback callback)
 
 void HardwareController::onSerialDataReceived(const std::string& data) 
 {
-    // Log ở mức INFO để đảm bảo luôn thấy dữ liệu phần cứng nhận vào
-    LOG_INFO("Received from hardware: " + data);
+    // Log ở mức DEBUG để tránh spam log
+    LOG_DEBUG("Received from hardware: " + data);
     
     // Thêm data vào buffer
     {

@@ -47,6 +47,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/MediaPlayerApp.dir/src/services/MetadataReader.cpp.o.d"
   "CMakeFiles/MediaPlayerApp.dir/src/services/SerialCommunication.cpp.o"
   "CMakeFiles/MediaPlayerApp.dir/src/services/SerialCommunication.cpp.o.d"
+  "CMakeFiles/MediaPlayerApp.dir/src/services/VideoMetadataReader.cpp.o"
+  "CMakeFiles/MediaPlayerApp.dir/src/services/VideoMetadataReader.cpp.o.d"
   "CMakeFiles/MediaPlayerApp.dir/src/ui/ImGuiManager.cpp.o"
   "CMakeFiles/MediaPlayerApp.dir/src/ui/ImGuiManager.cpp.o.d"
   "CMakeFiles/MediaPlayerApp.dir/src/ui/UIManager.cpp.o"

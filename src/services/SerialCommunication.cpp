@@ -271,10 +271,16 @@ void SerialCommunication::readThread()
             
             notifyData(data);
         }
-        else if (bytesRead < 0 && errno != EAGAIN && errno != EWOULDBLOCK) 
+        else if (bytesRead < 0) 
         {
-            LOG_ERROR("Error reading from serial port");
-            notifyError("Read error");
+            if (errno != EAGAIN && errno != EWOULDBLOCK)
+            {
+                LOG_WARNING("Error reading from serial port: " + std::string(strerror(errno)));
+                notifyError("Read error");
+                
+                // Avoid busy loop logging on persistent error
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
         }
         
         std::this_thread::sleep_for(std::chrono::milliseconds(10));

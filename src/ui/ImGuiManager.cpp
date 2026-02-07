@@ -840,21 +840,25 @@ void ImGuiManager::renderLibraryPanel() {
             drawRect(x, itemY, 4, ITEM_HEIGHT, m_theme.success);
             drawText(">", x + 15, itemY + 15, m_theme.success, 14);
         } else {
-            const char* icon = media.isAudio() ? "~" : "*";
-            drawText(icon, x + 15, itemY + 15, m_theme.textSecondary, 14);
+            const char* icon = media.isAudio() ? "~" : (media.isVideo() ? "*" : "?");
+            uint32_t iconColor = media.isUnsupported() ? m_theme.textDim : m_theme.textSecondary;
+            drawText(icon, x + 15, itemY + 15, iconColor, 14);
         }
         
+        uint32_t textCol = media.isUnsupported() ? m_theme.textDim : m_theme.textPrimary;
+        uint32_t subCol = media.isUnsupported() ? m_theme.textDim : m_theme.textSecondary;
+
         std::string title = media.getTitle().empty() ? media.getFileName() : media.getTitle();
         if (title.length() > 35) title = title.substr(0, 32) + "...";
-        drawText(title, colTitle + 50, itemY + 15, m_theme.textPrimary, 14);
+        drawText(title, colTitle + 50, itemY + 15, textCol, 14);
         
         std::string artist = media.getArtist().empty() ? "Unknown Artist" : media.getArtist();
         if (artist.length() > 25) artist = artist.substr(0, 22) + "...";
-        drawText(artist, colArtist, itemY + 15, m_theme.textSecondary, 14);
+        drawText(artist, colArtist, itemY + 15, subCol, 14);
         
         std::string album = media.getAlbum();
         if (album.length() > 25) album = album.substr(0, 22) + "...";
-        drawText(album, colAlbum, itemY + 15, m_theme.textSecondary, 14);
+        drawText(album, colAlbum, itemY + 15, subCol, 14);
 
         int duration = media.getDuration();
         std::string durationStr = "--:--";
@@ -867,11 +871,17 @@ void ImGuiManager::renderLibraryPanel() {
         }
         drawText(durationStr, colDuration, itemY + 15, m_theme.textDim, 12);
         
+        // Prevent click if unsupported
         if (hover && m_mouseClicked && !m_state.showContextMenu && !m_state.showAddToPlaylistDialog && !m_state.showPropertiesDialog && !m_state.showCreatePlaylistDialog && !m_state.showRenamePlaylistDialog) {
-            m_state.selectedMediaIndex = static_cast<int>(index);
-            if (m_onPlay) {
-                m_onPlay(static_cast<int>(index));
-                m_mouseClicked = false; // Consume click to prevent play/pause toggle
+            if (!media.isUnsupported()) {
+                m_state.selectedMediaIndex = static_cast<int>(index);
+                if (m_onPlay) {
+                    m_onPlay(static_cast<int>(index));
+                    m_mouseClicked = false; // Consume click to prevent play/pause toggle
+                }
+            } else {
+                // Consume click but do nothing for unsupported files
+                m_mouseClicked = false;
             }
         }
     }
@@ -1881,48 +1891,57 @@ void ImGuiManager::renderOverlays() {
         drawRect(m_state.contextMenuX, m_state.contextMenuY, menuW, menuH, m_theme.surfaceHover);
         drawRect(m_state.contextMenuX, m_state.contextMenuY, menuW, menuH, m_theme.border, false); // Border
         
+        // For unsupported files, only show Properties
+        bool isSupported = !m_state.contextMediaItem.isUnsupported();
+
         // Item 1: Add to Playlist
         int y = m_state.contextMenuY;
-        if (isMouseOver(m_state.contextMenuX, y, menuW, 35)) {
-            drawRect(m_state.contextMenuX, y, menuW, 35, m_theme.primary);
-            if (m_mouseClicked) {
-                m_state.showContextMenu = false;
-                m_state.showAddToPlaylistDialog = true;
-                m_mouseClicked = false;
+        if (isSupported) {
+            if (isMouseOver(m_state.contextMenuX, y, menuW, 35)) {
+                drawRect(m_state.contextMenuX, y, menuW, 35, m_theme.primary);
+                if (m_mouseClicked) {
+                    m_state.showContextMenu = false;
+                    m_state.showAddToPlaylistDialog = true;
+                    m_mouseClicked = false;
+                }
             }
+            drawText("Add to Playlist", m_state.contextMenuX + 10, y + 8, m_theme.textPrimary, 14);
+            y += 35;
         }
-        drawText("Add to Playlist", m_state.contextMenuX + 10, y + 8, m_theme.textPrimary, 14);
 
         // Item 2: Add to Queue
-        y += 35;
-        if (isMouseOver(m_state.contextMenuX, y, menuW, 35)) {
-            drawRect(m_state.contextMenuX, y, menuW, 35, m_theme.primary);
-            if (m_mouseClicked) {
-                 if (m_queueController) {
-                    m_queueController->addToQueue(m_state.contextMediaItem);
-                 }
-                m_state.showContextMenu = false;
-                m_mouseClicked = false;
+        if (isSupported) {
+            if (isMouseOver(m_state.contextMenuX, y, menuW, 35)) {
+                drawRect(m_state.contextMenuX, y, menuW, 35, m_theme.primary);
+                if (m_mouseClicked) {
+                     if (m_queueController) {
+                        m_queueController->addToQueue(m_state.contextMediaItem);
+                     }
+                    m_state.showContextMenu = false;
+                    m_mouseClicked = false;
+                }
             }
+            drawText("Add to Queue", m_state.contextMenuX + 10, y + 8, m_theme.textPrimary, 14);
+            y += 35;
         }
-        drawText("Add to Queue", m_state.contextMenuX + 10, y + 8, m_theme.textPrimary, 14);
         
         // Item 3: Play Next
-        y += 35;
-        if (isMouseOver(m_state.contextMenuX, y, menuW, 35)) {
-            drawRect(m_state.contextMenuX, y, menuW, 35, m_theme.primary);
-            if (m_mouseClicked) {
-                 if (m_queueController) {
-                    m_queueController->addToQueueNext(m_state.contextMediaItem);
-                 }
-                m_state.showContextMenu = false;
-                m_mouseClicked = false;
+        if (isSupported) {
+            if (isMouseOver(m_state.contextMenuX, y, menuW, 35)) {
+                drawRect(m_state.contextMenuX, y, menuW, 35, m_theme.primary);
+                if (m_mouseClicked) {
+                     if (m_queueController) {
+                        m_queueController->addToQueueNext(m_state.contextMediaItem);
+                     }
+                    m_state.showContextMenu = false;
+                    m_mouseClicked = false;
+                }
             }
+            drawText("Play Next", m_state.contextMenuX + 10, y + 8, m_theme.textPrimary, 14);
+            y += 35;
         }
-        drawText("Play Next", m_state.contextMenuX + 10, y + 8, m_theme.textPrimary, 14);
         
         // Item 4: Properties
-        y += 35;
         if (isMouseOver(m_state.contextMenuX, y, menuW, 35)) {
             drawRect(m_state.contextMenuX, y, menuW, 35, m_theme.primary);
             if (m_mouseClicked) {
@@ -1932,7 +1951,7 @@ void ImGuiManager::renderOverlays() {
                 m_state.metadataEdit.filePath = media.getFilePath();
                 m_state.metadataEdit.fileName = media.getFileName();
                 m_state.metadataEdit.extension = media.getExtension();
-                m_state.metadataEdit.typeStr = media.isAudio() ? "Audio" : (media.isVideo() ? "Video" : "Unknown");
+                m_state.metadataEdit.typeStr = media.isAudio() ? "Audio" : (media.isVideo() ? "Video" : (media.isUnsupported() ? "Unsupported" : "Unknown"));
                 size_t sz = media.getFileSize();
                 if (sz >= 1024 * 1024)
                     m_state.metadataEdit.fileSizeStr = std::to_string(sz / (1024 * 1024)) + " MB";
@@ -1949,7 +1968,7 @@ void ImGuiManager::renderOverlays() {
                 m_state.metadataEdit.year = "-";
                 m_state.metadataEdit.publisher = "-";
                 m_state.metadataEdit.bitrateStr = "-";
-                if (m_getMetadataForProperties) {
+                if (m_getMetadataForProperties && !media.isUnsupported()) {
                     auto meta = m_getMetadataForProperties(media.getFilePath());
                     if (meta) {
                         if (!meta->getTitle().empty()) m_state.metadataEdit.title = meta->getTitle();

@@ -32,6 +32,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/duong/MediaPlayerApp/src/services/FileScanner.cpp" "CMakeFiles/MediaPlayerApp.dir/src/services/FileScanner.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/services/FileScanner.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/services/MetadataReader.cpp" "CMakeFiles/MediaPlayerApp.dir/src/services/MetadataReader.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/services/MetadataReader.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/services/SerialCommunication.cpp" "CMakeFiles/MediaPlayerApp.dir/src/services/SerialCommunication.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/services/SerialCommunication.cpp.o.d"
+  "/home/duong/MediaPlayerApp/src/services/VideoMetadataReader.cpp" "CMakeFiles/MediaPlayerApp.dir/src/services/VideoMetadataReader.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/services/VideoMetadataReader.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/ui/ImGuiManager.cpp" "CMakeFiles/MediaPlayerApp.dir/src/ui/ImGuiManager.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/ui/ImGuiManager.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/ui/UIManager.cpp" "CMakeFiles/MediaPlayerApp.dir/src/ui/UIManager.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/ui/UIManager.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/utils/AVSyncClock.cpp" "CMakeFiles/MediaPlayerApp.dir/src/utils/AVSyncClock.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/utils/AVSyncClock.cpp.o.d"

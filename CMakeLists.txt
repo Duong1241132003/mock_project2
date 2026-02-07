@@ -31,6 +31,7 @@ pkg_check_modules(LIBAVUTIL REQUIRED libavutil)
 pkg_check_modules(LIBSWSCALE REQUIRED libswscale)
 pkg_check_modules(LIBSWRESAMPLE REQUIRED libswresample)
 
+
 # Source files (excluding video-related files)
 file(GLOB_RECURSE SOURCES 
     "src/models/*.cpp"
@@ -44,12 +45,15 @@ file(GLOB_RECURSE SOURCES
     "src/ui/*.cpp"
 )
 
-# Remove video-related files
+# Remove video-related files (EXCEPT metadata)
 list(FILTER SOURCES EXCLUDE REGEX ".*VideoController\\.cpp$")
 list(FILTER SOURCES EXCLUDE REGEX ".*VideoPlaybackEngine\\.cpp$")
-list(FILTER SOURCES EXCLUDE REGEX ".*VideoMetadataReader\\.cpp$")
 list(FILTER SOURCES EXCLUDE REGEX ".*VideoPlayerScreen\\.cpp$")
 list(FILTER SOURCES EXCLUDE REGEX ".*VideoRenderPanel\\.cpp$")
+# Keep VideoMetadataReader and VideoMetadataModel
+# list(FILTER SOURCES EXCLUDE REGEX ".*VideoMetadataReader\\.cpp$")
+
+
 
 # Main executable
 add_executable(${PROJECT_NAME} 
@@ -68,6 +72,7 @@ target_link_libraries(${PROJECT_NAME}
     ${LIBAVUTIL_LIBRARIES}
     ${LIBSWSCALE_LIBRARIES}
     ${LIBSWRESAMPLE_LIBRARIES}
+
     pthread
     stdc++fs
 )
@@ -81,6 +86,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${LIBAVUTIL_INCLUDE_DIRS}
     ${LIBSWSCALE_INCLUDE_DIRS}
     ${LIBSWRESAMPLE_INCLUDE_DIRS}
+
 )
 
 # Install target

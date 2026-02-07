@@ -157,7 +157,8 @@ bool AudioPlaybackEngine::loadFile(const std::string& filePath)
         
         if (queryResult == 0) // Not open
         {
-            if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+            // Use 4096 sample buffer (approx 92ms latency) to prevent stuttering under load
+            if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
             {
                 LOG_ERROR("Mix_OpenAudio failed: " + std::string(Mix_GetError()));
                 notifyError("Failed to open audio device");
