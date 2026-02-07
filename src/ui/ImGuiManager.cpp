@@ -35,17 +35,39 @@ static void unpackColor(uint32_t color, Uint8& r, Uint8& g, Uint8& b, Uint8& a) 
 
 Theme Theme::light() {
     Theme t;
-    t.background = 0xFFF5F5F5;
-    t.surface = 0xFFFFFFFF;
-    t.surfaceHover = 0xFFE8E8E8;
-    t.surfaceActive = 0xFFD0D0D0;
-    t.textPrimary = 0xFF1E1E1E;
-    t.textSecondary = 0xFF404040;
-    t.textDim = 0xFF808080;
+    // Modern Light Theme
+    t.background      = 0xFFF5F6FA;  // Very soft gray/white background (Lynx White)
+    t.surface         = 0xFFFFFFFF;  // Pure white cards/panels
+    t.surfaceHover    = 0xFFE8EAF6;  // Very light indigo tint for hover
+    t.surfaceActive   = 0xFFDCE1E8;  // Light gray-blue active
+    
+    // Primary - use a vibrant but professional blue (similar to iOS/macOS blue)
+    t.primary         = 0xFF007AFF;  
+    t.primaryHover    = 0xFF3395FF;
+    t.primaryActive   = 0xFF0056B3;
+    
+    // Text - High contrast dark gray (not full black for softness)
+    t.textPrimary     = 0xFF2C3E50;  // Dark Blue-Gray (Midnight Blue)
+    t.textSecondary   = 0xFF7F8C8D;  // Medium Gray (Asbestos)
+    t.textDim         = 0xFF95A5A6;  // Light Gray (Concrete)
+    
+    // Status
+    t.success         = 0xFF2ECC71;  // Emerald Green
+    t.warning         = 0xFFF1C40F;  // Sun Flower Yellow
+    t.error           = 0xFFE74C3C;  // Alizarin Red
+    
+    // UI Elements
+    t.border          = 0xFFDCDCDC;  // Light gray border
+    t.scrollbar       = 0xFFF0F0F0;
+    t.scrollbarThumb  = 0xFFBDC3C7;
+    
     return t;
 }
 
-ImGuiManager::ImGuiManager() = default;
+ImGuiManager::ImGuiManager() {
+    // Set default theme to Light
+    m_theme = Theme::light();
+}
 
 ImGuiManager::~ImGuiManager() {
     shutdown();
@@ -537,7 +559,6 @@ void ImGuiManager::renderSidebar() {
     int stopBtnY = m_height - PLAYER_BAR_HEIGHT - stopBtnH - 10;
     bool stopHover = isMouseOver(10, stopBtnY, SIDEBAR_WIDTH - 20, stopBtnH);
     drawRect(10, stopBtnY, SIDEBAR_WIDTH - 20, stopBtnH, stopHover ? m_theme.error : m_theme.surfaceActive);
-    drawText("X", 20, stopBtnY + 8, m_theme.textPrimary, 16);
     drawText("Quit App", 45, stopBtnY + 10, m_theme.textPrimary, 12);
     
     if (stopHover && m_mouseClicked && m_onQuit) {
@@ -1038,23 +1059,7 @@ void ImGuiManager::renderPlayerBar() {
         m_mouseClicked = false;
     }
     
-    // Hardware connection status indicator (S32K144)
-    // Hiển thị ở góc phải trên của player bar
-    int hwStatusX = m_width - 25;
-    int hwStatusY = y + 8;
-    int hwDotSize = 8;
-    
-    if (m_state.hardwareConnected)
-    {
-        // Chấm xanh lá khi kết nối
-        drawRect(hwStatusX, hwStatusY, hwDotSize, hwDotSize, m_theme.success);
-        drawText("HW", hwStatusX - 22, hwStatusY - 1, m_theme.success, 10);
-    }
-    else
-    {
-        // Chấm xám khi không kết nối (không hiển thị gì để app hoạt động bình thường)
-        // Chỉ hiển thị indicator khi có kết nối theo yêu cầu
-    }
+    // Hardware connection status indicator removed as per user request
 }
 
 void ImGuiManager::renderQueuePanel() {

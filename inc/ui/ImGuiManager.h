@@ -59,7 +59,7 @@ struct Theme {
     // Utility
     uint32_t scrollbar       = 0xFF404050;
     uint32_t scrollbarThumb  = 0xFF606070;
-    uint32_t border          = 0xFF404050;
+    uint32_t border          = 0xFF404050; // Default dark theme border
     
     static Theme dark() { return Theme(); }
     static Theme light();

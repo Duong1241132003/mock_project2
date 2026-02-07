@@ -105,14 +105,7 @@ void VideoPlayerScreen::handleKeyPress(SDL_Keycode key)
     switch (key) 
     {
         case SDLK_SPACE:
-            if (m_playbackStateModel->isPlaying()) 
-            {
-                m_playbackController->pause();
-            }
-            else 
-            {
-                m_playbackController->play();
-            }
+            m_playbackController->togglePlayPause();
             break;
             
         case SDLK_f:

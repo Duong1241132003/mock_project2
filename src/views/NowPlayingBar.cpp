@@ -55,14 +55,7 @@ bool NowPlayingBar::isVisible() const
 
 void NowPlayingBar::onPlayPauseClicked() 
 {
-    if (m_playbackStateModel->isPlaying()) 
-    {
-        m_playbackController->pause();
-    }
-    else 
-    {
-        m_playbackController->play();
-    }
+    m_playbackController->togglePlayPause();
 }
 
 void NowPlayingBar::onStopClicked() 
