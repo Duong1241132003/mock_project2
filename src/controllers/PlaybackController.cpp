@@ -185,8 +185,18 @@ bool PlaybackController::togglePlayPause()
     {
         return pause();
     }
+    else if (isPaused())
+    {
+        // Resume the current track without changing queue
+        if (m_currentEngine) 
+        {
+            return m_currentEngine->play();
+        }
+        return false;
+    }
     else 
     {
+        // If stopped, then play from queue
         return play();
     }
 }
