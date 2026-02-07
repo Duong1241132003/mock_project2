@@ -354,84 +354,12 @@ CMakeFiles/MediaPlayerApp.dir/src/controllers/MainController.cpp.o: \
  /usr/include/SDL2/SDL_version.h /usr/include/SDL2/SDL_locale.h \
  /usr/include/SDL2/SDL_misc.h /usr/include/SDL2/SDL_mixer.h \
  /home/duong/MediaPlayerApp/inc/services/IPlaybackEngine.h \
- /home/duong/MediaPlayerApp/inc/services/VideoPlaybackEngine.h \
- /usr/include/c++/13/condition_variable \
- /usr/include/x86_64-linux-gnu/libavformat/avformat.h \
- /usr/include/x86_64-linux-gnu/libavcodec/codec_par.h \
- /usr/include/x86_64-linux-gnu/libavutil/avutil.h \
- /usr/include/x86_64-linux-gnu/libavutil/common.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h \
- /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
- /usr/include/x86_64-linux-gnu/bits/local_lim.h \
- /usr/include/linux/limits.h \
- /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
- /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
- /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
- /usr/include/x86_64-linux-gnu/libavutil/attributes.h \
- /usr/include/x86_64-linux-gnu/libavutil/error.h \
- /usr/include/x86_64-linux-gnu/libavutil/macros.h \
- /usr/include/x86_64-linux-gnu/libavutil/avconfig.h \
- /usr/include/x86_64-linux-gnu/libavutil/mem.h \
- /usr/include/x86_64-linux-gnu/libavutil/rational.h \
- /usr/include/x86_64-linux-gnu/libavutil/version.h \
- /usr/include/x86_64-linux-gnu/libavutil/mathematics.h \
- /usr/include/x86_64-linux-gnu/libavutil/intfloat.h \
- /usr/include/x86_64-linux-gnu/libavutil/log.h \
- /usr/include/x86_64-linux-gnu/libavutil/pixfmt.h \
- /usr/include/x86_64-linux-gnu/libavutil/channel_layout.h \
- /usr/include/x86_64-linux-gnu/libavutil/rational.h \
- /usr/include/x86_64-linux-gnu/libavutil/pixfmt.h \
- /usr/include/x86_64-linux-gnu/libavcodec/codec_id.h \
- /usr/include/x86_64-linux-gnu/libavutil/samplefmt.h \
- /usr/include/x86_64-linux-gnu/libavcodec/version_major.h \
- /usr/include/x86_64-linux-gnu/libavcodec/defs.h \
- /usr/include/x86_64-linux-gnu/libavcodec/packet.h \
- /usr/include/x86_64-linux-gnu/libavutil/attributes.h \
- /usr/include/x86_64-linux-gnu/libavutil/buffer.h \
- /usr/include/x86_64-linux-gnu/libavutil/dict.h \
- /usr/include/x86_64-linux-gnu/libavutil/version.h \
- /usr/include/x86_64-linux-gnu/libavcodec/version_major.h \
- /usr/include/x86_64-linux-gnu/libavcodec/defs.h \
- /usr/include/x86_64-linux-gnu/libavcodec/packet.h \
- /usr/include/x86_64-linux-gnu/libavutil/log.h \
- /usr/include/x86_64-linux-gnu/libavformat/avio.h \
- /usr/include/x86_64-linux-gnu/libavformat/version_major.h \
- /usr/include/x86_64-linux-gnu/libavformat/version.h \
- /usr/include/x86_64-linux-gnu/libavformat/version_major.h \
- /usr/include/x86_64-linux-gnu/libavutil/frame.h \
- /usr/include/x86_64-linux-gnu/libavutil/avutil.h \
- /usr/include/x86_64-linux-gnu/libavutil/buffer.h \
- /usr/include/x86_64-linux-gnu/libavutil/channel_layout.h \
- /usr/include/x86_64-linux-gnu/libavutil/dict.h \
- /usr/include/x86_64-linux-gnu/libavutil/samplefmt.h \
- /usr/include/x86_64-linux-gnu/libavcodec/codec.h \
- /usr/include/x86_64-linux-gnu/libavutil/hwcontext.h \
- /usr/include/x86_64-linux-gnu/libavutil/frame.h \
- /usr/include/x86_64-linux-gnu/libavcodec/codec_id.h \
- /usr/include/x86_64-linux-gnu/libavcodec/avcodec.h \
- /usr/include/x86_64-linux-gnu/libavcodec/codec.h \
- /usr/include/x86_64-linux-gnu/libavcodec/version.h \
- /usr/include/x86_64-linux-gnu/libavcodec/codec_desc.h \
- /usr/include/x86_64-linux-gnu/libavcodec/codec_par.h \
- /usr/include/x86_64-linux-gnu/libavutil/imgutils.h \
- /usr/include/x86_64-linux-gnu/libavutil/pixdesc.h \
- /usr/include/x86_64-linux-gnu/libswscale/swscale.h \
- /usr/include/x86_64-linux-gnu/libswscale/version_major.h \
- /usr/include/x86_64-linux-gnu/libswscale/version.h \
- /usr/include/x86_64-linux-gnu/libswresample/swresample.h \
- /usr/include/x86_64-linux-gnu/libswresample/version_major.h \
- /usr/include/x86_64-linux-gnu/libswresample/version.h \
- /usr/include/x86_64-linux-gnu/libswresample/version_major.h \
- /home/duong/MediaPlayerApp/inc/utils/ThreadSafeQueue.h \
- /usr/include/c++/13/queue /usr/include/c++/13/deque \
- /usr/include/c++/13/bits/stl_deque.h /usr/include/c++/13/bits/deque.tcc \
- /usr/include/c++/13/bits/stl_queue.h \
- /home/duong/MediaPlayerApp/inc/utils/AVSyncClock.h \
  /home/duong/MediaPlayerApp/inc/models/QueueModel.h \
  /home/duong/MediaPlayerApp/inc/models/MediaFileModel.h \
  /home/duong/MediaPlayerApp/inc/models/PlaybackStateModel.h \
  /home/duong/MediaPlayerApp/inc/repositories/HistoryRepository.h \
+ /usr/include/c++/13/deque /usr/include/c++/13/bits/stl_deque.h \
+ /usr/include/c++/13/bits/deque.tcc \
  /home/duong/MediaPlayerApp/inc/utils/Observer.h \
  /usr/include/c++/13/algorithm \
  /usr/include/c++/13/pstl/glue_algorithm_defs.h \

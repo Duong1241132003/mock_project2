@@ -18,11 +18,10 @@ PlaybackController::PlaybackController(
     , m_currentEngine(nullptr)
     , m_currentMediaType(models::MediaType::UNKNOWN)
 {
-    // Create both engines
+    // Create only audio engine (video support removed)
     m_audioEngine = std::make_unique<services::AudioPlaybackEngine>();
-    m_videoEngine = std::make_unique<services::VideoPlaybackEngine>();
     
-    // Setup callbacks for both engines
+    // Setup callbacks for audio engine only
     m_audioEngine->setStateChangeCallback(
         [this](services::PlaybackState state) 
         {
@@ -51,35 +50,7 @@ PlaybackController::PlaybackController(
         }
     );
     
-    m_videoEngine->setStateChangeCallback(
-        [this](services::PlaybackState state) 
-        {
-            onStateChanged(state);
-        }
-    );
-    
-    m_videoEngine->setPositionCallback(
-        [this](int current, int total) 
-        {
-            onPositionChanged(current, total);
-        }
-    );
-    
-    m_videoEngine->setErrorCallback(
-        [this](const std::string& error) 
-        {
-            onError(error);
-        }
-    );
-    
-    m_videoEngine->setFinishedCallback(
-        [this]() 
-        {
-            onFinished();
-        }
-    );
-    
-    LOG_INFO("PlaybackController initialized");
+    LOG_INFO("PlaybackController initialized (audio only)");
 }
 
 PlaybackController::~PlaybackController() 
@@ -399,145 +370,28 @@ models::MediaType PlaybackController::getCurrentMediaType() const
     return m_playbackStateModel->getCurrentMediaType();
 }
 
-void PlaybackController::setFullscreen(bool fullscreen) 
-{
-    std::lock_guard<std::recursive_mutex> lock(m_mutex);
-    m_playbackStateModel->setFullscreen(fullscreen);
-    
-    // TODO: Implement SDL window fullscreen toggle
-    LOG_INFO("Fullscreen " + std::string(fullscreen ? "enabled" : "disabled"));
-}
-
-bool PlaybackController::isFullscreen() const 
-{
-    std::lock_guard<std::recursive_mutex> lock(m_mutex);
-    return m_playbackStateModel->isFullscreen();
-}
-
-SDL_Texture* PlaybackController::getCurrentVideoTexture() 
-{
-    std::lock_guard<std::recursive_mutex> lock(m_mutex);
-    if (m_currentMediaType == models::MediaType::VIDEO && m_videoEngine) 
-    {
-        return m_videoEngine->getCurrentVideoTexture();
-    }
-    
-    return nullptr;
-}
-
-void PlaybackController::getVideoResolution(int& width, int& height) 
-{
-    std::lock_guard<std::recursive_mutex> lock(m_mutex);
-    if (m_currentMediaType == models::MediaType::VIDEO && m_videoEngine) 
-    {
-        m_videoEngine->getVideoResolution(width, height);
-    }
-    else 
-    {
-        width = 0;
-        height = 0;
-    }
-}
-
-void PlaybackController::presentVideoFrame()
-{
-    std::lock_guard<std::recursive_mutex> lock(m_mutex);
-    if (m_currentMediaType == models::MediaType::VIDEO && m_videoEngine)
-    {
-        m_videoEngine->presentVideoFrame();
-    }
-}
-
-void PlaybackController::updateTextureFromMainThread()
-{
-    std::lock_guard<std::recursive_mutex> lock(m_mutex);
-    if (m_currentMediaType == models::MediaType::VIDEO && m_videoEngine)
-    {
-        m_videoEngine->updateTextureFromMainThread();
-    }
-}
-
-void PlaybackController::setExternalRenderer(SDL_Renderer* renderer)
-{
-    std::lock_guard<std::recursive_mutex> lock(m_mutex);
-    if (m_videoEngine)
-    {
-        m_videoEngine->setExternalRenderer(renderer);
-    }
-}
-
-bool PlaybackController::isPlayingVideo() const
-{
-    std::lock_guard<std::recursive_mutex> lock(m_mutex);
-    return m_currentMediaType == models::MediaType::VIDEO && 
-           m_currentEngine != nullptr &&
-           m_playbackStateModel->getState() != models::PlaybackState::STOPPED;
-}
-
 bool PlaybackController::selectAndLoadEngine(const models::MediaFileModel& media) 
 {
     models::MediaType newType = media.getType();
     
-    // Explicitly release resources if switching engine types
-    if (m_currentEngine && m_currentMediaType != newType)
+    // Video support removed - only audio is supported
+    if (newType != models::MediaType::AUDIO) 
     {
-        m_currentEngine->stop();
-        m_currentEngine->releaseResources();
-    }
-    else
-    {
-        cleanupCurrentEngine();
-    }
-    
-    m_currentMediaType = newType;
-    
-    if (newType == models::MediaType::AUDIO) 
-    {
-        // Use AudioEngine (SDL_mixer) only for simple formats like MP3/WAV if desired.
-        // But for reliability with .m4a, .ogg, .flac on some systems, FFmpeg (VideoEngine) is better.
-        // Check extension
-        std::string ext = "";
-        std::string path = media.getFilePath();
-        size_t dotPos = path.rfind('.');
-        if (dotPos != std::string::npos) {
-            ext = path.substr(dotPos);
-            // Lowercase
-            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-        }
-        
-        if (ext == ".m4a" || ext == ".ogg" || ext == ".flac") 
-        {
-            LOG_INFO("Using Universal/Video Engine for complex audio format: " + ext);
-            m_currentEngine = m_videoEngine.get();
-            // Treat as audio but processed by video engine
-            m_currentMediaType = models::MediaType::VIDEO; // Hack to keep engine happy or valid logic
-            // Actually VideoEngine supports audio-only files too if we set type to VIDEO or if engine supports AUDIO?
-            // VideoEngine::supportsMediaType checks for VIDEO. 
-            // We can just CAST it to use the pointer but PlaybackController tracks m_currentMediaType.
-            // Let's set m_currentMediaType = models::MediaType::VIDEO so getter uses video engine.
-            // Is that safe? yes, PlaybackController::getCurrentVideoTexture checks this.
-        }
-        else 
-        {
-            LOG_INFO("Selecting audio engine for: " + media.getFileName());
-            m_currentEngine = m_audioEngine.get();
-        }
-    }
-    else if (newType == models::MediaType::VIDEO) 
-    {
-        LOG_INFO("Selecting video engine for: " + media.getFileName());
-        m_currentEngine = m_videoEngine.get();
-        m_currentMediaType = models::MediaType::VIDEO;
-    }
-    else 
-    {
-        LOG_ERROR("Unsupported media type");
+        LOG_ERROR("Video support removed, only audio files are supported");
         return false;
     }
     
+    // Cleanup current engine
+    cleanupCurrentEngine();
+    m_currentMediaType = models::MediaType::AUDIO;
+    
+    // Always use audio engine now (video engine removed)
+    LOG_INFO("Selecting audio engine for: " + media.getFileName());
+    m_currentEngine = m_audioEngine.get();
+    
     if (!m_currentEngine->loadFile(media.getFilePath())) 
     {
-        LOG_ERROR("Failed to load file: " + media.getFilePath());
+        LOG_ERROR("Failed to load audio file: " + media.getFilePath());
         m_currentEngine = nullptr;
         m_currentMediaType = models::MediaType::UNKNOWN;
         return false;
@@ -545,8 +399,6 @@ bool PlaybackController::selectAndLoadEngine(const models::MediaFileModel& media
     
     // Sync volume
     m_currentEngine->setVolume(m_playbackStateModel->getVolume());
-    
-    // Metadata is now handled in play() to ensure it's always up to date
     
     return true;
 }

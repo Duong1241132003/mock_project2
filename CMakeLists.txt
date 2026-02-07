@@ -31,7 +31,7 @@ pkg_check_modules(LIBAVUTIL REQUIRED libavutil)
 pkg_check_modules(LIBSWSCALE REQUIRED libswscale)
 pkg_check_modules(LIBSWRESAMPLE REQUIRED libswresample)
 
-# Source files
+# Source files (excluding video-related files)
 file(GLOB_RECURSE SOURCES 
     "src/models/*.cpp"
     "src/controllers/*.cpp"
@@ -43,6 +43,13 @@ file(GLOB_RECURSE SOURCES
     "src/config/*.cpp"
     "src/ui/*.cpp"
 )
+
+# Remove video-related files
+list(FILTER SOURCES EXCLUDE REGEX ".*VideoController\\.cpp$")
+list(FILTER SOURCES EXCLUDE REGEX ".*VideoPlaybackEngine\\.cpp$")
+list(FILTER SOURCES EXCLUDE REGEX ".*VideoMetadataReader\\.cpp$")
+list(FILTER SOURCES EXCLUDE REGEX ".*VideoPlayerScreen\\.cpp$")
+list(FILTER SOURCES EXCLUDE REGEX ".*VideoRenderPanel\\.cpp$")
 
 # Main executable
 add_executable(${PROJECT_NAME} 

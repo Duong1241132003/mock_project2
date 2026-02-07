@@ -366,30 +366,6 @@ src/controllers/SourceController.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/SourceController.cpp.s
 .PHONY : src/controllers/SourceController.cpp.s
 
-src/controllers/VideoController.o: src/controllers/VideoController.cpp.o
-.PHONY : src/controllers/VideoController.o
-
-# target to build an object file
-src/controllers/VideoController.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/VideoController.cpp.o
-.PHONY : src/controllers/VideoController.cpp.o
-
-src/controllers/VideoController.i: src/controllers/VideoController.cpp.i
-.PHONY : src/controllers/VideoController.i
-
-# target to preprocess a source file
-src/controllers/VideoController.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/VideoController.cpp.i
-.PHONY : src/controllers/VideoController.cpp.i
-
-src/controllers/VideoController.s: src/controllers/VideoController.cpp.s
-.PHONY : src/controllers/VideoController.s
-
-# target to generate assembly for a file
-src/controllers/VideoController.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/VideoController.cpp.s
-.PHONY : src/controllers/VideoController.cpp.s
-
 src/core/Application.o: src/core/Application.cpp.o
 .PHONY : src/core/Application.o
 
@@ -774,54 +750,6 @@ src/services/SerialCommunication.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/SerialCommunication.cpp.s
 .PHONY : src/services/SerialCommunication.cpp.s
 
-src/services/VideoMetadataReader.o: src/services/VideoMetadataReader.cpp.o
-.PHONY : src/services/VideoMetadataReader.o
-
-# target to build an object file
-src/services/VideoMetadataReader.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/VideoMetadataReader.cpp.o
-.PHONY : src/services/VideoMetadataReader.cpp.o
-
-src/services/VideoMetadataReader.i: src/services/VideoMetadataReader.cpp.i
-.PHONY : src/services/VideoMetadataReader.i
-
-# target to preprocess a source file
-src/services/VideoMetadataReader.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/VideoMetadataReader.cpp.i
-.PHONY : src/services/VideoMetadataReader.cpp.i
-
-src/services/VideoMetadataReader.s: src/services/VideoMetadataReader.cpp.s
-.PHONY : src/services/VideoMetadataReader.s
-
-# target to generate assembly for a file
-src/services/VideoMetadataReader.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/VideoMetadataReader.cpp.s
-.PHONY : src/services/VideoMetadataReader.cpp.s
-
-src/services/VideoPlaybackEngine.o: src/services/VideoPlaybackEngine.cpp.o
-.PHONY : src/services/VideoPlaybackEngine.o
-
-# target to build an object file
-src/services/VideoPlaybackEngine.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/VideoPlaybackEngine.cpp.o
-.PHONY : src/services/VideoPlaybackEngine.cpp.o
-
-src/services/VideoPlaybackEngine.i: src/services/VideoPlaybackEngine.cpp.i
-.PHONY : src/services/VideoPlaybackEngine.i
-
-# target to preprocess a source file
-src/services/VideoPlaybackEngine.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/VideoPlaybackEngine.cpp.i
-.PHONY : src/services/VideoPlaybackEngine.cpp.i
-
-src/services/VideoPlaybackEngine.s: src/services/VideoPlaybackEngine.cpp.s
-.PHONY : src/services/VideoPlaybackEngine.s
-
-# target to generate assembly for a file
-src/services/VideoPlaybackEngine.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/VideoPlaybackEngine.cpp.s
-.PHONY : src/services/VideoPlaybackEngine.cpp.s
-
 src/ui/ImGuiManager.o: src/ui/ImGuiManager.cpp.o
 .PHONY : src/ui/ImGuiManager.o
 
@@ -1062,54 +990,6 @@ src/views/ScanScreen.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/ScanScreen.cpp.s
 .PHONY : src/views/ScanScreen.cpp.s
 
-src/views/VideoPlayerScreen.o: src/views/VideoPlayerScreen.cpp.o
-.PHONY : src/views/VideoPlayerScreen.o
-
-# target to build an object file
-src/views/VideoPlayerScreen.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/VideoPlayerScreen.cpp.o
-.PHONY : src/views/VideoPlayerScreen.cpp.o
-
-src/views/VideoPlayerScreen.i: src/views/VideoPlayerScreen.cpp.i
-.PHONY : src/views/VideoPlayerScreen.i
-
-# target to preprocess a source file
-src/views/VideoPlayerScreen.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/VideoPlayerScreen.cpp.i
-.PHONY : src/views/VideoPlayerScreen.cpp.i
-
-src/views/VideoPlayerScreen.s: src/views/VideoPlayerScreen.cpp.s
-.PHONY : src/views/VideoPlayerScreen.s
-
-# target to generate assembly for a file
-src/views/VideoPlayerScreen.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/VideoPlayerScreen.cpp.s
-.PHONY : src/views/VideoPlayerScreen.cpp.s
-
-src/views/VideoRenderPanel.o: src/views/VideoRenderPanel.cpp.o
-.PHONY : src/views/VideoRenderPanel.o
-
-# target to build an object file
-src/views/VideoRenderPanel.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/VideoRenderPanel.cpp.o
-.PHONY : src/views/VideoRenderPanel.cpp.o
-
-src/views/VideoRenderPanel.i: src/views/VideoRenderPanel.cpp.i
-.PHONY : src/views/VideoRenderPanel.i
-
-# target to preprocess a source file
-src/views/VideoRenderPanel.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/VideoRenderPanel.cpp.i
-.PHONY : src/views/VideoRenderPanel.cpp.i
-
-src/views/VideoRenderPanel.s: src/views/VideoRenderPanel.cpp.s
-.PHONY : src/views/VideoRenderPanel.s
-
-# target to generate assembly for a file
-src/views/VideoRenderPanel.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/VideoRenderPanel.cpp.s
-.PHONY : src/views/VideoRenderPanel.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -1147,9 +1027,6 @@ help:
 	@echo "... src/controllers/SourceController.o"
 	@echo "... src/controllers/SourceController.i"
 	@echo "... src/controllers/SourceController.s"
-	@echo "... src/controllers/VideoController.o"
-	@echo "... src/controllers/VideoController.i"
-	@echo "... src/controllers/VideoController.s"
 	@echo "... src/core/Application.o"
 	@echo "... src/core/Application.i"
 	@echo "... src/core/Application.s"
@@ -1198,12 +1075,6 @@ help:
 	@echo "... src/services/SerialCommunication.o"
 	@echo "... src/services/SerialCommunication.i"
 	@echo "... src/services/SerialCommunication.s"
-	@echo "... src/services/VideoMetadataReader.o"
-	@echo "... src/services/VideoMetadataReader.i"
-	@echo "... src/services/VideoMetadataReader.s"
-	@echo "... src/services/VideoPlaybackEngine.o"
-	@echo "... src/services/VideoPlaybackEngine.i"
-	@echo "... src/services/VideoPlaybackEngine.s"
 	@echo "... src/ui/ImGuiManager.o"
 	@echo "... src/ui/ImGuiManager.i"
 	@echo "... src/ui/ImGuiManager.s"
@@ -1234,12 +1105,6 @@ help:
 	@echo "... src/views/ScanScreen.o"
 	@echo "... src/views/ScanScreen.i"
 	@echo "... src/views/ScanScreen.s"
-	@echo "... src/views/VideoPlayerScreen.o"
-	@echo "... src/views/VideoPlayerScreen.i"
-	@echo "... src/views/VideoPlayerScreen.s"
-	@echo "... src/views/VideoRenderPanel.o"
-	@echo "... src/views/VideoRenderPanel.i"
-	@echo "... src/views/VideoRenderPanel.s"
 .PHONY : help
 
 

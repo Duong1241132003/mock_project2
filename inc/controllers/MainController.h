@@ -25,7 +25,6 @@ enum class ScreenType
     LIBRARY,
     PLAYLIST,
     QUEUE,
-    VIDEO_PLAYER,
     SCAN
 };
 
@@ -34,7 +33,6 @@ class MainController
 public:
     MainController(
         std::shared_ptr<PlaybackController> playbackController,
-        std::shared_ptr<VideoController> videoController,
         std::shared_ptr<SourceController> sourceController,
         std::shared_ptr<LibraryController> libraryController,
         std::shared_ptr<PlaylistController> playlistController,
@@ -59,7 +57,6 @@ public:
     
 private:
     std::shared_ptr<PlaybackController> m_playbackController;
-    std::shared_ptr<VideoController> m_videoController;
     std::shared_ptr<SourceController> m_sourceController;
     std::shared_ptr<LibraryController> m_libraryController;
     std::shared_ptr<PlaylistController> m_playlistController;

@@ -10,7 +10,6 @@
 // Project includes
 #include "services/IPlaybackEngine.h"
 #include "services/AudioPlaybackEngine.h"
-#include "services/VideoPlaybackEngine.h"
 #include "models/QueueModel.h"
 #include "models/PlaybackStateModel.h"
 #include "models/MediaFileModel.h"
@@ -59,24 +58,6 @@ public:
     std::string getCurrentFilePath() const;
     models::MediaType getCurrentMediaType() const;
     
-    // Video-specific (only when playing video)
-    void setFullscreen(bool fullscreen);
-    bool isFullscreen() const;
-    SDL_Texture* getCurrentVideoTexture();
-    void getVideoResolution(int& width, int& height);
-    
-    // Render video frame từ main thread (SDL rendering phải từ main thread)
-    void presentVideoFrame();
-    
-    // Update texture từ main thread (SDL operations phải từ main thread)
-    void updateTextureFromMainThread();
-    
-    // Thiết lập external renderer cho video (từ main UI)
-    void setExternalRenderer(SDL_Renderer* renderer);
-    
-    // Kiểm tra có đang phát video không
-    bool isPlayingVideo() const;
-    
 private:
     // Engine management
     bool selectAndLoadEngine(const models::MediaFileModel& media);
@@ -93,7 +74,6 @@ private:
     
     // Engines
     std::unique_ptr<services::AudioPlaybackEngine> m_audioEngine;
-    std::unique_ptr<services::VideoPlaybackEngine> m_videoEngine;
     
     // Current active engine
     services::IPlaybackEngine* m_currentEngine;

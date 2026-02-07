@@ -9,7 +9,6 @@ namespace controllers
 
 MainController::MainController(
     std::shared_ptr<PlaybackController> playbackController,
-    std::shared_ptr<VideoController> videoController,
     std::shared_ptr<SourceController> sourceController,
     std::shared_ptr<LibraryController> libraryController,
     std::shared_ptr<PlaylistController> playlistController,
@@ -18,7 +17,6 @@ MainController::MainController(
     std::shared_ptr<models::SystemStateModel> systemStateModel
 )
     : m_playbackController(playbackController)
-    , m_videoController(videoController)
     , m_sourceController(sourceController)
     , m_libraryController(libraryController)
     , m_playlistController(playlistController)
@@ -53,9 +51,6 @@ void MainController::navigateTo(ScreenType screen)
             break;
         case ScreenType::QUEUE:
             LOG_INFO("Navigated to Queue Panel");
-            break;
-        case ScreenType::VIDEO_PLAYER:
-            LOG_INFO("Navigated to Video Player Screen");
             break;
         case ScreenType::SCAN:
             LOG_INFO("Navigated to Scan Screen");

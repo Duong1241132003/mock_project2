@@ -26,10 +26,9 @@ FileScanner::FileScanner()
     , m_scannedCount(0)
     , m_totalFiles(0)
 {
-    // Initialize with default extensions
+    // Initialize with only audio extensions (video support removed)
     m_validExtensions = config::AppConfig::AUDIO_EXTENSIONS;
-    auto videoExts = config::AppConfig::VIDEO_EXTENSIONS;
-    m_validExtensions.insert(m_validExtensions.end(), videoExts.begin(), videoExts.end());
+    // Video extensions removed - no longer supported
 }
 
 FileScanner::~FileScanner() 

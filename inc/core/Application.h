@@ -15,7 +15,6 @@
 #include "views/LibraryScreen.h"
 #include "views/PlaylistScreen.h"
 #include "views/QueuePanel.h"
-#include "views/VideoPlayerScreen.h"
 #include "views/NowPlayingBar.h"
 #include "models/LibraryModel.h"
 #include "models/PlaybackStateModel.h"
@@ -31,7 +30,6 @@ namespace core
 // Custom Event Codes
 const Uint32 EVENT_PLAYBACK_FINISHED = SDL_USEREVENT + 1;
 const Uint32 EVENT_USB_INSERTED = SDL_USEREVENT + 2;
-const Uint32 EVENT_VIDEO_FRAME_READY = SDL_USEREVENT + 3;
 
 class Application 
 {
@@ -73,7 +71,6 @@ private:
     // Controllers (shared ownership)
     std::shared_ptr<controllers::MainController> m_mainController;
     std::shared_ptr<controllers::PlaybackController> m_playbackController;
-    std::shared_ptr<controllers::VideoController> m_videoController;
     std::shared_ptr<controllers::SourceController> m_sourceController;
     std::shared_ptr<controllers::LibraryController> m_libraryController;
     std::shared_ptr<controllers::PlaylistController> m_playlistController;
@@ -94,7 +91,6 @@ private:
     std::unique_ptr<views::LibraryScreen> m_libraryScreen;
     std::unique_ptr<views::PlaylistScreen> m_playlistScreen;
     std::unique_ptr<views::QueuePanel> m_queuePanel;
-    std::unique_ptr<views::VideoPlayerScreen> m_videoPlayerScreen;
     
     // UI state
     int m_selectedIndex = 0;

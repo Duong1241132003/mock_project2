@@ -16,7 +16,6 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/duong/MediaPlayerApp/src/controllers/PlaylistController.cpp" "CMakeFiles/MediaPlayerApp.dir/src/controllers/PlaylistController.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/controllers/PlaylistController.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/controllers/QueueController.cpp" "CMakeFiles/MediaPlayerApp.dir/src/controllers/QueueController.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/controllers/QueueController.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/controllers/SourceController.cpp" "CMakeFiles/MediaPlayerApp.dir/src/controllers/SourceController.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/controllers/SourceController.cpp.o.d"
-  "/home/duong/MediaPlayerApp/src/controllers/VideoController.cpp" "CMakeFiles/MediaPlayerApp.dir/src/controllers/VideoController.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/controllers/VideoController.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/core/Application.cpp" "CMakeFiles/MediaPlayerApp.dir/src/core/Application.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/core/Application.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/main.cpp" "CMakeFiles/MediaPlayerApp.dir/src/main.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/main.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/models/LibraryModel.cpp" "CMakeFiles/MediaPlayerApp.dir/src/models/LibraryModel.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/models/LibraryModel.cpp.o.d"
@@ -33,8 +32,6 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/duong/MediaPlayerApp/src/services/FileScanner.cpp" "CMakeFiles/MediaPlayerApp.dir/src/services/FileScanner.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/services/FileScanner.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/services/MetadataReader.cpp" "CMakeFiles/MediaPlayerApp.dir/src/services/MetadataReader.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/services/MetadataReader.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/services/SerialCommunication.cpp" "CMakeFiles/MediaPlayerApp.dir/src/services/SerialCommunication.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/services/SerialCommunication.cpp.o.d"
-  "/home/duong/MediaPlayerApp/src/services/VideoMetadataReader.cpp" "CMakeFiles/MediaPlayerApp.dir/src/services/VideoMetadataReader.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/services/VideoMetadataReader.cpp.o.d"
-  "/home/duong/MediaPlayerApp/src/services/VideoPlaybackEngine.cpp" "CMakeFiles/MediaPlayerApp.dir/src/services/VideoPlaybackEngine.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/services/VideoPlaybackEngine.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/ui/ImGuiManager.cpp" "CMakeFiles/MediaPlayerApp.dir/src/ui/ImGuiManager.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/ui/ImGuiManager.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/ui/UIManager.cpp" "CMakeFiles/MediaPlayerApp.dir/src/ui/UIManager.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/ui/UIManager.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/utils/AVSyncClock.cpp" "CMakeFiles/MediaPlayerApp.dir/src/utils/AVSyncClock.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/utils/AVSyncClock.cpp.o.d"
@@ -45,8 +42,6 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/duong/MediaPlayerApp/src/views/PlaylistScreen.cpp" "CMakeFiles/MediaPlayerApp.dir/src/views/PlaylistScreen.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/views/PlaylistScreen.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/views/QueuePanel.cpp" "CMakeFiles/MediaPlayerApp.dir/src/views/QueuePanel.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/views/QueuePanel.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/views/ScanScreen.cpp" "CMakeFiles/MediaPlayerApp.dir/src/views/ScanScreen.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/views/ScanScreen.cpp.o.d"
-  "/home/duong/MediaPlayerApp/src/views/VideoPlayerScreen.cpp" "CMakeFiles/MediaPlayerApp.dir/src/views/VideoPlayerScreen.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/views/VideoPlayerScreen.cpp.o.d"
-  "/home/duong/MediaPlayerApp/src/views/VideoRenderPanel.cpp" "CMakeFiles/MediaPlayerApp.dir/src/views/VideoRenderPanel.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/views/VideoRenderPanel.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

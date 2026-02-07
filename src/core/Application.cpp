@@ -13,10 +13,7 @@
 // All services
 #include "services/FileScanner.h"
 #include "services/MetadataReader.h"
-#include "services/VideoMetadataReader.h"
 #include "services/AudioPlaybackEngine.h"
-#include "services/MetadataReader.h"
-#include "services/VideoPlaybackEngine.h"
 #include "services/SerialCommunication.h"
 
 // All repositories
@@ -344,11 +341,6 @@ bool Application::createAllComponents()
         m_historyRepo
     );
     
-    m_videoController = std::make_shared<controllers::VideoController>(
-        m_playbackController,
-        playbackStateModel
-    );
-    
     m_sourceController = std::make_shared<controllers::SourceController>(
         fileScanner,
         libraryRepo,
@@ -372,7 +364,6 @@ bool Application::createAllComponents()
     
     m_mainController = std::make_shared<controllers::MainController>(
         m_playbackController,
-        m_videoController,
         m_sourceController,
         m_libraryController,
         m_playlistController,
@@ -406,12 +397,6 @@ bool Application::createAllComponents()
         queueModel
     );
     
-    m_videoPlayerScreen = std::make_unique<views::VideoPlayerScreen>(
-        m_videoController,
-        m_playbackController,
-        playbackStateModel
-    );
-    
     LOG_INFO("All components created successfully");
     return true;
 }
@@ -425,17 +410,6 @@ bool Application::wireUpDependencies()
     {
         LOG_ERROR("Failed to initialize main controller");
         return false;
-    }
-    
-    // Truyền renderer từ main UI vào VideoPlaybackEngine để video render trong main UI
-    if (g_uiManager && m_playbackController)
-    {
-        SDL_Renderer* renderer = g_uiManager->getRenderer();
-        if (renderer)
-        {
-            m_playbackController->setExternalRenderer(renderer);
-            LOG_INFO("External renderer set for video playback");
-        }
     }
     
     LOG_INFO("Dependencies wired successfully");
@@ -595,14 +569,6 @@ void Application::processEvents()
                         m_playbackController->onFinished();
                     }
                 }
-                else if (event.type == EVENT_VIDEO_FRAME_READY)
-                {
-                    // Update texture từ main thread (SDL operations phải từ main thread)
-                    if (m_playbackController)
-                    {
-                        m_playbackController->updateTextureFromMainThread();
-                    }
-                }
                 else if (event.type == EVENT_USB_INSERTED)
                 {
                     // Extract path from user data
@@ -656,24 +622,7 @@ void Application::update()
              state.shuffleEnabled = m_queueController->isShuffleEnabled();
         }
         
-        // Cập nhật state video cho UI
-        if (m_playbackController)
-        {
-            state.isPlayingVideo = m_playbackController->isPlayingVideo();
-            
-            if (state.isPlayingVideo)
-            {
-                // Lấy video texture và resolution
-                state.videoTexture = m_playbackController->getCurrentVideoTexture();
-                m_playbackController->getVideoResolution(state.videoWidth, state.videoHeight);
-            }
-            else
-            {
-                state.videoTexture = nullptr;
-                state.videoWidth = 0;
-                state.videoHeight = 0;
-            }
-        }
+        // Video support removed - no video state updates needed
     }
     
     // Update media list reference
@@ -848,12 +797,6 @@ void Application::handleKeyboardEvent(const SDL_KeyboardEvent& event)
         else if (key == SDLK_3) state.currentTab = ui::NavTab::Queue;
         else if (key == SDLK_4) state.currentTab = ui::NavTab::History;
     }
-    
-    // Pass to video player if visible
-    if (m_videoPlayerScreen && m_videoPlayerScreen->isVisible()) 
-    {
-        m_videoPlayerScreen->handleKeyPress(key);
-    }
 }
 
 void Application::handleMouseEvent(const SDL_MouseButtonEvent& event) 
@@ -866,12 +809,7 @@ void Application::handleWindowEvent(const SDL_WindowEvent& event)
 {
     if (event.event == SDL_WINDOWEVENT_RESIZED) 
     {
-        // Handle window resize
-        if (m_videoPlayerScreen && m_videoPlayerScreen->isVisible()) 
-        {
-            m_videoPlayerScreen->handleWindowResize(event.data1, event.data2);
-        }
-        
+        // Handle window resize (video support removed)
         if (g_uiManager) {
             g_uiManager->handleResize(event.data1, event.data2);
         }
