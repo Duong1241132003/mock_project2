@@ -167,8 +167,18 @@ bool PlaybackController::togglePlayPause()
     }
     else 
     {
-        // If stopped, then play from queue
-        return play();
+        // If stopped, check if we have one-off media to resume
+        if (m_oneOffMedia && m_currentEngine)
+        {
+            // Resume one-off media without clearing it
+            LOG_INFO("Resuming one-off media: " + m_oneOffMedia->getFileName());
+            return m_currentEngine->play();
+        }
+        else
+        {
+            // If no one-off media, then play from queue
+            return play();
+        }
     }
 }
 
