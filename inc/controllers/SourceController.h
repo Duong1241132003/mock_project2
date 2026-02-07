@@ -61,6 +61,10 @@ private:
     void onScanProgress(int count, const std::string& path);
     void onScanComplete(std::vector<models::MediaFileModel> results);
     
+    // USB Detection helpers
+    bool isStorageDevice(const std::string& mountPoint);
+    bool isS32K144Device(const std::string& mountPoint);
+    
     std::shared_ptr<services::FileScanner> m_fileScanner;
     std::shared_ptr<repositories::LibraryRepository> m_libraryRepo;
     std::shared_ptr<models::LibraryModel> m_libraryModel;

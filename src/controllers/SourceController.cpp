@@ -2,6 +2,10 @@
 #include "controllers/SourceController.h"
 #include "utils/Logger.h"
 
+// System includes
+#include <algorithm>
+#include <filesystem>
+
 namespace media_player 
 {
 namespace controllers 
@@ -85,17 +89,100 @@ void SourceController::handleUSBInserted(const std::string& mountPoint)
 {
     LOG_INFO("USB inserted at: " + mountPoint);
     
-    // Notify UI instead of auto-scanning
-    if (m_usbInsertedCallback) 
+    // Check if this is a storage device (not S32K144)
+    if (isStorageDevice(mountPoint)) 
     {
-        m_usbInsertedCallback(mountPoint);
+        LOG_INFO("Storage device detected, showing popup: " + mountPoint);
+        // Notify UI for storage devices
+        if (m_usbInsertedCallback) 
+        {
+            m_usbInsertedCallback(mountPoint);
+        }
+        else 
+        {
+            // Fallback if no callback registered (legacy behavior)
+            m_currentSourcePath = mountPoint;
+            scanCurrentDirectory();
+        }
     }
     else 
     {
-        // Fallback if no callback registered (legacy behavior)
-        m_currentSourcePath = mountPoint;
-        scanCurrentDirectory();
+        LOG_INFO("S32K144 device detected, not showing popup: " + mountPoint);
+        // For S32K144, we might want to handle differently in the future
+        // For now, just log and don't show popup
     }
+}
+
+bool SourceController::isStorageDevice(const std::string& mountPoint)
+{
+    // Check if mount point contains S32K144 identifier
+    std::string mountLower = mountPoint;
+    std::transform(mountLower.begin(), mountLower.end(), mountLower.begin(), ::tolower);
+    
+    // S32K144 devices typically have "EVB-S32K144" in the path
+    if (mountLower.find("evb-s32k144") != std::string::npos) 
+    {
+        return false; // This is S32K144, not storage
+    }
+    
+    // Additional checks for storage devices:
+    // 1. Check if it contains typical media directories
+    // 2. Check if it's a typical USB mount pattern
+    
+    if (std::filesystem::exists(mountPoint)) 
+    {
+        try 
+        {
+            // Check for typical storage device indicators
+            for (const auto& entry : std::filesystem::directory_iterator(mountPoint)) 
+            {
+                if (entry.is_directory()) 
+                {
+                    std::string dirName = entry.path().filename().string();
+                    std::transform(dirName.begin(), dirName.end(), dirName.begin(), ::tolower);
+                    
+                    // Common directories in storage devices
+                    if (dirName == "music" || dirName == "videos" || dirName == "photos" || 
+                        dirName == "dcim" || dirName == "documents" || dirName == "audio") 
+                    {
+                        return true; // Likely a storage device
+                    }
+                }
+            }
+            
+            // Check if there are media files directly in root
+            for (const auto& entry : std::filesystem::directory_iterator(mountPoint)) 
+            {
+                if (entry.is_regular_file()) 
+                {
+                    std::string ext = entry.path().extension().string();
+                    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                    
+                    // Common media file extensions
+                    if (ext == ".mp3" || ext == ".wav" || ext == ".flac" || ext == ".m4a" ||
+                        ext == ".mp4" || ext == ".avi" || ext == ".mkv" || ext == ".mov") 
+                    {
+                        return true; // Has media files, likely storage
+                    }
+                }
+            }
+        }
+        catch (const std::filesystem::filesystem_error& e) 
+        {
+            LOG_WARNING("Error checking USB device: " + std::string(e.what()));
+        }
+    }
+    
+    // Default to true for non-S32K144 devices (assume storage)
+    return true;
+}
+
+bool SourceController::isS32K144Device(const std::string& mountPoint)
+{
+    std::string mountLower = mountPoint;
+    std::transform(mountLower.begin(), mountLower.end(), mountLower.begin(), ::tolower);
+    
+    return mountLower.find("evb-s32k144") != std::string::npos;
 }
 
 void SourceController::handleUSBRemoved() 
