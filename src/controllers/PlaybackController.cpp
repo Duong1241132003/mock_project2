@@ -156,23 +156,37 @@ bool PlaybackController::togglePlayPause()
     {
         return pause();
     }
-    else if (isPaused())
+    else if (isPaused() && m_currentEngine)
     {
         // Resume the current track without changing queue
-        if (m_currentEngine) 
-        {
-            return m_currentEngine->play();
-        }
-        return false;
+        LOG_INFO("Resuming paused track");
+        return m_currentEngine->play();
     }
     else 
     {
         // If stopped, check if we have one-off media to resume
         if (m_oneOffMedia && m_currentEngine)
         {
-            // Resume one-off media without clearing it
-            LOG_INFO("Resuming one-off media: " + m_oneOffMedia->getFileName());
-            return m_currentEngine->play();
+            // Check if engine has file loaded (can resume)
+            if (!m_playbackStateModel->getCurrentFilePath().empty())
+            {
+                // Resume one-off media without clearing it
+                LOG_INFO("Resuming one-off media: " + m_oneOffMedia->getFileName());
+                return m_currentEngine->play();
+            }
+            else
+            {
+                // Engine lost file, reload one-off media
+                LOG_INFO("Reloading one-off media: " + m_oneOffMedia->getFileName());
+                if (selectAndLoadEngine(*m_oneOffMedia))
+                {
+                    m_playbackStateModel->setCurrentFilePath(m_oneOffMedia->getFilePath());
+                    m_playbackStateModel->setCurrentTitle(m_oneOffMedia->getTitle().empty() ? m_oneOffMedia->getFileName() : m_oneOffMedia->getTitle());
+                    m_playbackStateModel->setCurrentArtist(m_oneOffMedia->getArtist().empty() ? "Unknown Artist" : m_oneOffMedia->getArtist());
+                    m_playbackStateModel->setCurrentMediaType(m_oneOffMedia->getType());
+                    return m_currentEngine->play();
+                }
+            }
         }
         else
         {
@@ -180,6 +194,7 @@ bool PlaybackController::togglePlayPause()
             return play();
         }
     }
+    return false;
 }
 
 bool PlaybackController::stop() 
