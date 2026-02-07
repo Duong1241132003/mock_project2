@@ -299,10 +299,10 @@ void Application::setupUICallbacks()
                     LOG_INFO("Hardware: Previous track");
                     break;
                     
-                case controllers::HardwareButton::STOP:
-                    // BTN 4: Stop
-                    m_playbackController->stop();
-                    LOG_INFO("Hardware: Stop");
+                case controllers::HardwareButton::QUIT:
+                    // BTN 4: Quit Application
+                    LOG_INFO("Hardware: Quit Application");
+                    quit();
                     break;
             }
         });

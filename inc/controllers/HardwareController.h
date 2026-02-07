@@ -22,14 +22,14 @@ namespace controllers
  * BTN 1: Toggle Play/Pause
  * BTN 2: Next track
  * BTN 3: Previous track
- * BTN 4: Stop
+ * BTN 4: Quit Application
  */
 enum class HardwareButton
 {
     TOGGLE_PLAY_PAUSE = 1,
     NEXT = 2,
     PREVIOUS = 3,
-    STOP = 4
+    QUIT = 4
 };
 
 // Callback types
