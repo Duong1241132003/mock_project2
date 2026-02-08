@@ -213,9 +213,5 @@ CMakeFiles/MediaPlayerApp.dir/src/controllers/SourceController.cpp.o: \
  /home/duong/MediaPlayerApp/inc/repositories/IRepository.h \
  /home/duong/MediaPlayerApp/inc/models/LibraryModel.h \
  /home/duong/MediaPlayerApp/inc/models/MediaFileModel.h \
- /home/duong/MediaPlayerApp/inc/utils/Logger.h \
- /usr/include/c++/13/fstream \
- /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
- /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
- /usr/include/c++/13/bits/fstream.tcc /usr/include/c++/13/algorithm \
+ /usr/include/c++/13/algorithm \
  /usr/include/c++/13/pstl/glue_algorithm_defs.h

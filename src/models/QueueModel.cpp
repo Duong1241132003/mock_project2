@@ -1,6 +1,5 @@
 // Project includes
 #include "models/QueueModel.h"
-#include "utils/Logger.h"
 
 // System includes
 #include <algorithm>
@@ -20,7 +19,6 @@ void QueueModel::addToEnd(const MediaFileModel& media)
     {
         updateShuffleOrder();
     }
-    LOG_DEBUG("Added item to end of queue: " + media.getFileName());
 }
 
 void QueueModel::addNext(const MediaFileModel& media) 
@@ -37,7 +35,6 @@ void QueueModel::addNext(const MediaFileModel& media)
     {
         updateShuffleOrder();
     }
-    LOG_DEBUG("Added item next in queue: " + media.getFileName());
 }
 
 void QueueModel::addAt(const MediaFileModel& media, size_t position) 
@@ -99,7 +96,6 @@ void QueueModel::clear()
     m_items.clear();
     m_shuffleOrder.clear();
     m_currentIndex = 0;
-    LOG_DEBUG("Queue cleared");
 }
 
 std::optional<MediaFileModel> QueueModel::getCurrentItem() const 
@@ -294,7 +290,6 @@ void QueueModel::setShuffleMode(bool enabled)
     {
         updateShuffleOrder();
     }
-    LOG_DEBUG("Shuffle mode: " + std::string(enabled ? "enabled" : "disabled"));
 }
 
 void QueueModel::setRepeatMode(RepeatMode mode) 
@@ -302,7 +297,6 @@ void QueueModel::setRepeatMode(RepeatMode mode)
     m_repeatMode = mode;
     const char* name = (mode == RepeatMode::None) ? "None" : 
                        (mode == RepeatMode::LoopOne) ? "LoopOne" : "LoopAll";
-    LOG_DEBUG("Repeat mode: " + std::string(name));
 }
 
 void QueueModel::updateShuffleOrder() 

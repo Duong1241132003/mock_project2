@@ -1,0 +1,61 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/src/config/AppConfig.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.gcda
+        -:    0:Runs:6
+        -:    1:// Project includes
+        -:    2:#include "config/AppConfig.h"
+        -:    3:
+        -:    4:namespace media_player 
+        -:    5:{
+        -:    6:namespace config 
+        -:    7:{
+        -:    8:
+    #####:    9:AppConfig& AppConfig::getInstance() 
+        -:   10:{
+        -:   11:    static AppConfig instance;
+    #####:   12:    return instance;
+        -:   13:}
+        -:   14:
+        -:   15:// Audio formats - Chỉ hỗ trợ các định dạng ổn định để tránh crash
+        -:   16:// Audio formats - Formats effectively supported by the playback engine
+        -:   17:const std::vector<std::string> AppConfig::SUPPORTED_AUDIO_EXTENSIONS = 
+        -:   18:{
+        -:   19:    ".mp3",
+        -:   20:    ".wav"
+        -:   21:};
+        -:   22:
+        -:   23:// Video formats - Formats effectively supported by the video engine
+        -:   24:const std::vector<std::string> AppConfig::SUPPORTED_VIDEO_EXTENSIONS = 
+        -:   25:{
+        -:   26:    ".avi",
+        -:   27:    ".mp4"
+        -:   28:};
+        -:   29:
+        -:   30:// All formats to scan and show in library (even if not playable)
+        -:   31:const std::vector<std::string> AppConfig::SCANNABLE_EXTENSIONS = 
+        -:   32:{
+        -:   33:    // Supported
+        -:   34:    ".mp3", ".wav",
+        -:   35:    ".avi", ".mp4",
+        -:   36:    
+        -:   37:    // Unsupported but partially scannable (metadata only)
+        -:   38:    ".flac", ".ogg", ".m4a", ".wma", ".aac",
+        -:   39:    ".mkv", ".mov", ".wmv", ".flv", ".webm"
+        -:   40:};
+        -:   41:
+        -:   42:
+        -:   43:// Paths
+        -:   44:const std::string AppConfig::DEFAULT_COVER_PATH = "./assets/default_cover.png";
+        -:   45:const std::string AppConfig::PLAYLIST_STORAGE_PATH = "./data/playlists";
+        -:   46:const std::string AppConfig::LOG_FILE_PATH = "./logs/app.log";
+        -:   47:const std::string AppConfig::LIBRARY_STORAGE_PATH = "./data/library";
+        -:   48:const std::string AppConfig::HISTORY_STORAGE_PATH = "./data/history";
+        -:   49:
+        -:   50:// Serial
+        -:   51:const std::string AppConfig::SERIAL_PORT_DEFAULT = "/dev/ttyUSB0";
+        -:   52:
+        -:   53:// Default scan path
+        -:   54:const std::string AppConfig::DEFAULT_SCAN_PATH = "/home/duong/Music";
+        -:   55:
+        -:   56:} // namespace config
+        -:   57:} // namespace media_player

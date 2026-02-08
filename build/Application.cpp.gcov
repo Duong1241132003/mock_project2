@@ -1,0 +1,824 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/src/core/Application.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/core/Application.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/core/Application.cpp.gcda
+        -:    0:Runs:6
+        -:    1:// Project includes
+        -:    2:#include "core/Application.h"
+        -:    3:#include "utils/Logger.h"
+        -:    4:#include "config/AppConfig.h"
+        -:    5:#include "ui/ImGuiManager.h"
+        -:    6:
+        -:    7:// All models
+        -:    8:#include "models/QueueModel.h"
+        -:    9:#include "models/PlaybackStateModel.h"
+        -:   10:#include "models/LibraryModel.h"
+        -:   11:#include "models/SystemStateModel.h"
+        -:   12:
+        -:   13:// All services
+        -:   14:#include "services/FileScanner.h"
+        -:   15:#include "services/MetadataReader.h"
+        -:   16:#include "services/AudioPlaybackEngine.h"
+        -:   17:#include "services/SerialCommunication.h"
+        -:   18:
+        -:   19:// All repositories
+        -:   20:#include "repositories/LibraryRepository.h"
+        -:   21:#include "repositories/PlaylistRepository.h"
+        -:   22:#include "repositories/HistoryRepository.h"
+        -:   23:
+        -:   24:// System
+        -:   25:#include <thread>
+        -:   26:#include <atomic>
+        -:   27:#include <fstream>
+        -:   28:#include <filesystem>
+        -:   29:
+        -:   30:namespace media_player 
+        -:   31:{
+        -:   32:namespace core 
+        -:   33:{
+        -:   34:
+        -:   35:// Static UI manager instance
+        -:   36:static std::unique_ptr<ui::ImGuiManager> g_uiManager;
+        -:   37:static std::atomic<bool> g_scanComplete{false};
+        -:   38:static std::atomic<bool> g_scanStarted{false};
+        -:   39:static std::atomic<int> g_scanProgress{0};
+        -:   40:static std::atomic<int> g_scanTotal{0};
+        -:   41:static std::atomic<bool> g_scanCancelled{false};
+        -:   42:static std::string g_currentScanPath;
+        -:   43:static std::vector<models::MediaFileModel> g_scannedMedia;
+        -:   44:static std::mutex g_mediaMutex;
+        -:   45:
+        -:   46:static const char* LAST_SCAN_PATH_FILE = "./data/last_scan_path.txt";
+        -:   47:
+    #####:   48:static std::string loadLastScanPath() {
+    #####:   49:    std::ifstream f(LAST_SCAN_PATH_FILE);
+    #####:   50:    std::string path;
+    #####:   51:    if (f && std::getline(f, path)) {
+    #####:   52:        while (!path.empty() && (path.back() == '\r' || path.back() == '\n' || path.back() == ' ')) path.pop_back();
+    #####:   53:        if (!path.empty()) return path;
+        -:   54:    }
+    #####:   55:    return config::AppConfig::DEFAULT_SCAN_PATH;
+    #####:   56:}
+        -:   57:
+    #####:   58:static void saveLastScanPath(const std::string& path) {
+    #####:   59:    std::filesystem::create_directories("./data");
+    #####:   60:    std::ofstream f(LAST_SCAN_PATH_FILE);
+    #####:   61:    if (f) f << path << "\n";
+    #####:   62:}
+        -:   63:
+    #####:   64:Application::Application()
+    #####:   65:    : m_running(false)
+    #####:   66:    , m_sdlInitialized(false)
+        -:   67:{
+    #####:   68:    LOG_INFO("Application instance created");
+    #####:   69:}
+        -:   70:
+    #####:   71:Application::~Application() 
+        -:   72:{
+    #####:   73:    g_uiManager.reset();
+        -:   74:    
+    #####:   75:    if (m_sdlInitialized) 
+        -:   76:    {
+    #####:   77:        SDL_Quit();
+        -:   78:    }
+        -:   79:    
+    #####:   80:    LOG_INFO("Application instance destroyed");
+    #####:   81:}
+        -:   82:
+    #####:   83:Application& Application::getInstance() 
+        -:   84:{
+    #####:   85:    static Application instance;
+    #####:   86:    return instance;
+        -:   87:}
+        -:   88:
+    #####:   89:bool Application::initialize() 
+        -:   90:{
+    #####:   91:    LOG_INFO("Initializing application...");
+        -:   92:    
+    #####:   93:    if (!initializeSDL()) 
+        -:   94:    {
+    #####:   95:        LOG_ERROR("Failed to initialize SDL");
+    #####:   96:        return false;
+        -:   97:    }
+        -:   98:    
+        -:   99:    // Initialize UI Manager with modern ImGui-style interface
+    #####:  100:    g_uiManager = std::make_unique<ui::ImGuiManager>();
+    #####:  101:    if (!g_uiManager->initialize("Media Player", 1280, 800)) 
+        -:  102:    {
+    #####:  103:        LOG_ERROR("Failed to initialize UI Manager");
+    #####:  104:        return false;
+        -:  105:    }
+        -:  106:    
+    #####:  107:    if (!createAllComponents()) 
+        -:  108:    {
+    #####:  109:        LOG_ERROR("Failed to create components");
+    #####:  110:        return false;
+        -:  111:    }
+        -:  112:    
+    #####:  113:    if (!wireUpDependencies()) 
+        -:  114:    {
+    #####:  115:        LOG_ERROR("Failed to wire up dependencies");
+    #####:  116:        return false;
+        -:  117:    }
+        -:  118:    
+        -:  119:    // Setup UI callbacks
+    #####:  120:    setupUICallbacks();
+        -:  121:    
+        -:  122:    // Start services/threads after callbacks are ready
+    #####:  123:    if (m_sourceController) {
+    #####:  124:        m_sourceController->startMonitoring();
+        -:  125:    }
+        -:  126:    
+    #####:  127:    LOG_INFO("Application initialized successfully");
+    #####:  128:    return true;
+        -:  129:}
+        -:  130:
+    #####:  131:bool Application::initializeSDL() 
+        -:  132:{
+    #####:  133:    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) < 0) 
+        -:  134:    {
+    #####:  135:        LOG_ERROR("SDL_Init failed: " + std::string(SDL_GetError()));
+    #####:  136:        return false;
+        -:  137:    }
+        -:  138:    
+    #####:  139:    m_sdlInitialized = true;
+    #####:  140:    LOG_INFO("SDL initialized");
+        -:  141:    
+    #####:  142:    return true;
+        -:  143:}
+        -:  144:
+    #####:  145:void Application::setupUICallbacks()
+        -:  146:{
+    #####:  147:    if (!g_uiManager) return;
+        -:  148:    
+        -:  149:    // Set controllers
+    #####:  150:    g_uiManager->setControllers(m_playbackController, m_queueController, m_libraryController, m_playlistController);
+        -:  151:    
+        -:  152:    // Play callback - play without adding to queue (add via context menu when needed)
+    #####:  153:    g_uiManager->setOnPlay([this](int index) {
+    #####:  154:        std::lock_guard<std::mutex> lock(g_mediaMutex);
+    #####:  155:        if (m_libraryModel && index >= 0 && 
+    #####:  156:            index < static_cast<int>(m_libraryModel->getMediaCount())) 
+        -:  157:        {
+    #####:  158:            auto mediaList = m_libraryModel->getAllMedia();
+    #####:  159:            const auto& media = mediaList[index];
+    #####:  160:            LOG_INFO("Playing: " + media.getFileName());
+        -:  161:            
+    #####:  162:            if (m_playbackController && m_playbackController->playMediaWithoutQueue(media))
+        -:  163:            {
+    #####:  164:                auto& state = g_uiManager->getState();
+    #####:  165:                state.isPlaying = true;
+    #####:  166:                std::string title = media.getTitle();
+    #####:  167:                state.currentTrackTitle = title.empty() ? media.getFileName() : title;
+    #####:  168:                std::string artist = media.getArtist();
+    #####:  169:                state.currentTrackArtist = artist.empty() ? "Unknown Artist" : artist;
+    #####:  170:                state.playbackDuration = static_cast<float>(media.getDuration());
+    #####:  171:            }
+    #####:  172:        }
+    #####:  173:    });
+        -:  174:    
+        -:  175:    // Volume change callback
+    #####:  176:    g_uiManager->setOnVolumeChange([this](float volume) {
+    #####:  177:        if (m_playbackController) {
+        -:  178:            // Convert 0.0-1.0 to 0-100
+    #####:  179:            m_playbackController->setVolume(static_cast<int>(volume * 100));
+        -:  180:        }
+    #####:  181:    });
+        -:  182:    
+        -:  183:    // Callback for state changes (Thread-safe polling handles the rest)
+    #####:  184:    m_playbackStateModel->setStateChangeCallback([this](models::PlaybackState state) {
+        -:  185:        // Optional: Could trigger an event to wake up main loop if sleeping
+    #####:  186:    });
+        -:  187:
+        -:  188:    // Metadata changes are polled in update(), no need for callback here which runs on audio thread
+    #####:  189:    m_playbackStateModel->setMetadataChangeCallback(nullptr);
+        -:  190:    
+        -:  191:    // Request scan (path input screen): validate path; if invalid use last path as fallback
+    #####:  192:    g_uiManager->setOnRequestScan([this](const std::string& path) {
+    #####:  193:        std::string toScan = path;
+    #####:  194:        while (!toScan.empty() && (toScan.back() == ' ' || toScan.back() == '\n')) toScan.pop_back();
+    #####:  195:        bool valid = !toScan.empty() && std::filesystem::exists(toScan) && std::filesystem::is_directory(toScan);
+    #####:  196:        if (valid) {
+    #####:  197:            if (g_uiManager) g_uiManager->getState().libraryPathError.clear();
+        -:  198:            // Use resetAndRescan to clear old library before loading new source
+    #####:  199:            resetAndRescan(toScan);
+        -:  200:        } else {
+    #####:  201:            std::string fallback = loadLastScanPath();
+    #####:  202:            if (g_uiManager)
+    #####:  203:                g_uiManager->getState().libraryPathError = "Đường dẫn không hợp lệ. Đang dùng: " + fallback;
+        -:  204:            // Fallback also needs reset if we were trying to switch
+    #####:  205:            resetAndRescan(fallback);
+    #####:  206:        }
+    #####:  207:    });
+        -:  208:    
+    #####:  209:    g_uiManager->setGetCurrentLibraryPath([]() { return loadLastScanPath(); });
+        -:  210:    
+    #####:  211:    g_uiManager->setGetMetadataForProperties([this](const std::string& path) {
+    #####:  212:        return m_libraryController ? m_libraryController->readMetadata(path) : std::optional<models::MetadataModel>();
+        -:  213:    });
+    #####:  214:    g_uiManager->setOnQuit([this]() { quit(); });
+        -:  215:    
+        -:  216:    // Cancel scan callback
+    #####:  217:    g_uiManager->setOnCancelScan([this]() {
+    #####:  218:        LOG_INFO("User cancelled scan");
+    #####:  219:        g_scanCancelled = true;
+    #####:  220:        if (m_fileScanner && m_fileScanner->isScanning())
+        -:  221:        {
+    #####:  222:            m_fileScanner->stopScanning();
+        -:  223:        }
+    #####:  224:        g_scanComplete = true;
+    #####:  225:        g_scanStarted = false;
+    #####:  226:    });
+        -:  227:    
+        -:  228:    // Change library path (from Settings): reset playback, queue, library, history then rescan
+    #####:  229:    g_uiManager->setOnChangeLibraryPath([this](const std::string& path) {
+    #####:  230:        std::string toScan = path;
+    #####:  231:        while (!toScan.empty() && (toScan.back() == ' ' || toScan.back() == '\n')) toScan.pop_back();
+    #####:  232:        if (toScan.empty() || !std::filesystem::exists(toScan) || !std::filesystem::is_directory(toScan)) {
+    #####:  233:            if (g_uiManager) g_uiManager->getState().libraryPathError = "Đường dẫn không hợp lệ.";
+    #####:  234:            return;
+        -:  235:        }
+    #####:  236:        if (g_uiManager) {
+    #####:  237:            g_uiManager->getState().showChangePathDialog = false;
+    #####:  238:            g_uiManager->getState().libraryPathError.clear();
+        -:  239:        }
+    #####:  240:        resetAndRescan(toScan);
+    #####:  241:    });
+        -:  242:    
+        -:  243:    // USB Inserted Callback
+    #####:  244:    m_sourceController->setUsbInsertedCallback([this](const std::string& path) {
+        -:  245:        // Push event to main thread
+        -:  246:        SDL_Event event;
+    #####:  247:        SDL_zero(event);
+    #####:  248:        event.type = EVENT_USB_INSERTED;
+        -:  249:        // Allocate string on heap to pass through event data
+    #####:  250:        event.user.data1 = new std::string(path); 
+    #####:  251:        SDL_PushEvent(&event);
+    #####:  252:    });
+        -:  253:    
+        -:  254:    // Setup Hardware Controller Callbacks (S32K144)
+    #####:  255:    if (m_hardwareController)
+        -:  256:    {
+        -:  257:        // Volume callback: ADC message "!ADC: %d!" điều chỉnh volume 0-100
+    #####:  258:        m_hardwareController->setVolumeCallback([this](int volume) {
+    #####:  259:            if (m_playbackController)
+        -:  260:            {
+    #####:  261:                m_playbackController->setVolume(volume);
+    #####:  262:                LOG_INFO("Hardware volume set to: " + std::to_string(volume));
+        -:  263:                
+        -:  264:                // Cập nhật UI state
+    #####:  265:                if (g_uiManager)
+        -:  266:                {
+    #####:  267:                    g_uiManager->getState().volume = static_cast<float>(volume) / 100.0f;
+        -:  268:                }
+        -:  269:            }
+    #####:  270:        });
+        -:  271:        
+        -:  272:        // Button callback: BTN message "!BTN: %d!" điều khiển playback
+    #####:  273:        m_hardwareController->setButtonCallback([this](controllers::HardwareButton button) {
+    #####:  274:            if (!m_playbackController)
+        -:  275:            {
+    #####:  276:                return;
+        -:  277:            }
+        -:  278:            
+    #####:  279:            switch (button)
+        -:  280:            {
+    #####:  281:                case controllers::HardwareButton::TOGGLE_PLAY_PAUSE:
+        -:  282:                    // BTN 1: Toggle Play/Pause
+    #####:  283:                    m_playbackController->togglePlayPause();
+    #####:  284:                    LOG_INFO("Hardware: Toggle Play/Pause");
+    #####:  285:                    break;
+        -:  286:                    
+    #####:  287:                case controllers::HardwareButton::NEXT:
+        -:  288:                    // BTN 2: Next track
+    #####:  289:                    m_playbackController->playNext();
+    #####:  290:                    LOG_INFO("Hardware: Next track");
+    #####:  291:                    break;
+        -:  292:                    
+    #####:  293:                case controllers::HardwareButton::PREVIOUS:
+        -:  294:                    // BTN 3: Previous track
+    #####:  295:                    m_playbackController->playPrevious();
+    #####:  296:                    LOG_INFO("Hardware: Previous track");
+    #####:  297:                    break;
+        -:  298:                    
+    #####:  299:                case controllers::HardwareButton::QUIT:
+        -:  300:                    // BTN 4: Quit Application
+    #####:  301:                    LOG_INFO("Hardware: Quit Application");
+    #####:  302:                    quit();
+    #####:  303:                    break;
+        -:  304:            }
+        -:  305:        });
+        -:  306:    }
+        -:  307:}
+        -:  308:
+    #####:  309:bool Application::createAllComponents() 
+        -:  310:{
+    #####:  311:    LOG_INFO("Creating application components...");
+        -:  312:    
+        -:  313:    // Create models
+    #####:  314:    auto queueModel = std::make_shared<models::QueueModel>();
+    #####:  315:    auto playbackStateModel = std::make_shared<models::PlaybackStateModel>();
+    #####:  316:    auto libraryModel = std::make_shared<models::LibraryModel>();
+    #####:  317:    auto systemStateModel = std::make_shared<models::SystemStateModel>();
+        -:  318:    
+        -:  319:    // Create repositories
+        -:  320:    auto libraryRepo = std::make_shared<repositories::LibraryRepository>(
+        -:  321:        config::AppConfig::LIBRARY_STORAGE_PATH
+    #####:  322:    );
+        -:  323:    auto playlistRepo = std::make_shared<repositories::PlaylistRepository>(
+        -:  324:        config::AppConfig::PLAYLIST_STORAGE_PATH
+    #####:  325:    );
+    #####:  326:    m_historyRepo = std::make_shared<repositories::HistoryRepository>(
+        -:  327:        config::AppConfig::HISTORY_STORAGE_PATH
+    #####:  328:    );
+        -:  329:    
+        -:  330:    // Create services
+    #####:  331:    auto fileScanner = std::make_shared<services::FileScanner>();
+    #####:  332:    auto serialComm = std::make_shared<services::SerialCommunication>();
+    #####:  333:    auto metadataReader = std::make_shared<services::MetadataReader>();
+        -:  334:    
+        -:  335:    // Create controllers
+    #####:  336:    m_queueController = std::make_shared<controllers::QueueController>(queueModel);
+        -:  337:    
+    #####:  338:    m_playbackController = std::make_shared<controllers::PlaybackController>(
+        -:  339:        queueModel,
+        -:  340:        playbackStateModel,
+    #####:  341:        m_historyRepo
+    #####:  342:    );
+        -:  343:    
+    #####:  344:    m_sourceController = std::make_shared<controllers::SourceController>(
+        -:  345:        fileScanner,
+        -:  346:        libraryRepo,
+        -:  347:        libraryModel
+    #####:  348:    );
+        -:  349:    
+    #####:  350:    m_libraryController = std::make_shared<controllers::LibraryController>(
+        -:  351:        libraryModel,
+        -:  352:        libraryRepo,
+        -:  353:        metadataReader
+    #####:  354:    );
+        -:  355:    
+    #####:  356:    m_playlistController = std::make_shared<controllers::PlaylistController>(
+        -:  357:        playlistRepo
+    #####:  358:    );
+        -:  359:    
+    #####:  360:    m_hardwareController = std::make_shared<controllers::HardwareController>(
+        -:  361:        serialComm,
+        -:  362:        playbackStateModel
+    #####:  363:    );
+        -:  364:    
+    #####:  365:    m_mainController = std::make_shared<controllers::MainController>(
+    #####:  366:        m_playbackController,
+    #####:  367:        m_sourceController,
+    #####:  368:        m_libraryController,
+    #####:  369:        m_playlistController,
+    #####:  370:        m_queueController,
+    #####:  371:        m_hardwareController,
+        -:  372:        systemStateModel
+    #####:  373:    );
+        -:  374:    
+        -:  375:    // Store models for UI access
+    #####:  376:    m_libraryModel = libraryModel;
+    #####:  377:    m_playbackStateModel = playbackStateModel;
+    #####:  378:    m_fileScanner = fileScanner;
+        -:  379:    
+        -:  380:    // Create views (kept for compatibility, but UI now uses ImGuiManager)
+    #####:  381:    m_nowPlayingBar = std::make_unique<views::NowPlayingBar>(
+        -:  382:        playbackStateModel,
+    #####:  383:        m_playbackController
+    #####:  384:    );
+        -:  385:    
+    #####:  386:    m_libraryScreen = std::make_unique<views::LibraryScreen>(
+    #####:  387:        m_libraryController,
+    #####:  388:        m_queueController
+    #####:  389:    );
+        -:  390:    
+    #####:  391:    m_playlistScreen = std::make_unique<views::PlaylistScreen>(
+    #####:  392:        m_playlistController
+    #####:  393:    );
+        -:  394:    
+    #####:  395:    m_queuePanel = std::make_unique<views::QueuePanel>(
+    #####:  396:        m_queueController,
+        -:  397:        queueModel
+    #####:  398:    );
+        -:  399:    
+    #####:  400:    LOG_INFO("All components created successfully");
+    #####:  401:    return true;
+    #####:  402:}
+        -:  403:
+    #####:  404:bool Application::wireUpDependencies() 
+        -:  405:{
+    #####:  406:    LOG_INFO("Wiring up dependencies...");
+        -:  407:    
+        -:  408:    // Initialize main controller
+    #####:  409:    if (!m_mainController->initialize()) 
+        -:  410:    {
+    #####:  411:        LOG_ERROR("Failed to initialize main controller");
+    #####:  412:        return false;
+        -:  413:    }
+        -:  414:    
+    #####:  415:    LOG_INFO("Dependencies wired successfully");
+    #####:  416:    return true;
+        -:  417:}
+        -:  418:
+    #####:  419:void Application::startScan(const std::string& path)
+        -:  420:{
+    #####:  421:    g_scanComplete = false;
+    #####:  422:    g_scanStarted = true;
+    #####:  423:    g_scanProgress = 0;
+    #####:  424:    g_scanTotal = 0;
+    #####:  425:    g_currentScanPath = path;
+    #####:  426:    g_scanCancelled = false;
+        -:  427:    
+    #####:  428:    std::thread scanThread([this, path]() {
+    #####:  429:        LOG_INFO("Starting media scan: " + path);
+    #####:  430:        if (m_fileScanner)
+        -:  431:        {
+    #####:  432:            m_fileScanner->setProgressCallback([](int current, int total, const std::string& p) {
+    #####:  433:                g_scanProgress = current;
+    #####:  434:                g_scanTotal = total;
+    #####:  435:                g_currentScanPath = p;
+    #####:  436:            });
+    #####:  437:            auto scannedMedia = m_fileScanner->scanDirectorySync(path);
+        -:  438:            {
+    #####:  439:                std::lock_guard<std::mutex> lock(g_mediaMutex);
+    #####:  440:                g_scannedMedia = scannedMedia;
+    #####:  441:            }
+        -:  442:
+    #####:  443:            if (!g_scanCancelled)
+        -:  444:            {
+        -:  445:                // Chỉ cập nhật thư viện khi scan hoàn tất thành công
+    #####:  446:                if (m_libraryModel)
+        -:  447:                {
+    #####:  448:                    m_libraryModel->clear();
+    #####:  449:                    m_libraryModel->addMediaBatch(g_scannedMedia);
+        -:  450:                }
+        -:  451:            }
+        -:  452:            else
+        -:  453:            {
+    #####:  454:                LOG_INFO("Scan cancelled, keeping existing library");
+        -:  455:            }
+    #####:  456:        }
+    #####:  457:        g_scanComplete = true;
+    #####:  458:        LOG_INFO("Media scan complete. Found " + std::to_string(g_scannedMedia.size()) + " files");
+    #####:  459:    });
+    #####:  460:    scanThread.detach();
+    #####:  461:}
+        -:  462:
+    #####:  463:void Application::resetAndRescan(const std::string& path)
+        -:  464:{
+    #####:  465:    if (m_playbackController) m_playbackController->stop();
+    #####:  466:    if (m_queueController) m_queueController->clearQueue();
+    #####:  467:    if (m_historyRepo) m_historyRepo->clear();
+    #####:  468:    saveLastScanPath(path);
+        -:  469:    
+        -:  470:    // Reset UI state to prevent "ghost" pages or invalid selection
+    #####:  471:    if (g_uiManager) {
+    #####:  472:        auto& state = g_uiManager->getState();
+    #####:  473:        state.currentPage = 0;
+    #####:  474:        state.selectedMediaIndex = -1;
+    #####:  475:        state.scrollOffset = 0;
+    #####:  476:        state.searchQuery.clear();
+    #####:  477:        state.searchFocused = false;
+        -:  478:        // Keep sort settings or reset? Resetting is safer.
+    #####:  479:        state.sortField = 0;
+    #####:  480:        state.sortAscending = true;
+        -:  481:    }
+        -:  482:    
+    #####:  483:    startScan(path);
+    #####:  484:}
+        -:  485:
+    #####:  486:int Application::run() 
+        -:  487:{
+    #####:  488:    LOG_INFO("Starting main application loop...");
+        -:  489:    
+    #####:  490:    m_running = true;
+        -:  491:    
+        -:  492:    // Auto-start scan on launch to skip the "Select Source" screen
+    #####:  493:    std::string lastPath = loadLastScanPath();
+    #####:  494:    if (lastPath.empty() || !std::filesystem::exists(lastPath)) {
+    #####:  495:        const char* homeDir = getenv("HOME");
+    #####:  496:        if (homeDir) {
+    #####:  497:            std::string musicDir = std::string(homeDir) + "/Music";
+    #####:  498:            if (std::filesystem::exists(musicDir)) lastPath = musicDir;
+    #####:  499:            else lastPath = std::string(homeDir);
+    #####:  500:        } else {
+    #####:  501:            lastPath = "/";
+        -:  502:        }
+        -:  503:    }
+        -:  504:    
+        -:  505:    // Start scanning immediately
+    #####:  506:    if (g_uiManager) {
+    #####:  507:        g_uiManager->getState().pathInputScreenVisible = false;
+    #####:  508:        g_uiManager->getState().focusPathInput = false;
+    #####:  509:        SDL_StopTextInput(); 
+        -:  510:    }
+    #####:  511:    startScan(lastPath);
+        -:  512:    
+        -:  513:    // Main loop
+    #####:  514:    while (m_running) 
+        -:  515:    {
+    #####:  516:        processEvents();
+    #####:  517:        update();
+    #####:  518:        render();
+        -:  519:        
+        -:  520:        // Cap frame rate to ~60 FPS
+    #####:  521:        SDL_Delay(16);
+        -:  522:    }
+        -:  523:    
+    #####:  524:    LOG_INFO("Main application loop ended");
+    #####:  525:    return 0;
+    #####:  526:}
+        -:  527:
+    #####:  528:void Application::quit() 
+        -:  529:{
+    #####:  530:    LOG_INFO("Application quit requested");
+    #####:  531:    m_running = false;
+    #####:  532:}
+        -:  533:
+    #####:  534:void Application::processEvents() 
+        -:  535:{
+        -:  536:    SDL_Event event;
+        -:  537:
+    #####:  538:    if (g_uiManager)
+        -:  539:    {
+    #####:  540:        g_uiManager->getState().scanDialogVisible = (!g_scanComplete && g_scanStarted);
+        -:  541:    }
+        -:  542:    
+    #####:  543:    while (SDL_PollEvent(&event)) 
+        -:  544:    {
+        -:  545:        // Let ImGuiManager process events first
+    #####:  546:        if (g_uiManager) {
+    #####:  547:            g_uiManager->processEvent(event);
+        -:  548:        }
+        -:  549:        
+    #####:  550:        switch (event.type) 
+        -:  551:        {
+    #####:  552:            case SDL_QUIT:
+    #####:  553:                quit();
+    #####:  554:                break;
+        -:  555:                
+    #####:  556:            case SDL_KEYDOWN:
+    #####:  557:                handleKeyboardEvent(event.key);
+    #####:  558:                break;
+        -:  559:                
+    #####:  560:            case SDL_WINDOWEVENT:
+    #####:  561:                handleWindowEvent(event.window);
+    #####:  562:                break;
+        -:  563:                
+    #####:  564:            default:
+    #####:  565:                if (event.type == EVENT_PLAYBACK_FINISHED)
+        -:  566:                {
+    #####:  567:                    if (m_playbackController)
+        -:  568:                    {
+    #####:  569:                        m_playbackController->onFinished();
+        -:  570:                    }
+        -:  571:                }
+    #####:  572:                else if (event.type == EVENT_USB_INSERTED)
+        -:  573:                {
+        -:  574:                    // Extract path from user data
+    #####:  575:                    std::string* pathPtr = static_cast<std::string*>(event.user.data1);
+    #####:  576:                    if (pathPtr && g_uiManager)
+        -:  577:                    {
+    #####:  578:                        g_uiManager->showUsbPopup(*pathPtr);
+    #####:  579:                        delete pathPtr; // Free heap memory
+        -:  580:                    }
+        -:  581:                }
+    #####:  582:                break;
+        -:  583:        }
+        -:  584:    }
+    #####:  585:}
+        -:  586:
+    #####:  587:void Application::update() 
+        -:  588:{
+        -:  589:    // Path input screen visibility (so UI can route keyboard to search vs path input)
+    #####:  590:    if (g_uiManager) {
+    #####:  591:        g_uiManager->getState().pathInputScreenVisible = (!g_scanComplete && !g_scanStarted);
+    #####:  592:        if (g_uiManager->getState().pathInputScreenVisible) {
+    #####:  593:            auto& state = g_uiManager->getState();
+    #####:  594:            if (state.libraryPathInput.empty())
+    #####:  595:                state.libraryPathInput = loadLastScanPath();
+        -:  596:        }
+        -:  597:    }
+        -:  598:    
+        -:  599:    // Update UI state with playback info
+    #####:  600:    if (g_uiManager && m_playbackStateModel) {
+    #####:  601:        auto& state = g_uiManager->getState();
+    #####:  602:        state.isPlaying = (m_playbackStateModel->getState() == models::PlaybackState::PLAYING);
+        -:  603:        
+        -:  604:        // Update metadata and progress
+    #####:  605:        state.currentTrackTitle = m_playbackStateModel->getCurrentTitle();
+    #####:  606:        state.currentTrackArtist = m_playbackStateModel->getCurrentArtist();
+        -:  607:
+    #####:  608:        float duration = static_cast<float>(m_playbackStateModel->getTotalDuration());
+    #####:  609:        state.playbackDuration = duration;
+        -:  610:        
+    #####:  611:        float current = static_cast<float>(m_playbackStateModel->getCurrentPosition());
+    #####:  612:        if (duration > 0) {
+    #####:  613:            state.playbackProgress = current / duration;
+        -:  614:        } else {
+    #####:  615:            state.playbackProgress = 0.0f;
+        -:  616:        }
+        -:  617:        
+        -:  618:        // Also sync Loop/Shuffle state from Queue Controller if available
+    #####:  619:        if (m_queueController) {
+    #####:  620:             state.loopEnabled = m_queueController->isRepeatEnabled();
+    #####:  621:             state.loopAllEnabled = m_queueController->isLoopAllEnabled();
+    #####:  622:             state.shuffleEnabled = m_queueController->isShuffleEnabled();
+        -:  623:        }
+        -:  624:        
+        -:  625:        // Video support removed - no video state updates needed
+        -:  626:    }
+        -:  627:    
+        -:  628:    // Update media list reference
+    #####:  629:    if (g_uiManager && m_libraryModel && g_scanComplete) {
+    #####:  630:        std::lock_guard<std::mutex> lock(g_mediaMutex);
+    #####:  631:        static std::vector<models::MediaFileModel> cachedMedia;
+    #####:  632:        cachedMedia = m_libraryModel->getAllMedia();
+    #####:  633:        g_uiManager->setMediaList(&cachedMedia);
+    #####:  634:    }
+        -:  635:    
+        -:  636:    // Sync playback history to UI
+    #####:  637:    if (g_uiManager && m_historyRepo) {
+    #####:  638:        auto historyList = m_historyRepo->getRecentHistory(100);
+    #####:  639:        g_uiManager->setHistoryList(historyList);
+    #####:  640:    }
+        -:  641:    
+        -:  642:    // Thử kết nối lại phần cứng S32K144 theo chu kỳ để nhận bản tin từ UART
+    #####:  643:    if (m_hardwareController)
+        -:  644:    {
+    #####:  645:        m_hardwareController->refreshConnection();
+        -:  646:    }
+        -:  647:
+        -:  648:    // Cập nhật trạng thái kết nối phần cứng S32K144
+    #####:  649:    if (g_uiManager && m_hardwareController)
+        -:  650:    {
+    #####:  651:        g_uiManager->getState().hardwareConnected = m_hardwareController->isConnected();
+        -:  652:    }
+    #####:  653:}
+        -:  654:
+    #####:  655:void Application::render() 
+        -:  656:{
+    #####:  657:    if (!g_uiManager) return;
+        -:  658:    
+    #####:  659:    g_uiManager->beginFrame();
+        -:  660:    
+    #####:  661:    if (!g_scanComplete && g_scanStarted) 
+        -:  662:    {
+    #####:  663:        g_uiManager->getState().scanDialogVisible = true;
+    #####:  664:        g_uiManager->renderMainLayout();
+    #####:  665:        g_uiManager->renderScanProgress(g_currentScanPath, g_scanProgress, g_scanTotal);
+        -:  666:    }
+    #####:  667:    else if (!g_scanComplete && !g_scanStarted) 
+        -:  668:    {
+    #####:  669:        g_uiManager->renderMainLayout();
+    #####:  670:        g_uiManager->renderPathInputScreen(loadLastScanPath());
+        -:  671:    }
+        -:  672:    else 
+        -:  673:    {
+    #####:  674:        g_uiManager->renderMainLayout();
+        -:  675:    }
+        -:  676:    
+    #####:  677:    g_uiManager->endFrame();
+        -:  678:}
+        -:  679:
+    #####:  680:void Application::handleKeyboardEvent(const SDL_KeyboardEvent& event) 
+        -:  681:{
+    #####:  682:    SDL_Keycode key = event.keysym.sym;
+        -:  683:    
+        -:  684:    // Check for modal dialogs blocking input
+    #####:  685:    if (g_uiManager && g_uiManager->getState().showUsbDialog) {
+        -:  686:        // Allow Quit (Ctrl+Q) only? Or block everything? 
+        -:  687:        // User said "require interaction with this screen", so strict blocking.
+        -:  688:        // But we might want to allow Esc to close it if that's UI policy.
+        -:  689:        // For now, adhere to request: only interact with the popup.
+        -:  690:        // Allowing ONLY Quit for safety.
+    #####:  691:        if (key == SDLK_q && (event.keysym.mod & KMOD_CTRL)) 
+        -:  692:        {
+    #####:  693:             quit();
+        -:  694:        }
+    #####:  695:        return;
+        -:  696:    }
+        -:  697:    
+        -:  698:    // Global shortcuts
+    #####:  699:    if (key == SDLK_q || (key == SDLK_q && (event.keysym.mod & KMOD_CTRL))) 
+        -:  700:    {
+    #####:  701:        quit();
+    #####:  702:        return;
+        -:  703:    }
+        -:  704:    
+    #####:  705:    if (!g_uiManager) return;
+    #####:  706:    auto& state = g_uiManager->getState();
+        -:  707:    
+        -:  708:    // Only handle keys in Library view for now
+    #####:  709:    if (state.currentTab == ui::NavTab::Library && g_scanComplete && m_libraryModel) 
+        -:  710:    {
+    #####:  711:        int mediaCount = static_cast<int>(m_libraryModel->getMediaCount());
+        -:  712:        
+    #####:  713:        if (key == SDLK_UP || key == SDLK_k) 
+        -:  714:        {
+    #####:  715:            if (state.selectedMediaIndex > 0) 
+        -:  716:            {
+    #####:  717:                state.selectedMediaIndex--;
+        -:  718:                // Scroll up if needed
+    #####:  719:                if (state.selectedMediaIndex < state.scrollOffset) 
+        -:  720:                {
+    #####:  721:                    state.scrollOffset = state.selectedMediaIndex;
+        -:  722:                }
+        -:  723:            }
+        -:  724:        }
+    #####:  725:        else if (key == SDLK_DOWN || key == SDLK_j) 
+        -:  726:        {
+    #####:  727:            if (state.selectedMediaIndex < mediaCount - 1) 
+        -:  728:            {
+    #####:  729:                state.selectedMediaIndex++;
+        -:  730:                // Scroll down if needed
+    #####:  731:                int visibleItems = (g_uiManager->getHeight() - 180) / 50;
+    #####:  732:                if (state.selectedMediaIndex >= state.scrollOffset + visibleItems) 
+        -:  733:                {
+    #####:  734:                    state.scrollOffset = state.selectedMediaIndex - visibleItems + 1;
+        -:  735:                }
+        -:  736:            }
+    #####:  737:        }
+    #####:  738:        else if (key == SDLK_RETURN || key == SDLK_KP_ENTER) 
+        -:  739:        {
+    #####:  740:            if (state.selectedMediaIndex >= 0 && state.selectedMediaIndex < mediaCount) 
+        -:  741:            {
+    #####:  742:                auto mediaList = m_libraryModel->getAllMedia();
+    #####:  743:                const auto& media = mediaList[state.selectedMediaIndex];
+    #####:  744:                LOG_INFO("Playing: " + media.getFileName());
+        -:  745:                
+    #####:  746:                if (m_playbackController && m_playbackController->playMediaWithoutQueue(media))
+        -:  747:                {
+    #####:  748:                    state.isPlaying = true;
+    #####:  749:                    state.currentTrackTitle = media.getTitle().empty() ? media.getFileName() : media.getTitle();
+    #####:  750:                    state.currentTrackArtist = media.getArtist().empty() ? "Unknown Artist" : media.getArtist();
+        -:  751:                }
+    #####:  752:            }
+    #####:  753:        }
+    #####:  754:        else if (key == SDLK_SPACE) 
+        -:  755:        {
+        -:  756:            // Toggle play/pause
+    #####:  757:            if (m_playbackController) 
+        -:  758:            {
+    #####:  759:                m_playbackController->togglePlayPause();
+    #####:  760:                state.isPlaying = !state.isPlaying;
+        -:  761:            }
+        -:  762:        }
+    #####:  763:        else if (key == SDLK_PAGEUP) 
+        -:  764:        {
+    #####:  765:            int visibleItems = (g_uiManager->getHeight() - 180) / 50;
+    #####:  766:            state.selectedMediaIndex = std::max(0, state.selectedMediaIndex - visibleItems);
+    #####:  767:            state.scrollOffset = std::max(0, state.scrollOffset - visibleItems);
+        -:  768:        }
+    #####:  769:        else if (key == SDLK_PAGEDOWN) 
+        -:  770:        {
+    #####:  771:            int visibleItems = (g_uiManager->getHeight() - 180) / 50;
+    #####:  772:            state.selectedMediaIndex = std::min(mediaCount - 1, state.selectedMediaIndex + visibleItems);
+    #####:  773:            if (state.selectedMediaIndex >= state.scrollOffset + visibleItems) 
+        -:  774:            {
+    #####:  775:                state.scrollOffset = state.selectedMediaIndex - visibleItems + 1;
+        -:  776:            }
+        -:  777:        }
+    #####:  778:        else if (key == SDLK_HOME) 
+        -:  779:        {
+    #####:  780:            state.selectedMediaIndex = 0;
+    #####:  781:            state.scrollOffset = 0;
+        -:  782:        }
+    #####:  783:        else if (key == SDLK_END) 
+        -:  784:        {
+    #####:  785:            state.selectedMediaIndex = mediaCount - 1;
+    #####:  786:            int visibleItems = (g_uiManager->getHeight() - 180) / 50;
+    #####:  787:            state.scrollOffset = std::max(0, mediaCount - visibleItems);
+        -:  788:        }
+        -:  789:    }
+        -:  790:    
+        -:  791:    // Tab navigation - only when no dialog is active
+    #####:  792:    if (!state.showCreatePlaylistDialog && !state.showRenamePlaylistDialog && 
+    #####:  793:        !state.showAddToPlaylistDialog && !state.showPropertiesDialog &&
+    #####:  794:        !state.showChangePathDialog && !state.pathInputScreenVisible) {
+    #####:  795:        if (key == SDLK_1) state.currentTab = ui::NavTab::Library;
+    #####:  796:        else if (key == SDLK_2) state.currentTab = ui::NavTab::Playlists;
+    #####:  797:        else if (key == SDLK_3) state.currentTab = ui::NavTab::Queue;
+    #####:  798:        else if (key == SDLK_4) state.currentTab = ui::NavTab::History;
+        -:  799:    }
+        -:  800:}
+        -:  801:
+    #####:  802:void Application::handleMouseEvent(const SDL_MouseButtonEvent& event) 
+        -:  803:{
+        -:  804:    // Mouse events are now handled by ImGuiManager
+        -:  805:    (void)event;
+    #####:  806:}
+        -:  807:
+    #####:  808:void Application::handleWindowEvent(const SDL_WindowEvent& event) 
+        -:  809:{
+    #####:  810:    if (event.event == SDL_WINDOWEVENT_RESIZED) 
+        -:  811:    {
+        -:  812:        // Handle window resize (video support removed)
+    #####:  813:        if (g_uiManager) {
+    #####:  814:            g_uiManager->handleResize(event.data1, event.data2);
+        -:  815:        }
+        -:  816:    }
+    #####:  817:}
+        -:  818:
+        -:  819:} // namespace core
+        -:  820:} // namespace media_player

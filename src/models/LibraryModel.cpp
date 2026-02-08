@@ -1,6 +1,5 @@
 // Project includes
 #include "models/LibraryModel.h"
-#include "utils/Logger.h"
 
 // System includes
 #include <algorithm>
@@ -22,7 +21,6 @@ void LibraryModel::addMedia(const MediaFileModel& media)
     }
     
     m_mediaList.push_back(media);
-    LOG_DEBUG("Added media to library: " + media.getFileName());
 }
 
 void LibraryModel::addMediaBatch(const std::vector<MediaFileModel>& mediaList) 
@@ -31,7 +29,6 @@ void LibraryModel::addMediaBatch(const std::vector<MediaFileModel>& mediaList)
     {
         addMedia(media);
     }
-    LOG_INFO("Added " + std::to_string(mediaList.size()) + " items to library");
 }
 
 bool LibraryModel::removeMedia(const std::string& filePath) 
@@ -43,7 +40,6 @@ bool LibraryModel::removeMedia(const std::string& filePath)
     
     if (it != m_mediaList.end()) 
     {
-        LOG_DEBUG("Removed media from library: " + it->getFileName());
         m_mediaList.erase(it);
         return true;
     }
@@ -55,7 +51,6 @@ bool LibraryModel::removeMedia(const std::string& filePath)
 void LibraryModel::clear() 
 {
     m_mediaList.clear();
-    LOG_INFO("Library cleared");
 }
 
 bool LibraryModel::updateMedia(const std::string& filePath, const MediaFileModel& updatedMedia) 
@@ -68,7 +63,6 @@ bool LibraryModel::updateMedia(const std::string& filePath, const MediaFileModel
     if (it != m_mediaList.end()) 
     {
         *it = updatedMedia;
-        LOG_INFO("Updated media in library: " + updatedMedia.getFileName());
         return true;
     }
     

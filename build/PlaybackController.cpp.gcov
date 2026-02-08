@@ -1,0 +1,577 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/src/controllers/PlaybackController.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/controllers/PlaybackController.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/controllers/PlaybackController.cpp.gcda
+        -:    0:Runs:6
+        -:    1:// Project includes
+        -:    2:#include "controllers/PlaybackController.h"
+        -:    3:#include "utils/Logger.h"
+        -:    4:
+        -:    5:namespace media_player 
+        -:    6:{
+        -:    7:namespace controllers 
+        -:    8:{
+        -:    9:
+       18:   10:PlaybackController::PlaybackController(
+        -:   11:    std::shared_ptr<models::QueueModel> queueModel,
+        -:   12:    std::shared_ptr<models::PlaybackStateModel> playbackStateModel,
+        -:   13:    std::shared_ptr<repositories::HistoryRepository> historyRepo
+       18:   14:)
+       18:   15:    : m_queueModel(queueModel)
+       18:   16:    , m_playbackStateModel(playbackStateModel)
+       18:   17:    , m_historyRepo(historyRepo)
+       18:   18:    , m_currentEngine(nullptr)
+       18:   19:    , m_currentMediaType(models::MediaType::UNKNOWN)
+        -:   20:{
+        -:   21:    // Create only audio engine (video support removed)
+       18:   22:    m_audioEngine = std::make_unique<services::AudioPlaybackEngine>();
+        -:   23:    
+        -:   24:    // Setup callbacks for audio engine only
+       36:   25:    m_audioEngine->setStateChangeCallback(
+      18*:   26:        [this](services::PlaybackState state) 
+        -:   27:        {
+    #####:   28:            onStateChanged(state);
+    #####:   29:        }
+        -:   30:    );
+        -:   31:    
+       36:   32:    m_audioEngine->setPositionCallback(
+      18*:   33:        [this](int current, int total) 
+        -:   34:        {
+    #####:   35:            onPositionChanged(current, total);
+    #####:   36:        }
+        -:   37:    );
+        -:   38:    
+       36:   39:    m_audioEngine->setErrorCallback(
+      18*:   40:        [this](const std::string& error) 
+        -:   41:        {
+    #####:   42:            onError(error);
+    #####:   43:        }
+        -:   44:    );
+        -:   45:    
+       36:   46:    m_audioEngine->setFinishedCallback(
+      18*:   47:        [this]() 
+        -:   48:        {
+    #####:   49:            onFinished();
+    #####:   50:        }
+        -:   51:    );
+        -:   52:    
+       36:   53:    LOG_INFO("PlaybackController initialized (audio only)");
+       18:   54:}
+        -:   55:
+       18:   56:PlaybackController::~PlaybackController() 
+        -:   57:{
+       18:   58:    stop();
+       36:   59:    LOG_INFO("PlaybackController destroyed");
+       18:   60:}
+        -:   61:
+       12:   62:bool PlaybackController::play() 
+        -:   63:{
+       12:   64:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+        -:   65:    
+       12:   66:    m_oneOffMedia.reset();
+       12:   67:    m_playingOneOffWithoutQueue = false;  // play() is for queue; clear one-off state
+       12:   68:    auto currentItem = m_queueModel->getCurrentItem();
+        -:   69:    
+       12:   70:    if (!currentItem) 
+        -:   71:    {
+       12:   72:        LOG_WARNING("No item in queue to play");
+        6:   73:        return false;
+        -:   74:    }
+        -:   75:    
+        -:   76:    // Skip items whose file no longer exists (deleted on disk)
+       18:   77:    while (currentItem && !std::filesystem::exists(currentItem->getFilePath()))
+        -:   78:    {
+       12:   79:        LOG_WARNING("File no longer exists, skipping: " + currentItem->getFilePath());
+       12:   80:        m_queueModel->removeByPath(currentItem->getFilePath());
+       12:   81:        cleanupCurrentEngine();
+       12:   82:        currentItem = m_queueModel->getCurrentItem();
+        -:   83:    }
+        6:   84:    if (!currentItem)
+        -:   85:    {
+       12:   86:        LOG_WARNING("No valid item in queue to play");
+        6:   87:        stop();
+        6:   88:        return false;
+        -:   89:    }
+        -:   90:    
+        -:   91:    // Always sync Metadata, even if engine is already loaded for this file
+    #####:   92:    const auto& media = *currentItem;
+    #####:   93:    m_playbackStateModel->setCurrentTitle(media.getTitle().empty() ? media.getFileName() : media.getTitle());
+    #####:   94:    m_playbackStateModel->setCurrentArtist(media.getArtist().empty() ? "Unknown Artist" : media.getArtist());
+    #####:   95:    m_playbackStateModel->setCurrentMediaType(media.getType());
+        -:   96:
+        -:   97:    // Check if we need to load a new file
+    #####:   98:    if (m_playbackStateModel->getCurrentFilePath() != currentItem->getFilePath()) 
+        -:   99:    {
+    #####:  100:        if (!selectAndLoadEngine(*currentItem)) 
+        -:  101:        {
+    #####:  102:            LOG_ERROR("Failed to load media file (may have been deleted): " + currentItem->getFilePath());
+    #####:  103:            m_queueModel->removeByPath(currentItem->getFilePath());
+    #####:  104:            cleanupCurrentEngine();
+    #####:  105:            return play();
+        -:  106:        }
+        -:  107:        
+    #####:  108:        m_playbackStateModel->setCurrentFilePath(currentItem->getFilePath());
+        -:  109:        // MediaType set above
+        -:  110:    }
+        -:  111:    
+    #####:  112:    if (!m_currentEngine) 
+        -:  113:    {
+    #####:  114:        LOG_ERROR("No engine available");
+    #####:  115:        return false;
+        -:  116:    }
+        -:  117:    
+    #####:  118:    bool success = m_currentEngine->play();
+        -:  119:    
+    #####:  120:    if (success) 
+        -:  121:    {
+        -:  122:        // Add to history (skip when coming from play previous)
+    #####:  123:        if (m_skipHistoryOnNextPlay)
+        -:  124:        {
+    #####:  125:            m_skipHistoryOnNextPlay = false;
+        -:  126:        }
+    #####:  127:        else if (m_historyRepo)
+        -:  128:        {
+    #####:  129:            m_historyRepo->removeAllEntriesByFilePath(currentItem->getFilePath());
+    #####:  130:            m_historyRepo->addEntry(*currentItem);
+        -:  131:        }
+        -:  132:        
+    #####:  133:        LOG_INFO("Playback started: " + currentItem->getFileName());
+        -:  134:    }
+        -:  135:    
+    #####:  136:    return success;
+       12:  137:}
+        -:  138:
+    #####:  139:bool PlaybackController::pause() 
+        -:  140:{
+    #####:  141:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+        -:  142:    
+    #####:  143:    if (!m_currentEngine) 
+        -:  144:    {
+    #####:  145:        return false;
+        -:  146:    }
+        -:  147:    
+    #####:  148:    return m_currentEngine->pause();
+    #####:  149:}
+        -:  150:
+        6:  151:bool PlaybackController::togglePlayPause() 
+        -:  152:{
+        6:  153:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+        -:  154:    
+        6:  155:    if (isPlaying()) 
+        -:  156:    {
+    #####:  157:        return pause();
+        -:  158:    }
+       6*:  159:    else if (isPaused() && m_currentEngine)
+        -:  160:    {
+        -:  161:        // Resume the current track without changing queue
+    #####:  162:        LOG_INFO("Resuming paused track");
+    #####:  163:        return m_currentEngine->play();
+        -:  164:    }
+        -:  165:    else 
+        -:  166:    {
+        -:  167:        // If stopped, check if we have one-off media to resume
+       6*:  168:        if (m_oneOffMedia && m_currentEngine)
+        -:  169:        {
+        -:  170:            // Check if engine has file loaded (can resume)
+    #####:  171:            if (!m_playbackStateModel->getCurrentFilePath().empty())
+        -:  172:            {
+        -:  173:                // Resume one-off media without clearing it
+    #####:  174:                LOG_INFO("Resuming one-off media: " + m_oneOffMedia->getFileName());
+    #####:  175:                return m_currentEngine->play();
+        -:  176:            }
+        -:  177:            else
+        -:  178:            {
+        -:  179:                // Engine lost file, reload one-off media
+    #####:  180:                LOG_INFO("Reloading one-off media: " + m_oneOffMedia->getFileName());
+    #####:  181:                if (selectAndLoadEngine(*m_oneOffMedia))
+        -:  182:                {
+    #####:  183:                    m_playbackStateModel->setCurrentFilePath(m_oneOffMedia->getFilePath());
+    #####:  184:                    m_playbackStateModel->setCurrentTitle(m_oneOffMedia->getTitle().empty() ? m_oneOffMedia->getFileName() : m_oneOffMedia->getTitle());
+    #####:  185:                    m_playbackStateModel->setCurrentArtist(m_oneOffMedia->getArtist().empty() ? "Unknown Artist" : m_oneOffMedia->getArtist());
+    #####:  186:                    m_playbackStateModel->setCurrentMediaType(m_oneOffMedia->getType());
+    #####:  187:                    return m_currentEngine->play();
+        -:  188:                }
+        -:  189:            }
+        -:  190:        }
+        -:  191:        else
+        -:  192:        {
+        -:  193:            // If no one-off media, then play from queue
+        6:  194:            return play();
+        -:  195:        }
+        -:  196:    }
+    #####:  197:    return false;
+        6:  198:}
+        -:  199:
+       24:  200:bool PlaybackController::stop() 
+        -:  201:{
+       24:  202:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+        -:  203:    
+       24:  204:    if (!m_currentEngine) 
+        -:  205:    {
+       24:  206:        return false;
+        -:  207:    }
+        -:  208:    
+    #####:  209:    bool success = m_currentEngine->stop();
+        -:  210:    
+    #####:  211:    if (success) 
+        -:  212:    {
+    #####:  213:        m_playbackStateModel->setCurrentFilePath("");
+    #####:  214:        m_playbackStateModel->setCurrentMediaType(models::MediaType::UNKNOWN);
+    #####:  215:        m_playbackStateModel->setCurrentPosition(0);
+    #####:  216:        m_oneOffMedia.reset();
+        -:  217:    }
+        -:  218:    
+    #####:  219:    return success;
+       24:  220:}
+        -:  221:
+        6:  222:bool PlaybackController::playNext() 
+        -:  223:{
+        6:  224:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+        6:  225:    bool moved = m_queueModel->moveToNext();
+        6:  226:    if (moved) 
+        -:  227:    {
+        6:  228:        cleanupCurrentEngine();
+        6:  229:        return play();
+        -:  230:    }
+    #####:  231:    LOG_INFO("End of queue reached");
+    #####:  232:    stop();
+    #####:  233:    return false;
+        6:  234:}
+        -:  235:
+        -:  236:// First press: replay current (seek to 0), remove from history. When already at start (pos~0): play previous from history.
+        -:  237:static const int REWIND_THRESHOLD_SEC = 2;
+        -:  238:
+    #####:  239:bool PlaybackController::playPrevious() 
+        -:  240:{
+    #####:  241:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+        -:  242:    
+    #####:  243:    auto currentItem = m_queueModel->getCurrentItem();
+    #####:  244:    int position = m_playbackStateModel->getCurrentPosition();
+    #####:  245:    bool hasCurrent = (currentItem && !m_playbackStateModel->getCurrentFilePath().empty());
+        -:  246:    
+        -:  247:    // First press (position > threshold): replay current (seek to 0) and remove it from history
+    #####:  248:    bool canReplay = hasCurrent && (isPlaying() || isPaused()) && (position > REWIND_THRESHOLD_SEC);
+    #####:  249:    if (canReplay)
+        -:  250:    {
+    #####:  251:        if (m_historyRepo && currentItem)
+    #####:  252:            m_historyRepo->removeMostRecentEntryByFilePath(currentItem->getFilePath());
+    #####:  253:        return m_currentEngine ? m_currentEngine->seek(0) : false;
+        -:  254:    }
+        -:  255:    
+        -:  256:    // Second press onwards: play the track that was played before current in history
+    #####:  257:    std::string currentPath = m_playbackStateModel->getCurrentFilePath();
+    #####:  258:    if (m_historyRepo)
+        -:  259:    {
+    #####:  260:        std::optional<repositories::PlaybackHistoryEntry> prevPlayed = m_historyRepo->getPlayedBefore(currentPath);
+    #####:  261:        if (!prevPlayed && !currentPath.empty())
+    #####:  262:            prevPlayed = m_historyRepo->getLastPlayed(); // current was removed from history, so last in history is the previous
+    #####:  263:        if (prevPlayed && std::filesystem::exists(prevPlayed->media.getFilePath()))
+        -:  264:        {
+    #####:  265:            m_historyRepo->removeMostRecentEntryByFilePath(prevPlayed->media.getFilePath());
+        -:  266:            // Play directly without touching queue - when done, onFinished will resume queue
+    #####:  267:            cleanupCurrentEngine();
+    #####:  268:            if (!selectAndLoadEngine(prevPlayed->media))
+    #####:  269:                return false;
+    #####:  270:            m_playbackStateModel->setCurrentFilePath(prevPlayed->media.getFilePath());
+    #####:  271:            m_playbackStateModel->setCurrentTitle(prevPlayed->media.getTitle().empty() ? prevPlayed->media.getFileName() : prevPlayed->media.getTitle());
+    #####:  272:            m_playbackStateModel->setCurrentArtist(prevPlayed->media.getArtist().empty() ? "Unknown Artist" : prevPlayed->media.getArtist());
+    #####:  273:            m_playbackStateModel->setCurrentMediaType(prevPlayed->media.getType());
+    #####:  274:            m_playingFromHistory = true;
+    #####:  275:            return m_currentEngine ? m_currentEngine->play() : false;
+        -:  276:        }
+    #####:  277:    }
+        -:  278:    
+        -:  279:    // Fallback: previous in queue (if no previous in history)
+    #####:  280:    if (!m_queueModel->hasPrevious())
+        -:  281:    {
+    #####:  282:        LOG_INFO("No previous item in queue or history");
+    #####:  283:        return false;
+        -:  284:    }
+        -:  285:    
+    #####:  286:    m_queueModel->moveToPrevious();
+    #####:  287:    cleanupCurrentEngine();
+    #####:  288:    auto prevItem = m_queueModel->getCurrentItem();
+    #####:  289:    if (m_historyRepo && prevItem)
+        -:  290:    {
+    #####:  291:        m_historyRepo->removeMostRecentEntryByFilePath(prevItem->getFilePath());
+    #####:  292:        m_skipHistoryOnNextPlay = true;
+        -:  293:    }
+    #####:  294:    return play();
+    #####:  295:}
+        -:  296:
+    #####:  297:bool PlaybackController::playItemAt(size_t index) 
+        -:  298:{
+    #####:  299:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+        -:  300:    
+    #####:  301:    if (!m_queueModel->jumpTo(index)) 
+        -:  302:    {
+    #####:  303:        LOG_ERROR("Failed to jump to index: " + std::to_string(index));
+    #####:  304:        return false;
+        -:  305:    }
+        -:  306:    
+    #####:  307:    cleanupCurrentEngine();
+    #####:  308:    return play();
+    #####:  309:}
+        -:  310:
+    #####:  311:bool PlaybackController::playMediaWithoutQueue(const models::MediaFileModel& media) 
+        -:  312:{
+    #####:  313:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+        -:  314:    
+    #####:  315:    if (!std::filesystem::exists(media.getFilePath()))
+    #####:  316:        return false;
+        -:  317:    
+    #####:  318:    cleanupCurrentEngine();
+    #####:  319:    m_oneOffMedia = media;
+    #####:  320:    if (!selectAndLoadEngine(media))
+    #####:  321:        return false;
+        -:  322:    
+    #####:  323:    m_playbackStateModel->setCurrentFilePath(media.getFilePath());
+    #####:  324:    m_playbackStateModel->setCurrentTitle(media.getTitle().empty() ? media.getFileName() : media.getTitle());
+    #####:  325:    m_playbackStateModel->setCurrentArtist(media.getArtist().empty() ? "Unknown Artist" : media.getArtist());
+    #####:  326:    m_playbackStateModel->setCurrentMediaType(media.getType());
+    #####:  327:    m_playingOneOffWithoutQueue = true;
+        -:  328:    
+    #####:  329:    bool success = m_currentEngine ? m_currentEngine->play() : false;
+    #####:  330:    if (success && m_historyRepo)
+        -:  331:    {
+    #####:  332:        m_historyRepo->removeAllEntriesByFilePath(media.getFilePath());
+    #####:  333:        m_historyRepo->addEntry(media);
+        -:  334:    }
+    #####:  335:    return success;
+    #####:  336:}
+        -:  337:
+    #####:  338:bool PlaybackController::seek(int positionSeconds) 
+        -:  339:{
+    #####:  340:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+        -:  341:    
+    #####:  342:    if (!m_currentEngine) 
+        -:  343:    {
+    #####:  344:        return false;
+        -:  345:    }
+        -:  346:    
+    #####:  347:    return m_currentEngine->seek(positionSeconds);
+    #####:  348:}
+        -:  349:
+        6:  350:void PlaybackController::setVolume(int volume) 
+        -:  351:{
+        6:  352:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+        -:  353:    
+        6:  354:    if (m_currentEngine) 
+        -:  355:    {
+    #####:  356:        m_currentEngine->setVolume(volume);
+        -:  357:    }
+        -:  358:    
+        6:  359:    m_playbackStateModel->setVolume(volume);
+        6:  360:}
+        -:  361:
+    #####:  362:int PlaybackController::getVolume() const 
+        -:  363:{
+    #####:  364:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+    #####:  365:    return m_playbackStateModel->getVolume();
+    #####:  366:}
+        -:  367:
+        6:  368:bool PlaybackController::isPlaying() const 
+        -:  369:{
+        6:  370:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+       12:  371:    return m_playbackStateModel->isPlaying();
+        6:  372:}
+        -:  373:
+        6:  374:bool PlaybackController::isPaused() const 
+        -:  375:{
+        6:  376:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+       12:  377:    return m_playbackStateModel->isPaused();
+        6:  378:}
+        -:  379:
+    #####:  380:bool PlaybackController::isStopped() const 
+        -:  381:{
+    #####:  382:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+    #####:  383:    return m_playbackStateModel->isStopped();
+    #####:  384:}
+        -:  385:
+    #####:  386:std::string PlaybackController::getCurrentFilePath() const 
+        -:  387:{
+    #####:  388:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+    #####:  389:    return m_playbackStateModel->getCurrentFilePath();
+    #####:  390:}
+        -:  391:
+    #####:  392:models::MediaType PlaybackController::getCurrentMediaType() const 
+        -:  393:{
+    #####:  394:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+    #####:  395:    return m_playbackStateModel->getCurrentMediaType();
+    #####:  396:}
+        -:  397:
+    #####:  398:bool PlaybackController::selectAndLoadEngine(const models::MediaFileModel& media) 
+        -:  399:{
+    #####:  400:    models::MediaType newType = media.getType();
+        -:  401:    
+        -:  402:    // Video support removed - only audio is supported
+        -:  403:    // Also block unsupported files
+    #####:  404:    if (newType == models::MediaType::UNSUPPORTED)
+        -:  405:    {
+    #####:  406:        LOG_WARNING("Cannot play unsupported media type");
+    #####:  407:        return false;
+        -:  408:    }
+        -:  409:
+    #####:  410:    if (newType != models::MediaType::AUDIO) 
+        -:  411:    {
+    #####:  412:        LOG_ERROR("Video support removed, only audio files are supported");
+    #####:  413:        return false;
+        -:  414:    }
+        -:  415:    
+        -:  416:    // Cleanup current engine
+    #####:  417:    cleanupCurrentEngine();
+    #####:  418:    m_currentMediaType = models::MediaType::AUDIO;
+        -:  419:    
+        -:  420:    // Always use audio engine now (video engine removed)
+    #####:  421:    LOG_INFO("Selecting audio engine for: " + media.getFileName());
+    #####:  422:    m_currentEngine = m_audioEngine.get();
+        -:  423:    
+    #####:  424:    if (!m_currentEngine->loadFile(media.getFilePath())) 
+        -:  425:    {
+    #####:  426:        LOG_ERROR("Failed to load audio file: " + media.getFilePath());
+    #####:  427:        m_currentEngine = nullptr;
+    #####:  428:        m_currentMediaType = models::MediaType::UNKNOWN;
+    #####:  429:        return false;
+        -:  430:    }
+        -:  431:    
+        -:  432:    // Sync volume
+    #####:  433:    m_currentEngine->setVolume(m_playbackStateModel->getVolume());
+        -:  434:    
+    #####:  435:    return true;
+        -:  436:}
+        -:  437:
+       18:  438:void PlaybackController::cleanupCurrentEngine() 
+        -:  439:{
+       18:  440:    if (m_currentEngine) 
+        -:  441:    {
+    #####:  442:        m_currentEngine->stop();
+        -:  443:    }
+        -:  444:    
+       18:  445:    m_currentEngine = nullptr;
+       18:  446:    m_currentMediaType = models::MediaType::UNKNOWN;
+       18:  447:}
+        -:  448:
+    #####:  449:void PlaybackController::onStateChanged(services::PlaybackState state) 
+        -:  450:{
+    #####:  451:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+        -:  452:    models::PlaybackState modelState;
+        -:  453:    
+    #####:  454:    switch (state) 
+        -:  455:    {
+    #####:  456:        case services::PlaybackState::PLAYING:
+    #####:  457:            modelState = models::PlaybackState::PLAYING;
+    #####:  458:            break;
+    #####:  459:        case services::PlaybackState::PAUSED:
+    #####:  460:            modelState = models::PlaybackState::PAUSED;
+    #####:  461:            break;
+    #####:  462:        case services::PlaybackState::STOPPED:
+    #####:  463:            modelState = models::PlaybackState::STOPPED;
+    #####:  464:            break;
+        -:  465:    }
+        -:  466:    
+    #####:  467:    m_playbackStateModel->setState(modelState);
+        -:  468:    
+    #####:  469:    LOG_INFO("Playback state changed");
+    #####:  470:}
+        -:  471:
+    #####:  472:void PlaybackController::onPositionChanged(int currentSeconds, int totalSeconds) 
+        -:  473:{
+    #####:  474:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+    #####:  475:    m_playbackStateModel->setCurrentPosition(currentSeconds);
+    #####:  476:    m_playbackStateModel->setTotalDuration(totalSeconds);
+    #####:  477:}
+        -:  478:
+    #####:  479:void PlaybackController::onError(const std::string& error) 
+        -:  480:{
+    #####:  481:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+    #####:  482:    LOG_ERROR("Playback error: " + error);
+        -:  483:    
+    #####:  484:    bool wasFromHistory = m_playingFromHistory;
+    #####:  485:    bool wasOneOff = m_playingOneOffWithoutQueue;
+    #####:  486:    m_playingFromHistory = false;
+    #####:  487:    m_playingOneOffWithoutQueue = false;
+        -:  488:    
+    #####:  489:    std::string currentPath = m_playbackStateModel->getCurrentFilePath();
+    #####:  490:    if (!wasFromHistory && !wasOneOff && !currentPath.empty())
+    #####:  491:        m_queueModel->removeByPath(currentPath);
+    #####:  492:    cleanupCurrentEngine();
+        -:  493:    
+    #####:  494:    if (!wasOneOff && !m_queueModel->isEmpty())
+    #####:  495:        play();
+        -:  496:    else
+    #####:  497:        stop();
+    #####:  498:}
+        -:  499:
+    #####:  500:void PlaybackController::onFinished() 
+        -:  501:{
+    #####:  502:    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+    #####:  503:    LOG_INFO("Playback finished");
+    #####:  504:    bool isLoopOne = m_queueModel->isLoopOneEnabled();
+    #####:  505:    if (m_playingOneOffWithoutQueue)
+        -:  506:    {
+    #####:  507:        m_playingOneOffWithoutQueue = false;
+        -:  508:        // Loop One only (Loop All N/A for one-off - no queue)
+    #####:  509:        if (isLoopOne && m_currentEngine)
+        -:  510:        {
+    #####:  511:            bool seekOk = m_currentEngine->seek(0);
+    #####:  512:            if (seekOk)
+        -:  513:            {
+    #####:  514:                m_playingOneOffWithoutQueue = true;
+    #####:  515:                m_currentEngine->play();
+    #####:  516:                return;
+        -:  517:            }
+        -:  518:            // seek failed (common when track just finished) - reload and play
+    #####:  519:            if (m_oneOffMedia && std::filesystem::exists(m_oneOffMedia->getFilePath()))
+        -:  520:            {
+    #####:  521:                const auto& media = *m_oneOffMedia;
+    #####:  522:                cleanupCurrentEngine();
+    #####:  523:                if (selectAndLoadEngine(media))
+        -:  524:                {
+    #####:  525:                    m_playbackStateModel->setCurrentFilePath(media.getFilePath());
+    #####:  526:                    m_playbackStateModel->setCurrentTitle(media.getTitle().empty() ? media.getFileName() : media.getTitle());
+    #####:  527:                    m_playbackStateModel->setCurrentArtist(media.getArtist().empty() ? "Unknown Artist" : media.getArtist());
+    #####:  528:                    m_playbackStateModel->setCurrentMediaType(media.getType());
+    #####:  529:                    m_playingOneOffWithoutQueue = true;
+    #####:  530:                    if (m_currentEngine && m_currentEngine->play())
+    #####:  531:                        return;
+        -:  532:                }
+        -:  533:            }
+        -:  534:        }
+    #####:  535:        cleanupCurrentEngine();
+    #####:  536:        stop();
+        -:  537:    }
+    #####:  538:    else if (m_playingFromHistory)
+        -:  539:    {
+    #####:  540:        m_playingFromHistory = false;
+    #####:  541:        cleanupCurrentEngine();
+    #####:  542:        play(); // Resume queue (don't advance - play current item)
+        -:  543:    }
+        -:  544:    else
+        -:  545:    {
+        -:  546:        // Playing from queue
+    #####:  547:        if (isLoopOne)
+        -:  548:        {
+    #####:  549:            if (m_currentEngine)
+        -:  550:            {
+    #####:  551:                bool seekOk = m_currentEngine->seek(0);
+    #####:  552:                if (seekOk)
+        -:  553:                {
+    #####:  554:                    m_currentEngine->play();
+    #####:  555:                    return;
+        -:  556:                }
+        -:  557:            }
+        -:  558:            // seek failed - reload current track and play
+    #####:  559:            auto currentItem = m_queueModel->getCurrentItem();
+    #####:  560:            if (currentItem && std::filesystem::exists(currentItem->getFilePath()))
+        -:  561:            {
+    #####:  562:                cleanupCurrentEngine();
+    #####:  563:                m_playbackStateModel->setCurrentFilePath("");
+    #####:  564:                if (play())
+    #####:  565:                    return;
+        -:  566:            }
+    #####:  567:        }
+    #####:  568:        playNext(); // Loop All: moveToNext wraps; None: stop at end
+        -:  569:    }
+    #####:  570:}
+        -:  571:
+        -:  572:} // namespace controllers
+        -:  573:} // namespace media_player

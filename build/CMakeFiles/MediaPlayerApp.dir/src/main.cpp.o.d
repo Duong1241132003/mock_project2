@@ -396,9 +396,4 @@ CMakeFiles/MediaPlayerApp.dir/src/main.cpp.o: \
  /home/duong/MediaPlayerApp/inc/views/NowPlayingBar.h \
  /home/duong/MediaPlayerApp/inc/controllers/PlaybackController.h \
  /home/duong/MediaPlayerApp/inc/ui/ImGuiManager.h \
- /usr/include/SDL2/SDL_ttf.h /usr/include/SDL2/SDL.h \
- /home/duong/MediaPlayerApp/inc/utils/Logger.h \
- /usr/include/c++/13/fstream \
- /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
- /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
- /usr/include/c++/13/bits/fstream.tcc /usr/include/c++/13/iostream
+ /usr/include/SDL2/SDL_ttf.h /usr/include/SDL2/SDL.h

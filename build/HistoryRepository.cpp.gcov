@@ -1,0 +1,324 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/src/repositories/HistoryRepository.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/repositories/HistoryRepository.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/repositories/HistoryRepository.cpp.gcda
+        -:    0:Runs:6
+        -:    1:// Project includes
+        -:    2:#include "repositories/HistoryRepository.h"
+        -:    3:#include "utils/Logger.h"
+        -:    4:
+        -:    5:// System includes
+        -:    6:#include <fstream>
+        -:    7:#include <filesystem>
+        -:    8:#include <algorithm>
+        -:    9:#include <chrono>
+        -:   10:
+        -:   11:namespace fs = std::filesystem;
+        -:   12:
+        -:   13:namespace media_player 
+        -:   14:{
+        -:   15:namespace repositories 
+        -:   16:{
+        -:   17:
+       18:   18:HistoryRepository::HistoryRepository(const std::string& storagePath, size_t maxEntries)
+       18:   19:    : m_storagePath(storagePath)
+       18:   20:    , m_maxEntries(maxEntries)
+        -:   21:{
+        -:   22:    // History is in-memory only; no load from disk
+       18:   23:    LOG_INFO("HistoryRepository initialized (max entries: " + std::to_string(maxEntries) + ", in-memory only)");
+       18:   24:}
+        -:   25:
+       18:   26:HistoryRepository::~HistoryRepository() 
+        -:   27:{
+        -:   28:    // No save to disk; history is session-only
+       36:   29:    LOG_INFO("HistoryRepository destroyed");
+       18:   30:}
+        -:   31:
+    #####:   32:void HistoryRepository::addEntry(const models::MediaFileModel& media) 
+        -:   33:{
+    #####:   34:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:   35:    
+        -:   36:    // Add to front of deque
+    #####:   37:    m_history.push_front(PlaybackHistoryEntry(media));
+        -:   38:    
+        -:   39:    // Maintain max size
+    #####:   40:    if (m_history.size() > m_maxEntries) 
+        -:   41:    {
+    #####:   42:        m_history.pop_back();
+        -:   43:    }
+        -:   44:    
+    #####:   45:    LOG_DEBUG("Added to playback history: " + media.getFileName());
+    #####:   46:}
+        -:   47:
+    #####:   48:void HistoryRepository::removeMostRecentEntryByFilePath(const std::string& filePath)
+        -:   49:{
+    #####:   50:    std::lock_guard<std::mutex> lock(m_mutex);
+    #####:   51:    auto it = std::find_if(m_history.begin(), m_history.end(),
+    #####:   52:        [&filePath](const PlaybackHistoryEntry& e) { return e.media.getFilePath() == filePath; });
+    #####:   53:    if (it != m_history.end())
+        -:   54:    {
+    #####:   55:        m_history.erase(it);
+    #####:   56:        LOG_DEBUG("Removed from playback history (play previous): " + filePath);
+        -:   57:    }
+    #####:   58:}
+        -:   59:
+    #####:   60:void HistoryRepository::removeAllEntriesByFilePath(const std::string& filePath)
+        -:   61:{
+    #####:   62:    std::lock_guard<std::mutex> lock(m_mutex);
+    #####:   63:    auto it = std::remove_if(m_history.begin(), m_history.end(),
+    #####:   64:        [&filePath](const PlaybackHistoryEntry& e) { return e.media.getFilePath() == filePath; });
+    #####:   65:    if (it != m_history.end())
+        -:   66:    {
+    #####:   67:        m_history.erase(it, m_history.end());
+    #####:   68:        LOG_DEBUG("Removed all history entries for: " + filePath);
+        -:   69:    }
+    #####:   70:}
+        -:   71:
+    #####:   72:std::vector<PlaybackHistoryEntry> HistoryRepository::getRecentHistory(size_t count) const 
+        -:   73:{
+    #####:   74:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:   75:    
+    #####:   76:    std::vector<PlaybackHistoryEntry> result;
+    #####:   77:    size_t actualCount = std::min(count, m_history.size());
+        -:   78:    
+    #####:   79:    result.reserve(actualCount);
+        -:   80:    
+    #####:   81:    for (size_t i = 0; i < actualCount; ++i) 
+        -:   82:    {
+    #####:   83:        result.push_back(m_history[i]);
+        -:   84:    }
+        -:   85:    
+    #####:   86:    return result;
+    #####:   87:}
+        -:   88:
+    #####:   89:std::vector<PlaybackHistoryEntry> HistoryRepository::getAllHistory() const 
+        -:   90:{
+    #####:   91:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:   92:    
+    #####:   93:    return std::vector<PlaybackHistoryEntry>(m_history.begin(), m_history.end());
+    #####:   94:}
+        -:   95:
+    #####:   96:void HistoryRepository::clear() 
+        -:   97:{
+    #####:   98:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:   99:    
+    #####:  100:    m_history.clear();
+    #####:  101:    LOG_INFO("Playback history cleared");
+    #####:  102:}
+        -:  103:
+    #####:  104:size_t HistoryRepository::count() const 
+        -:  105:{
+    #####:  106:    std::lock_guard<std::mutex> lock(m_mutex);
+    #####:  107:    return m_history.size();
+    #####:  108:}
+        -:  109:
+    #####:  110:bool HistoryRepository::wasRecentlyPlayed(const std::string& filePath, int withinMinutes) const 
+        -:  111:{
+    #####:  112:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:  113:    
+    #####:  114:    auto now = std::chrono::system_clock::now();
+    #####:  115:    auto threshold = now - std::chrono::minutes(withinMinutes);
+        -:  116:    
+    #####:  117:    for (const auto& entry : m_history) 
+        -:  118:    {
+    #####:  119:        if (entry.media.getFilePath() == filePath && entry.playedAt >= threshold) 
+        -:  120:        {
+    #####:  121:            return true;
+        -:  122:        }
+        -:  123:    }
+        -:  124:    
+    #####:  125:    return false;
+    #####:  126:}
+        -:  127:
+    #####:  128:std::optional<PlaybackHistoryEntry> HistoryRepository::getLastPlayed() const 
+        -:  129:{
+    #####:  130:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:  131:    
+    #####:  132:    if (m_history.empty()) 
+        -:  133:    {
+    #####:  134:        return std::nullopt;
+        -:  135:    }
+        -:  136:    
+    #####:  137:    return m_history.front();
+    #####:  138:}
+        -:  139:
+    #####:  140:std::optional<PlaybackHistoryEntry> HistoryRepository::getPreviousPlayed() const
+        -:  141:{
+    #####:  142:    std::lock_guard<std::mutex> lock(m_mutex);
+    #####:  143:    if (m_history.size() < 2)
+    #####:  144:        return std::nullopt;
+    #####:  145:    return m_history[1];
+    #####:  146:}
+        -:  147:
+    #####:  148:std::optional<PlaybackHistoryEntry> HistoryRepository::getPlayedBefore(const std::string& currentFilePath) const
+        -:  149:{
+    #####:  150:    std::lock_guard<std::mutex> lock(m_mutex);
+    #####:  151:    for (size_t i = 0; i < m_history.size(); ++i)
+    #####:  152:        if (m_history[i].media.getFilePath() == currentFilePath && i + 1 < m_history.size())
+    #####:  153:            return m_history[i + 1];
+    #####:  154:    return std::nullopt;
+    #####:  155:}
+        -:  156:
+    #####:  157:bool HistoryRepository::loadFromDisk() 
+        -:  158:{
+    #####:  159:    std::lock_guard<std::mutex> lock(m_mutex);
+    #####:  160:    return deserializeHistory();
+    #####:  161:}
+        -:  162:
+    #####:  163:bool HistoryRepository::saveToDisk() 
+        -:  164:{
+    #####:  165:    std::lock_guard<std::mutex> lock(m_mutex);
+    #####:  166:    return serializeHistory();
+    #####:  167:}
+        -:  168:
+    #####:  169:bool HistoryRepository::serializeHistory() 
+        -:  170:{
+        -:  171:    try 
+        -:  172:    {
+    #####:  173:        std::string filePath = getHistoryFilePath();
+    #####:  174:        std::ofstream file(filePath);
+        -:  175:        
+    #####:  176:        if (!file.is_open()) 
+        -:  177:        {
+    #####:  178:            LOG_ERROR("Failed to open history file for writing: " + filePath);
+    #####:  179:            return false;
+        -:  180:        }
+        -:  181:        
+    #####:  182:        file << "HISTORY_VERSION:1.1\n";
+    #####:  183:        file << "COUNT:" << m_history.size() << "\n";
+    #####:  184:        file << "ENTRIES:\n";
+        -:  185:        
+    #####:  186:        const char tab = '\t';
+    #####:  187:        for (const auto& entry : m_history) 
+        -:  188:        {
+    #####:  189:            auto timestamp = std::chrono::system_clock::to_time_t(entry.playedAt);
+    #####:  190:            std::string title = entry.media.getTitle();
+    #####:  191:            std::string artist = entry.media.getArtist();
+    #####:  192:            for (char& c : title) if (c == tab || c == '\n' || c == '\r') c = ' ';
+    #####:  193:            for (char& c : artist) if (c == tab || c == '\n' || c == '\r') c = ' ';
+    #####:  194:            file << entry.media.getFilePath() << tab << timestamp << tab << title << tab << artist << "\n";
+    #####:  195:        }
+        -:  196:        
+    #####:  197:        file.close();
+    #####:  198:        LOG_INFO("History serialized successfully");
+        -:  199:        
+    #####:  200:        return true;
+    #####:  201:    }
+    =====:  202:    catch (const std::exception& e) 
+        -:  203:    {
+    =====:  204:        LOG_ERROR("Exception serializing history: " + std::string(e.what()));
+    =====:  205:        return false;
+    =====:  206:    }
+        -:  207:}
+        -:  208:
+    #####:  209:bool HistoryRepository::deserializeHistory() 
+        -:  210:{
+        -:  211:    try 
+        -:  212:    {
+    #####:  213:        std::string filePath = getHistoryFilePath();
+        -:  214:        
+    #####:  215:        if (!fs::exists(filePath)) 
+        -:  216:        {
+    #####:  217:            LOG_INFO("History file does not exist, starting with empty history");
+    #####:  218:            return true;
+        -:  219:        }
+        -:  220:        
+    #####:  221:        std::ifstream file(filePath);
+        -:  222:        
+    #####:  223:        if (!file.is_open()) 
+        -:  224:        {
+    #####:  225:            LOG_ERROR("Failed to open history file for reading: " + filePath);
+    #####:  226:            return false;
+        -:  227:        }
+        -:  228:        
+    #####:  229:        std::string line;
+    #####:  230:        bool readingEntries = false;
+    #####:  231:        int loadedCount = 0;
+        -:  232:        
+    #####:  233:        while (std::getline(file, line)) 
+        -:  234:        {
+    #####:  235:            if (line.empty()) 
+        -:  236:            {
+    #####:  237:                continue;
+        -:  238:            }
+        -:  239:            
+    #####:  240:            if (line == "ENTRIES:") 
+        -:  241:            {
+    #####:  242:                readingEntries = true;
+    #####:  243:                continue;
+        -:  244:            }
+        -:  245:            
+    #####:  246:            if (readingEntries) 
+        -:  247:            {
+        -:  248:                // Format v1.1: path\ttimestamp\ttitle\tartist  |  Legacy: path|timestamp
+    #####:  249:                std::string mediaPath, timestampStr, title, artist;
+    #####:  250:                if (line.find('\t') != std::string::npos) {
+    #####:  251:                    size_t a = 0, b = line.find('\t');
+    #####:  252:                    mediaPath = line.substr(a, b - a);
+    #####:  253:                    a = b + 1; b = line.find('\t', a);
+    #####:  254:                    if (b != std::string::npos) { timestampStr = line.substr(a, b - a); a = b + 1; b = line.find('\t', a); }
+    #####:  255:                    if (b != std::string::npos) { title = line.substr(a, b - a); artist = line.substr(b + 1); }
+        -:  256:                } else {
+    #####:  257:                    size_t sep = line.find('|');
+    #####:  258:                    if (sep != std::string::npos) {
+    #####:  259:                        mediaPath = line.substr(0, sep);
+    #####:  260:                        timestampStr = line.substr(sep + 1);
+        -:  261:                    }
+        -:  262:                }
+    #####:  263:                if (!mediaPath.empty()) 
+        -:  264:                {
+    #####:  265:                    models::MediaFileModel media(mediaPath);
+    #####:  266:                    if (media.isValid()) 
+        -:  267:                    {
+    #####:  268:                        if (!title.empty()) media.setTitle(title);
+    #####:  269:                        if (!artist.empty()) media.setArtist(artist);
+    #####:  270:                        PlaybackHistoryEntry entry(media);
+        -:  271:                        try 
+        -:  272:                        {
+    #####:  273:                            if (!timestampStr.empty()) {
+    #####:  274:                                std::time_t timestamp = std::stoll(timestampStr);
+    #####:  275:                                entry.playedAt = std::chrono::system_clock::from_time_t(timestamp);
+        -:  276:                            }
+        -:  277:                        }
+    =====:  278:                        catch (...) {}
+    #####:  279:                        m_history.push_back(entry);
+    #####:  280:                        loadedCount++;
+    #####:  281:                    }
+    #####:  282:                }
+    #####:  283:            }
+        -:  284:        }
+        -:  285:        
+    #####:  286:        file.close();
+    #####:  287:        LOG_INFO("Loaded " + std::to_string(loadedCount) + " history entries");
+        -:  288:        
+    #####:  289:        return true;
+    #####:  290:    }
+    =====:  291:    catch (const std::exception& e) 
+        -:  292:    {
+    =====:  293:        LOG_ERROR("Exception deserializing history: " + std::string(e.what()));
+    =====:  294:        return false;
+    =====:  295:    }
+        -:  296:}
+        -:  297:
+    #####:  298:void HistoryRepository::ensureStorageDirectoryExists() 
+        -:  299:{
+        -:  300:    try 
+        -:  301:    {
+    #####:  302:        if (!fs::exists(m_storagePath)) 
+        -:  303:        {
+    #####:  304:            fs::create_directories(m_storagePath);
+    #####:  305:            LOG_INFO("Created storage directory: " + m_storagePath);
+        -:  306:        }
+        -:  307:    }
+    =====:  308:    catch (const fs::filesystem_error& e) 
+        -:  309:    {
+    =====:  310:        LOG_ERROR("Failed to create storage directory: " + std::string(e.what()));
+    =====:  311:    }
+    #####:  312:}
+        -:  313:
+    #####:  314:std::string HistoryRepository::getHistoryFilePath() const 
+        -:  315:{
+    #####:  316:    return m_storagePath + "/history.dat";
+        -:  317:}
+        -:  318:
+        -:  319:} // namespace repositories
+        -:  320:} // namespace media_player

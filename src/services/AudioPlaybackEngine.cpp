@@ -1,6 +1,5 @@
 // Project includes
 #include "services/AudioPlaybackEngine.h"
-#include "utils/Logger.h"
 #include "config/AppConfig.h"
 
 // System includes
@@ -35,14 +34,13 @@ AudioPlaybackEngine::AudioPlaybackEngine()
     
     if (!initializeSDL()) 
     {
-        LOG_ERROR("Failed to initialize SDL/Mixer for audio playback");
         return;
     }
     
     m_shouldStop = false;
     m_updateThread = std::make_unique<std::thread>(&AudioPlaybackEngine::updateThread, this);
     
-    LOG_INFO("AudioPlaybackEngine initialized successfully");
+    
 }
 
 AudioPlaybackEngine::~AudioPlaybackEngine() 
@@ -60,15 +58,12 @@ AudioPlaybackEngine::~AudioPlaybackEngine()
     cleanupSDL();
     
     s_instance = nullptr;
-    
-    LOG_INFO("AudioPlaybackEngine destroyed");
 }
 
 bool AudioPlaybackEngine::initializeSDL() 
 {
     if (SDL_Init(SDL_INIT_AUDIO) < 0) 
     {
-        LOG_ERROR("SDL_Init failed: " + std::string(SDL_GetError()));
         return false;
     }
     
@@ -78,9 +73,6 @@ bool AudioPlaybackEngine::initializeSDL()
     
     if ((initialized & flags) != flags) 
     {
-        LOG_WARNING("Mix_Init: NOT all requested formats initialized. Missing: " + 
-                   std::to_string(flags ^ (initialized & flags)));
-        LOG_WARNING("Mix_Init error: " + std::string(Mix_GetError()));
         // Don't fail completely, try to continue
     }
     
@@ -94,7 +86,6 @@ bool AudioPlaybackEngine::initializeSDL()
     // We MUST open/close on demand or when switching engines.
     
     m_sdlInitialized = true;
-    LOG_INFO("SDL Audio & Mixer initialized successfully");
     
     return true;
 }
@@ -129,7 +120,6 @@ bool AudioPlaybackEngine::loadFile(const std::string& filePath)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     
-    LOG_INFO("Loading audio file: " + filePath);
     
     try
     {
@@ -143,7 +133,6 @@ bool AudioPlaybackEngine::loadFile(const std::string& filePath)
         // Kiểm tra file tồn tại
         if (filePath.empty())
         {
-            LOG_ERROR("Empty file path");
             notifyError("Empty file path");
             return false;
         }
@@ -160,7 +149,6 @@ bool AudioPlaybackEngine::loadFile(const std::string& filePath)
             // Use 4096 sample buffer (approx 92ms latency) to prevent stuttering under load
             if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
             {
-                LOG_ERROR("Mix_OpenAudio failed: " + std::string(Mix_GetError()));
                 notifyError("Failed to open audio device");
                 return false;
             }
@@ -171,7 +159,6 @@ bool AudioPlaybackEngine::loadFile(const std::string& filePath)
         if (!m_music) 
         {
             std::string error = Mix_GetError();
-            LOG_ERROR("Mix_LoadMUS failed: " + error);
             notifyError("Unsupported audio format: " + error);
             Mix_CloseAudio();
             return false;
@@ -208,21 +195,18 @@ bool AudioPlaybackEngine::loadFile(const std::string& filePath)
             m_totalDurationSeconds = 0;
         }
         
-        LOG_INFO("Audio file loaded successfully");
         notifyStateChange(PlaybackState::STOPPED);
         
         return true;
     }
     catch (const std::exception& e)
     {
-        LOG_ERROR("Exception in loadFile: " + std::string(e.what()));
         notifyError("Load error: " + std::string(e.what()));
         unloadAudioFile();
         return false;
     }
     catch (...)
     {
-        LOG_ERROR("Unknown exception in loadFile");
         notifyError("Unknown load error");
         unloadAudioFile();
         return false;
@@ -237,7 +221,6 @@ bool AudioPlaybackEngine::play()
     {
         if (!m_music) 
         {
-            LOG_WARNING("No audio file loaded");
             return false;
         }
         
@@ -259,7 +242,6 @@ bool AudioPlaybackEngine::play()
             if (Mix_PlayMusic(m_music, 0) == -1) 
             {
                 std::string error = Mix_GetError();
-                LOG_ERROR("Mix_PlayMusic failed: " + error);
                 notifyError("Playback error: " + error);
                 return false;
             }
@@ -269,20 +251,17 @@ bool AudioPlaybackEngine::play()
         
         m_state = PlaybackState::PLAYING;
         
-        LOG_INFO("Audio playback started");
         notifyStateChange(PlaybackState::PLAYING);
         
         return true;
     }
     catch (const std::exception& e)
     {
-        LOG_ERROR("Exception in play: " + std::string(e.what()));
         notifyError("Playback error: " + std::string(e.what()));
         return false;
     }
     catch (...)
     {
-        LOG_ERROR("Unknown exception in play");
         notifyError("Unknown playback error");
         return false;
     }
@@ -299,8 +278,6 @@ bool AudioPlaybackEngine::pause()
     
     Mix_PauseMusic();
     m_state = PlaybackState::PAUSED;
-    
-    LOG_INFO("Audio playback paused");
     notifyStateChange(PlaybackState::PAUSED);
     
     return true;
@@ -329,8 +306,6 @@ bool AudioPlaybackEngine::stop()
     
     m_state = PlaybackState::STOPPED;
     m_currentPositionSeconds = 0;
-    
-    LOG_INFO("Audio playback stopped");
     notifyStateChange(PlaybackState::STOPPED);
     
     return true;
@@ -345,7 +320,6 @@ void AudioPlaybackEngine::releaseResources()
         m_music = nullptr;
     }
     Mix_CloseAudio();
-    LOG_INFO("Audio device closed");
 }
 
 bool AudioPlaybackEngine::seek(int positionSeconds)
@@ -479,11 +453,9 @@ void AudioPlaybackEngine::updateThread()
     }
     catch (const std::exception& e)
     {
-        LOG_ERROR("Audio update thread exception: " + std::string(e.what()));
     }
     catch (...)
     {
-        LOG_ERROR("Audio update thread: Unknown exception");
     }
 }
 

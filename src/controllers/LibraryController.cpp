@@ -1,6 +1,5 @@
 // Project includes
 #include "controllers/LibraryController.h"
-#include "utils/Logger.h"
 
 namespace media_player 
 {
@@ -16,7 +15,6 @@ LibraryController::LibraryController(
     , m_libraryRepo(libraryRepo)
     , m_metadataReader(metadataReader)
 {
-    LOG_INFO("LibraryController initialized");
 }
 
 std::optional<models::MetadataModel> LibraryController::readMetadata(const std::string& filePath) const
@@ -51,7 +49,6 @@ bool LibraryController::updateMetadata(const models::MediaFileModel& media, cons
 
 LibraryController::~LibraryController() 
 {
-    LOG_INFO("LibraryController destroyed");
 }
 
 std::vector<models::MediaFileModel> LibraryController::getAllMedia() const 

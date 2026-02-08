@@ -104,16 +104,35 @@ option(BUILD_TESTS "Build tests" OFF)
 
 if(BUILD_TESTS)
     enable_testing()
-    find_package(GTest REQUIRED)
+    
+    include(FetchContent)
+    FetchContent_Declare(
+      googletest
+      URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+    )
+    # For Windows: Prevent overriding the parent project's compiler/linker settings
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(googletest)
+    
+    include_directories(${googletest_SOURCE_DIR}/googletest/include)
+    include_directories(${googletest_SOURCE_DIR}/googlemock/include)
+    
+    # Coverage flags will be added to RunTests target directly
     
     file(GLOB_RECURSE TEST_SOURCES "tests/*.cpp")
     
     add_executable(RunTests ${TEST_SOURCES} ${SOURCES})
     
+    target_include_directories(RunTests PRIVATE
+        ${PROJECT_SOURCE_DIR}/tests
+    )
+    
     target_link_libraries(RunTests
-        GTest::GTest
-        GTest::Main
+        gtest_main
+        gmock_main
         SDL2::SDL2
+        SDL2_ttf
+        ${SDL2_MIXER_LIBRARIES}
         ${TAGLIB_LIBRARIES}
         ${LIBAVFORMAT_LIBRARIES}
         ${LIBAVCODEC_LIBRARIES}
@@ -124,7 +143,25 @@ if(BUILD_TESTS)
         stdc++fs
     )
     
+    if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        target_compile_options(RunTests PRIVATE --coverage -O0 -g)
+        target_link_options(RunTests PRIVATE --coverage)
+    endif()
+
     add_test(NAME RunTests COMMAND RunTests)
+    
+    # Add coverage target
+    # Add coverage target using lcov
+    add_custom_target(coverage
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/coverage_report
+        COMMAND lcov --directory . --zerocounters
+        COMMAND ./RunTests
+        COMMAND lcov --directory ${CMAKE_BINARY_DIR}/CMakeFiles/RunTests.dir/src/controllers --capture --output-file coverage.info --ignore-errors mismatch,gcov --rc geninfo_unexecuted_blocks=1
+        COMMAND lcov --remove coverage.info '/usr/*' '*/tests/*' '*/build/*' '*.h' '*/inc/*' '*/src/views/*' '*/src/ui/*' '*/src/models/*' '*/src/repositories/*' '*/src/utils/*' '*/src/config/*' '*/src/core/*' '*/src/services/*' --output-file coverage.info --ignore-errors mismatch --rc geninfo_unexecuted_blocks=1 --ignore-errors unused
+        COMMAND genhtml coverage.info --output-directory coverage_report --ignore-errors mismatch
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        COMMENT "Generating code coverage report with lcov..."
+    )
 endif()
 
 # Print configuration

@@ -58,6 +58,8 @@ public:
     std::string getCurrentFilePath() const;
     models::MediaType getCurrentMediaType() const;
     
+    void setAudioEngine(std::unique_ptr<services::IPlaybackEngine> engine);
+    
 private:
     // Engine management
     bool selectAndLoadEngine(const models::MediaFileModel& media);
@@ -73,7 +75,7 @@ private:
     std::shared_ptr<repositories::HistoryRepository> m_historyRepo;
     
     // Engines
-    std::unique_ptr<services::AudioPlaybackEngine> m_audioEngine;
+    std::unique_ptr<services::IPlaybackEngine> m_audioEngine;
     
     // Current active engine
     services::IPlaybackEngine* m_currentEngine;

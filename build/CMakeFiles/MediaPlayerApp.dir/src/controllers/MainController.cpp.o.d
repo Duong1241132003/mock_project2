@@ -382,9 +382,4 @@ CMakeFiles/MediaPlayerApp.dir/src/controllers/MainController.cpp.o: \
  /home/duong/MediaPlayerApp/inc/controllers/HardwareController.h \
  /home/duong/MediaPlayerApp/inc/services/SerialCommunication.h \
  /home/duong/MediaPlayerApp/inc/services/ISerialCommunication.h \
- /home/duong/MediaPlayerApp/inc/models/SystemStateModel.h \
- /home/duong/MediaPlayerApp/inc/utils/Logger.h \
- /usr/include/c++/13/fstream \
- /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
- /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
- /usr/include/c++/13/bits/fstream.tcc
+ /home/duong/MediaPlayerApp/inc/models/SystemStateModel.h

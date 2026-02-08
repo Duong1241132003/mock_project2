@@ -1,0 +1,80 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/inc/models/LibraryModel.h
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/core/Application.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/core/Application.cpp.gcda
+        -:    0:Runs:6
+        -:    1:#ifndef LIBRARY_MODEL_H
+        -:    2:#define LIBRARY_MODEL_H
+        -:    3:
+        -:    4:// System includes
+        -:    5:#include <vector>
+        -:    6:#include <string>
+        -:    7:#include <memory>
+        -:    8:#include <optional>
+        -:    9:
+        -:   10:// Project includes
+        -:   11:#include "MediaFileModel.h"
+        -:   12:
+        -:   13:namespace media_player 
+        -:   14:{
+        -:   15:namespace models 
+        -:   16:{
+        -:   17:
+        -:   18:enum class SortCriteria 
+        -:   19:{
+        -:   20:    TITLE,
+        -:   21:    ARTIST,
+        -:   22:    ALBUM,
+        -:   23:    FILE_NAME,
+        -:   24:    DATE_ADDED
+        -:   25:};
+        -:   26:
+        -:   27:class LibraryModel 
+        -:   28:{
+        -:   29:public:
+    #####:   30:    LibraryModel() = default;
+        -:   31:    
+        -:   32:    // Add/Remove
+        -:   33:    void addMedia(const MediaFileModel& media);
+        -:   34:    void addMediaBatch(const std::vector<MediaFileModel>& mediaList);
+        -:   35:    bool removeMedia(const std::string& filePath);
+        -:   36:    bool updateMedia(const std::string& filePath, const MediaFileModel& updatedMedia);
+        -:   37:    void clear();
+        -:   38:    
+        -:   39:    // Query
+    #####:   40:    size_t getMediaCount() const 
+        -:   41:    { 
+    #####:   42:        return m_mediaList.size(); 
+        -:   43:    }
+        -:   44:    
+        -:   45:    bool isEmpty() const 
+        -:   46:    { 
+        -:   47:        return m_mediaList.empty(); 
+        -:   48:    }
+        -:   49:    
+    #####:   50:    std::vector<MediaFileModel> getAllMedia() const 
+        -:   51:    { 
+    #####:   52:        return m_mediaList; 
+        -:   53:    }
+        -:   54:    
+        -:   55:    std::optional<MediaFileModel> getMediaByPath(const std::string& filePath) const;
+        -:   56:    
+        -:   57:    // Filtering and sorting
+        -:   58:    std::vector<MediaFileModel> search(const std::string& query) const;
+        -:   59:    std::vector<MediaFileModel> getSorted(SortCriteria criteria, bool ascending = true) const;
+        -:   60:    std::vector<MediaFileModel> getPage(size_t pageNumber, size_t itemsPerPage) const;
+        -:   61:    
+        -:   62:    // Statistics
+        -:   63:    int getTotalAudioFiles() const;
+        -:   64:    int getTotalVideoFiles() const;
+        -:   65:    long long getTotalSize() const;
+        -:   66:    
+        -:   67:private:
+        -:   68:    bool matchesQuery(const MediaFileModel& media, const std::string& query) const;
+        -:   69:    
+        -:   70:    std::vector<MediaFileModel> m_mediaList;
+        -:   71:};
+        -:   72:
+        -:   73:} // namespace models
+        -:   74:} // namespace media_player
+        -:   75:
+        -:   76:#endif // LIBRARY_MODEL_H

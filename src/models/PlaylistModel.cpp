@@ -1,6 +1,5 @@
 // Project includes
 #include "models/PlaylistModel.h"
-#include "utils/Logger.h"
 
 // System includes
 #include <algorithm>
@@ -18,7 +17,6 @@ PlaylistModel::PlaylistModel(const std::string& name)
     , m_createdAt(std::chrono::system_clock::now())
     , m_modifiedAt(std::chrono::system_clock::now())
 {
-    LOG_DEBUG("PlaylistModel created: " + name);
 }
 
 int PlaylistModel::getTotalDuration() const 
@@ -31,7 +29,6 @@ void PlaylistModel::addItem(const MediaFileModel& media)
 {
     m_items.push_back(media);
     m_modifiedAt = std::chrono::system_clock::now();
-    LOG_DEBUG("Added item to playlist: " + media.getFileName());
 }
 
 bool PlaylistModel::removeItem(size_t index) 

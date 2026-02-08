@@ -1,0 +1,196 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/tests/models/PlaybackStateModelTest.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.gcda
+        -:    0:Runs:6
+        -:    1:#include <gtest/gtest.h>
+        -:    2:#include "models/PlaybackStateModel.h"
+        -:    3:
+        -:    4:using namespace media_player;
+        -:    5:
+        -:    6:class PlaybackStateModelTest : public testing::Test {
+        -:    7:protected:
+        -:    8:    models::PlaybackStateModel model;
+        -:    9:};
+        -:   10:
+       24:   11:TEST_F(PlaybackStateModelTest, InitialState) {
+       6*:   12:    EXPECT_EQ(model.getState(), models::PlaybackState::STOPPED);
+       6*:   13:    EXPECT_EQ(model.getCurrentPosition(), 0);
+       6*:   14:    EXPECT_EQ(model.getTotalDuration(), 0);
+       6*:   15:    EXPECT_EQ(model.getVolume(), 70);
+        6:   16:}
+------------------
+_ZN40PlaybackStateModelTest_InitialState_TestC2Ev:
+        6:   11:TEST_F(PlaybackStateModelTest, InitialState) {
+------------------
+_ZN40PlaybackStateModelTest_InitialState_TestD0Ev:
+        6:   11:TEST_F(PlaybackStateModelTest, InitialState) {
+------------------
+_ZN40PlaybackStateModelTest_InitialState_TestD2Ev:
+        6:   11:TEST_F(PlaybackStateModelTest, InitialState) {
+------------------
+_ZN40PlaybackStateModelTest_InitialState_Test8TestBodyEv:
+        6:   11:TEST_F(PlaybackStateModelTest, InitialState) {
+       6*:   12:    EXPECT_EQ(model.getState(), models::PlaybackState::STOPPED);
+       6*:   13:    EXPECT_EQ(model.getCurrentPosition(), 0);
+       6*:   14:    EXPECT_EQ(model.getTotalDuration(), 0);
+       6*:   15:    EXPECT_EQ(model.getVolume(), 70);
+        6:   16:}
+------------------
+        -:   17:
+       24:   18:TEST_F(PlaybackStateModelTest, StateTransitions) {
+        6:   19:    model.setState(models::PlaybackState::PLAYING);
+       6*:   20:    EXPECT_EQ(model.getState(), models::PlaybackState::PLAYING);
+       6*:   21:    EXPECT_TRUE(model.isPlaying());
+       6*:   22:    EXPECT_FALSE(model.isPaused());
+       6*:   23:    EXPECT_FALSE(model.isStopped());
+        -:   24:    
+        6:   25:    model.setState(models::PlaybackState::PAUSED);
+       6*:   26:    EXPECT_EQ(model.getState(), models::PlaybackState::PAUSED);
+       6*:   27:    EXPECT_FALSE(model.isPlaying());
+       6*:   28:    EXPECT_TRUE(model.isPaused());
+        -:   29:    
+        6:   30:    model.setState(models::PlaybackState::STOPPED);
+       6*:   31:    EXPECT_EQ(model.getState(), models::PlaybackState::STOPPED);
+       6*:   32:    EXPECT_TRUE(model.isStopped());
+        6:   33:}
+------------------
+_ZN44PlaybackStateModelTest_StateTransitions_TestC2Ev:
+        6:   18:TEST_F(PlaybackStateModelTest, StateTransitions) {
+------------------
+_ZN44PlaybackStateModelTest_StateTransitions_TestD0Ev:
+        6:   18:TEST_F(PlaybackStateModelTest, StateTransitions) {
+------------------
+_ZN44PlaybackStateModelTest_StateTransitions_TestD2Ev:
+        6:   18:TEST_F(PlaybackStateModelTest, StateTransitions) {
+------------------
+_ZN44PlaybackStateModelTest_StateTransitions_Test8TestBodyEv:
+        6:   18:TEST_F(PlaybackStateModelTest, StateTransitions) {
+        6:   19:    model.setState(models::PlaybackState::PLAYING);
+       6*:   20:    EXPECT_EQ(model.getState(), models::PlaybackState::PLAYING);
+       6*:   21:    EXPECT_TRUE(model.isPlaying());
+       6*:   22:    EXPECT_FALSE(model.isPaused());
+       6*:   23:    EXPECT_FALSE(model.isStopped());
+        -:   24:    
+        6:   25:    model.setState(models::PlaybackState::PAUSED);
+       6*:   26:    EXPECT_EQ(model.getState(), models::PlaybackState::PAUSED);
+       6*:   27:    EXPECT_FALSE(model.isPlaying());
+       6*:   28:    EXPECT_TRUE(model.isPaused());
+        -:   29:    
+        6:   30:    model.setState(models::PlaybackState::STOPPED);
+       6*:   31:    EXPECT_EQ(model.getState(), models::PlaybackState::STOPPED);
+       6*:   32:    EXPECT_TRUE(model.isStopped());
+        6:   33:}
+------------------
+        -:   34:
+       24:   35:TEST_F(PlaybackStateModelTest, PositionAndDuration) {
+        6:   36:    model.setTotalDuration(300);
+        6:   37:    model.setCurrentPosition(150);
+        -:   38:    
+       6*:   39:    EXPECT_EQ(model.getTotalDuration(), 300);
+       6*:   40:    EXPECT_EQ(model.getCurrentPosition(), 150);
+        6:   41:    EXPECT_FLOAT_EQ(model.getProgressPercentage(), 50.0f);
+        6:   42:}
+------------------
+_ZN47PlaybackStateModelTest_PositionAndDuration_TestC2Ev:
+        6:   35:TEST_F(PlaybackStateModelTest, PositionAndDuration) {
+------------------
+_ZN47PlaybackStateModelTest_PositionAndDuration_TestD0Ev:
+        6:   35:TEST_F(PlaybackStateModelTest, PositionAndDuration) {
+------------------
+_ZN47PlaybackStateModelTest_PositionAndDuration_TestD2Ev:
+        6:   35:TEST_F(PlaybackStateModelTest, PositionAndDuration) {
+------------------
+_ZN47PlaybackStateModelTest_PositionAndDuration_Test8TestBodyEv:
+        6:   35:TEST_F(PlaybackStateModelTest, PositionAndDuration) {
+        6:   36:    model.setTotalDuration(300);
+        6:   37:    model.setCurrentPosition(150);
+        -:   38:    
+       6*:   39:    EXPECT_EQ(model.getTotalDuration(), 300);
+       6*:   40:    EXPECT_EQ(model.getCurrentPosition(), 150);
+        6:   41:    EXPECT_FLOAT_EQ(model.getProgressPercentage(), 50.0f);
+        6:   42:}
+------------------
+        -:   43:
+       24:   44:TEST_F(PlaybackStateModelTest, Callbacks) {
+        6:   45:    bool callbackCalled = false;
+        6:   46:    models::PlaybackState receivedState = models::PlaybackState::STOPPED;
+        -:   47:    
+       12:   48:    model.setStateChangeCallback([&](models::PlaybackState state) {
+        6:   49:        callbackCalled = true;
+        6:   50:        receivedState = state;
+        6:   51:    });
+        -:   52:    
+        6:   53:    model.setState(models::PlaybackState::PLAYING);
+        -:   54:    
+       6*:   55:    EXPECT_TRUE(callbackCalled);
+       6*:   56:    EXPECT_EQ(receivedState, models::PlaybackState::PLAYING);
+        6:   57:}
+------------------
+_ZN37PlaybackStateModelTest_Callbacks_TestC2Ev:
+        6:   44:TEST_F(PlaybackStateModelTest, Callbacks) {
+------------------
+_ZN37PlaybackStateModelTest_Callbacks_TestD0Ev:
+        6:   44:TEST_F(PlaybackStateModelTest, Callbacks) {
+------------------
+_ZN37PlaybackStateModelTest_Callbacks_TestD2Ev:
+        6:   44:TEST_F(PlaybackStateModelTest, Callbacks) {
+------------------
+_ZN37PlaybackStateModelTest_Callbacks_Test8TestBodyEv:
+        6:   44:TEST_F(PlaybackStateModelTest, Callbacks) {
+        6:   45:    bool callbackCalled = false;
+        6:   46:    models::PlaybackState receivedState = models::PlaybackState::STOPPED;
+        -:   47:    
+        6:   48:    model.setStateChangeCallback([&](models::PlaybackState state) {
+        -:   49:        callbackCalled = true;
+        -:   50:        receivedState = state;
+        -:   51:    });
+        -:   52:    
+        6:   53:    model.setState(models::PlaybackState::PLAYING);
+        -:   54:    
+       6*:   55:    EXPECT_TRUE(callbackCalled);
+       6*:   56:    EXPECT_EQ(receivedState, models::PlaybackState::PLAYING);
+        6:   57:}
+------------------
+        -:   58:
+       24:   59:TEST_F(PlaybackStateModelTest, Metadata) {
+        6:   60:    bool metadataCallbackCalled = false;
+       18:   61:    model.setMetadataChangeCallback([&]() {
+       12:   62:        metadataCallbackCalled = true;
+       12:   63:    });
+        -:   64:    
+       12:   65:    model.setCurrentTitle("New Title");
+       6*:   66:    EXPECT_EQ(model.getCurrentTitle(), "New Title");
+       6*:   67:    EXPECT_TRUE(metadataCallbackCalled);
+        -:   68:    
+        6:   69:    metadataCallbackCalled = false;
+       12:   70:    model.setCurrentArtist("New Artist");
+       6*:   71:    EXPECT_EQ(model.getCurrentArtist(), "New Artist");
+       6*:   72:    EXPECT_TRUE(metadataCallbackCalled);
+        6:   73:}
+------------------
+_ZN36PlaybackStateModelTest_Metadata_TestC2Ev:
+        6:   59:TEST_F(PlaybackStateModelTest, Metadata) {
+------------------
+_ZN36PlaybackStateModelTest_Metadata_TestD0Ev:
+        6:   59:TEST_F(PlaybackStateModelTest, Metadata) {
+------------------
+_ZN36PlaybackStateModelTest_Metadata_TestD2Ev:
+        6:   59:TEST_F(PlaybackStateModelTest, Metadata) {
+------------------
+_ZN36PlaybackStateModelTest_Metadata_Test8TestBodyEv:
+        6:   59:TEST_F(PlaybackStateModelTest, Metadata) {
+        6:   60:    bool metadataCallbackCalled = false;
+        6:   61:    model.setMetadataChangeCallback([&]() {
+        -:   62:        metadataCallbackCalled = true;
+        -:   63:    });
+        -:   64:    
+       12:   65:    model.setCurrentTitle("New Title");
+       6*:   66:    EXPECT_EQ(model.getCurrentTitle(), "New Title");
+       6*:   67:    EXPECT_TRUE(metadataCallbackCalled);
+        -:   68:    
+        6:   69:    metadataCallbackCalled = false;
+       12:   70:    model.setCurrentArtist("New Artist");
+       6*:   71:    EXPECT_EQ(model.getCurrentArtist(), "New Artist");
+       6*:   72:    EXPECT_TRUE(metadataCallbackCalled);
+        6:   73:}
+------------------

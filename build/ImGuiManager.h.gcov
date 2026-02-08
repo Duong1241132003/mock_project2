@@ -1,0 +1,337 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/inc/ui/ImGuiManager.h
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/core/Application.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/core/Application.cpp.gcda
+        -:    0:Runs:6
+        -:    1:#ifndef IMGUI_MANAGER_H
+        -:    2:#define IMGUI_MANAGER_H
+        -:    3:
+        -:    4:// SDL includes
+        -:    5:#include <SDL2/SDL.h>
+        -:    6:#include <SDL2/SDL_ttf.h>
+        -:    7:
+        -:    8:// System includes
+        -:    9:#include <string>
+        -:   10:#include <functional>
+        -:   11:#include <vector>
+        -:   12:#include <memory>
+        -:   13:#include <optional>
+        -:   14:
+        -:   15:#include "repositories/HistoryRepository.h"
+        -:   16:#include "models/MediaFileModel.h"
+        -:   17:#include "models/MetadataModel.h"
+        -:   18:
+        -:   19:// Forward declarations
+        -:   20:struct ImGuiContext;
+        -:   21:
+        -:   22:namespace media_player 
+        -:   23:{
+        -:   24:
+        -:   25:// Forward declarations
+        -:   26:namespace controllers { 
+        -:   27:    class PlaybackController; 
+        -:   28:    class QueueController;
+        -:   29:    class LibraryController;
+        -:   30:    class PlaylistController;
+        -:   31:}
+        -:   32:
+        -:   33:namespace ui 
+        -:   34:{
+        -:   35:
+        -:   36:// UI Theme colors
+        -:   37:struct Theme {
+        -:   38:    // Background colors
+        -:   39:    uint32_t background      = 0xFF1E1E28;  // Dark background
+        -:   40:    uint32_t surface         = 0xFF2A2A3A;  // Card/panel background  
+        -:   41:    uint32_t surfaceHover    = 0xFF3A3A4A;  // Hover state
+        -:   42:    uint32_t surfaceActive   = 0xFF4A4A5A;  // Active/selected
+        -:   43:    
+        -:   44:    // Primary accent
+        -:   45:    uint32_t primary         = 0xFF6495ED;  // Cornflower blue
+        -:   46:    uint32_t primaryHover    = 0xFF7AA5FF;
+        -:   47:    uint32_t primaryActive   = 0xFF5585DD;
+        -:   48:    
+        -:   49:    // Text colors  
+        -:   50:    uint32_t textPrimary     = 0xFFFFFFFF;
+        -:   51:    uint32_t textSecondary   = 0xFFB4B4B4;
+        -:   52:    uint32_t textDim         = 0xFF808080;
+        -:   53:    
+        -:   54:    // Status colors
+        -:   55:    uint32_t success         = 0xFF32CD32;
+        -:   56:    uint32_t warning         = 0xFFFFA500;
+        -:   57:    uint32_t error           = 0xFFDC3232;
+        -:   58:    
+        -:   59:    // Utility
+        -:   60:    uint32_t scrollbar       = 0xFF404050;
+        -:   61:    uint32_t scrollbarThumb  = 0xFF606070;
+        -:   62:    uint32_t border          = 0xFF404050; // Default dark theme border
+        -:   63:    
+        -:   64:    static Theme dark() { return Theme(); }
+        -:   65:    static Theme light();
+        -:   66:};
+        -:   67:
+        -:   68:// Context menu source (where the right-click came from)
+        -:   69:enum class ContextMenuSource { None, Library, Playlist, Queue };
+        -:   70:
+        -:   71:// Search filter options
+        -:   72:enum class SearchFilter {
+        -:   73:    All,      // Search in title, artist, album
+        -:   74:    Title,    // Search only in title
+        -:   75:    Artist,   // Search only in artist
+        -:   76:    Album     // Search only in album
+        -:   77:};
+        -:   78:
+        -:   79:// Navigation tabs
+        -:   80:enum class NavTab {
+        -:   81:    Library,
+        -:   82:    Playlists,
+        -:   83:    Queue,
+        -:   84:    History,
+        -:   85:    Settings
+        -:   86:};
+        -:   87:
+        -:   88:// UI State
+        -:   89:struct UIState {
+        -:   90:    NavTab currentTab = NavTab::Library;
+        -:   91:    int selectedMediaIndex = -1;
+        -:   92:    int scrollOffset = 0;
+        -:   93:    int queueScrollOffset = 0;
+        -:   94:    int historyScrollOffset = 0;
+        -:   95:    float volume = 0.8f;
+        -:   96:    bool isPlaying = false;
+        -:   97:    bool isPlayingVideo = false;  // true khi đang phát video, dùng để hiển thị video panel
+        -:   98:    SDL_Texture* videoTexture = nullptr;  // Texture video hiện tại để render
+        -:   99:    int videoWidth = 0;
+        -:  100:    int videoHeight = 0;
+        -:  101:    std::string searchQuery;
+        -:  102:    SearchFilter searchFilter = SearchFilter::All;  // Filter for search results
+        -:  103:    std::string currentTrackTitle;
+        -:  104:    std::string currentTrackArtist;
+        -:  105:    float playbackProgress = 0.0f;
+        -:  106:    float playbackDuration = 0.0f;
+        -:  107:    
+        -:  108:    // Sort options
+        -:  109:    int sortField = 0;  // 0=Title, 1=Artist, 2=Duration
+        -:  110:    bool sortAscending = true;
+        -:  111:    
+        -:  112:    // Pagination
+        -:  113:    int currentPage = 0;
+        -:  114:    static constexpr int ITEMS_PER_PAGE = 25;
+        -:  115:    
+        -:  116:    // Loop/Shuffle
+        -:  117:    bool loopEnabled = false;   // true when LoopOne or LoopAll
+        -:  118:    bool loopAllEnabled = false; // true when LoopAll (distinguishes from LoopOne)
+        -:  119:    bool shuffleEnabled = false;
+        -:  120:    
+        -:  121:    // Playlist UI
+        -:  122:    bool showCreatePlaylistDialog = false;
+        -:  123:    std::string newPlaylistName;
+        -:  124:
+        -:  125:    // Rename Playlist Dialog
+        -:  126:    bool showRenamePlaylistDialog = false;
+        -:  127:    std::string renamePlaylistId;
+        -:  128:    std::string renamePlaylistName;
+        -:  129:
+        -:  130:    std::string selectedPlaylistId;
+        -:  131:    
+        -:  132:    // Context Menu
+        -:  133:    bool showContextMenu = false;
+        -:  134:    int contextMenuX = 0;
+        -:  135:    int contextMenuY = 0;
+        -:  136:    int selectedContextItemIndex = -1; // Index in the current list (legacy, prefer contextMediaItem)
+        -:  137:    models::MediaFileModel contextMediaItem; // The actual item to act upon
+        -:  138:    ContextMenuSource contextMenuSource = ContextMenuSource::None;
+        -:  139:    
+        -:  140:    /** True when search box has focus (clicked) - enables text input for search. */
+        -:  141:    bool searchFocused = false;
+        -:  142:    
+        -:  143:    // Add to Playlist Dialog
+        -:  144:    bool showAddToPlaylistDialog = false;
+        -:  145:    
+        -:  146:    // Properties Dialog (read-only display)
+        -:  147:    bool showPropertiesDialog = false;
+        -:  148:    struct MetadataEditState {
+        -:  149:        std::string title;
+        -:  150:        std::string artist;
+        -:  151:        std::string album;
+        -:  152:        std::string genre;
+        -:  153:        std::string year;
+        -:  154:        std::string publisher;
+        -:  155:        std::string durationStr;
+        -:  156:        std::string bitrateStr;
+        -:  157:        std::string filePath;
+        -:  158:        std::string fileName;
+        -:  159:        std::string extension;
+        -:  160:        std::string typeStr;
+        -:  161:        std::string fileSizeStr;
+        -:  162:    } metadataEdit;
+        -:  163:    
+        -:  164:    // Library path (initial scan + change path)
+        -:  165:    std::string libraryPathInput;
+        -:  166:    std::string libraryPathError;
+        -:  167:    bool focusPathInput = false;
+        -:  168:    bool showChangePathDialog = false;
+        -:  169:    /** True when the initial "enter path to scan" screen is visible (so text goes to path input, not search). */
+        -:  170:    bool pathInputScreenVisible = false;
+        -:  171:    /** True when scan progress dialog is visible (modal). */
+        -:  172:    bool scanDialogVisible = false;
+        -:  173:
+        -:  174:    // USB Popup
+        -:  175:    bool showUsbDialog = false;
+        -:  176:    std::string usbPath;
+        -:  177:    
+        -:  178:    // Hardware connection status (S32K144)
+        -:  179:    bool hardwareConnected = false;
+        -:  180:};
+        -:  181:
+        -:  182:class ImGuiManager {
+        -:  183:public:
+        -:  184:    ImGuiManager();
+        -:  185:    ~ImGuiManager();
+        -:  186:    
+        -:  187:    // Lifecycle
+        -:  188:    bool initialize(const std::string& title, int width, int height);
+        -:  189:    void shutdown();
+        -:  190:    
+        -:  191:    // Frame management
+        -:  192:    void beginFrame();
+        -:  193:    void endFrame();
+        -:  194:    
+        -:  195:    // Event handling
+        -:  196:    bool processEvent(const SDL_Event& event);
+        -:  197:    void handleResize(int width, int height);
+        -:  198:    
+        -:  199:    // Main UI rendering
+        -:  200:    void renderMainLayout();
+        -:  201:    
+        -:  202:    // Components
+        -:  203:    void renderMenuBar();
+        -:  204:    void renderSidebar();
+        -:  205:    void renderLibraryPanel();
+        -:  206:    void renderPlayerBar();
+        -:  207:    void renderQueuePanel();
+        -:  208:    void renderPlaylistPanel();
+        -:  209:    void renderHistoryPanel();
+        -:  210:    void renderScanProgress(const std::string& path, int current, int total);
+        -:  211:    void renderPathInputScreen(const std::string& currentPathPlaceholder);
+        -:  212:    void renderOverlays();
+        -:  213:    
+        -:  214:    // Notifications
+        -:  215:    void showUsbPopup(const std::string& path);
+        -:  216:    
+        -:  217:    // State access
+    #####:  218:    UIState& getState() { return m_state; }
+        -:  219:    const UIState& getState() const { return m_state; }
+        -:  220:    void setState(const UIState& state) { m_state = state; }
+        -:  221:    
+        -:  222:    // Getters
+        -:  223:    SDL_Window* getWindow() const { return m_window; }
+        -:  224:    SDL_Renderer* getRenderer() const { return m_renderer; }
+        -:  225:    int getWidth() const { return m_width; }
+        -:  226:
+    #####:  227:    int getHeight() const { return m_height; }
+        -:  228:    size_t getHistoryListSize() const { return m_historyList.size(); }
+        -:  229:    
+        -:  230:    // Controllers (set by Application)
+        -:  231:    void setControllers(
+        -:  232:        std::shared_ptr<controllers::PlaybackController> playback,
+        -:  233:        std::shared_ptr<controllers::QueueController> queue,
+        -:  234:        std::shared_ptr<controllers::LibraryController> library,
+        -:  235:        std::shared_ptr<controllers::PlaylistController> playlist
+        -:  236:    );
+        -:  237:    
+        -:  238:    // Media list (set by Application)
+        -:  239:    void setMediaList(const std::vector<models::MediaFileModel>* mediaList);
+        -:  240:    void setHistoryList(const std::vector<repositories::PlaybackHistoryEntry>& historyList);
+        -:  241:    
+        -:  242:    // Callbacks
+        -:  243:    using PlayCallback = std::function<void(int index)>;
+        -:  244:    using VolumeCallback = std::function<void(float volume)>;
+        -:  245:    using SeekCallback = std::function<void(float position)>;
+        -:  246:    
+    #####:  247:    void setOnPlay(PlayCallback cb) { m_onPlay = std::move(cb); }
+    #####:  248:    void setOnVolumeChange(VolumeCallback cb) { m_onVolumeChange = std::move(cb); }
+        -:  249:    void setOnSeek(SeekCallback cb) { m_onSeek = std::move(cb); }
+        -:  250:    using RequestScanCallback = std::function<void(const std::string& path)>;
+        -:  251:    using ChangeLibraryPathCallback = std::function<void(const std::string& path)>;
+        -:  252:    using GetCurrentLibraryPathCallback = std::function<std::string()>;
+    #####:  253:    void setOnRequestScan(RequestScanCallback cb) { m_onRequestScan = std::move(cb); }
+    #####:  254:    void setOnChangeLibraryPath(ChangeLibraryPathCallback cb) { m_onChangeLibraryPath = std::move(cb); }
+    #####:  255:    void setGetCurrentLibraryPath(GetCurrentLibraryPathCallback cb) { m_getCurrentLibraryPath = std::move(cb); }
+        -:  256:    using GetMetadataCallback = std::function<std::optional<models::MetadataModel>(const std::string& filePath)>;
+    #####:  257:    void setGetMetadataForProperties(GetMetadataCallback cb) { m_getMetadataForProperties = std::move(cb); }
+        -:  258:    using QuitCallback = std::function<void()>;
+    #####:  259:    void setOnQuit(QuitCallback cb) { m_onQuit = std::move(cb); }
+        -:  260:    using CancelScanCallback = std::function<void()>;
+    #####:  261:    void setOnCancelScan(CancelScanCallback cb) { m_onCancelScan = std::move(cb); }
+        -:  262:    
+        -:  263:private:
+        -:  264:    // Rendering helpers
+        -:  265:    void drawRect(int x, int y, int w, int h, uint32_t color, bool filled = true);
+        -:  266:    void drawRoundedRect(int x, int y, int w, int h, int radius, uint32_t color, bool filled = true);
+        -:  267:    void drawText(const std::string& text, int x, int y, uint32_t color, int fontSize = 16);
+        -:  268:    void drawIcon(const std::string& icon, int x, int y, uint32_t color, int size = 24);
+        -:  269:    void drawProgressBar(int x, int y, int w, int h, float progress, uint32_t fg, uint32_t bg);
+        -:  270:    void drawButton(const std::string& label, int x, int y, int w, int h, bool active = false);
+        -:  271:    void drawSlider(float* value, int x, int y, int w, int h);
+        -:  272:    
+        -:  273:    // Hit testing
+        -:  274:    bool isMouseOver(int x, int y, int w, int h) const;
+        -:  275:    bool isMouseClicked(int x, int y, int w, int h) const;
+        -:  276:    bool isMouseDragging() const;
+        -:  277:    
+        -:  278:    // SDL resources
+        -:  279:    SDL_Window* m_window = nullptr;
+        -:  280:    SDL_Renderer* m_renderer = nullptr;
+        -:  281:    TTF_Font* m_font = nullptr;
+        -:  282:    TTF_Font* m_fontLarge = nullptr;
+        -:  283:    TTF_Font* m_fontSmall = nullptr;
+        -:  284:    
+        -:  285:    // Dimensions
+        -:  286:    int m_width = 0;
+        -:  287:    int m_height = 0;
+        -:  288:    
+        -:  289:    // Mouse state
+        -:  290:    int m_mouseX = 0;
+        -:  291:    int m_mouseY = 0;
+        -:  292:    bool m_mouseDown = false;
+        -:  293:    bool m_mouseClicked = false;
+        -:  294:    bool m_modalMouseClicked = false; // True when modal dialog consumes click
+        -:  295:    int m_dragStartX = 0;
+        -:  296:    int m_dragStartY = 0;
+        -:  297:    
+        -:  298:    // UI State
+        -:  299:    UIState m_state;
+        -:  300:    Theme m_theme;
+        -:  301:    
+        -:  302:    // Data references
+        -:  303:    const std::vector<models::MediaFileModel>* m_mediaList = nullptr;
+        -:  304:    std::vector<repositories::PlaybackHistoryEntry> m_historyList;
+        -:  305:    
+        -:  306:    // Controllers
+        -:  307:    std::shared_ptr<controllers::PlaybackController> m_playbackController;
+        -:  308:    std::shared_ptr<controllers::QueueController> m_queueController;
+        -:  309:    std::shared_ptr<controllers::LibraryController> m_libraryController;
+        -:  310:    std::shared_ptr<controllers::PlaylistController> m_playlistController;
+        -:  311:    
+        -:  312:    // Callbacks
+        -:  313:    PlayCallback m_onPlay;
+        -:  314:    VolumeCallback m_onVolumeChange;
+        -:  315:    SeekCallback m_onSeek;
+        -:  316:    RequestScanCallback m_onRequestScan;
+        -:  317:    ChangeLibraryPathCallback m_onChangeLibraryPath;
+        -:  318:    GetCurrentLibraryPathCallback m_getCurrentLibraryPath;
+        -:  319:    GetMetadataCallback m_getMetadataForProperties;
+        -:  320:    QuitCallback m_onQuit;
+        -:  321:    CancelScanCallback m_onCancelScan;
+        -:  322:    
+        -:  323:    // Layout constants
+        -:  324:    static constexpr int SIDEBAR_WIDTH = 200;
+        -:  325:    static constexpr int PLAYER_BAR_HEIGHT = 90;
+        -:  326:    static constexpr int MENU_BAR_HEIGHT = 30;
+        -:  327:    static constexpr int ITEM_HEIGHT = 50;
+        -:  328:};
+        -:  329:
+        -:  330:} // namespace ui
+        -:  331:} // namespace media_player
+        -:  332:
+        -:  333:#endif // IMGUI_MANAGER_H

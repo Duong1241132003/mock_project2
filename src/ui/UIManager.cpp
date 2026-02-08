@@ -1,6 +1,5 @@
 // Project includes
 #include "ui/UIManager.h"
-#include "utils/Logger.h"
 
 // System includes
 #include <sstream>
@@ -34,7 +33,6 @@ bool UIManager::initialize(const std::string& title, int width, int height)
     // Initialize SDL_ttf
     if (TTF_Init() < 0) 
     {
-        LOG_ERROR("Failed to initialize SDL_ttf: " + std::string(TTF_GetError()));
         return false;
     }
     
@@ -50,7 +48,6 @@ bool UIManager::initialize(const std::string& title, int width, int height)
     
     if (!m_window) 
     {
-        LOG_ERROR("Failed to create window: " + std::string(SDL_GetError()));
         return false;
     }
     
@@ -63,7 +60,6 @@ bool UIManager::initialize(const std::string& title, int width, int height)
     
     if (!m_renderer) 
     {
-        LOG_ERROR("Failed to create renderer: " + std::string(SDL_GetError()));
         return false;
     }
     
@@ -86,17 +82,13 @@ bool UIManager::initialize(const std::string& title, int width, int height)
         {
             m_fontLarge = TTF_OpenFont(path, 24);
             m_fontSmall = TTF_OpenFont(path, 12);
-            LOG_INFO("Loaded font: " + std::string(path));
             break;
         }
     }
     
     if (!m_font) 
     {
-        LOG_WARNING("No system font found, text rendering will be limited");
     }
-    
-    LOG_INFO("UIManager initialized with " + std::to_string(width) + "x" + std::to_string(height));
     return true;
 }
 

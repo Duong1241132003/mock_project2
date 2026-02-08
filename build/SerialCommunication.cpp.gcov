@@ -1,0 +1,352 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/src/services/SerialCommunication.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/services/SerialCommunication.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/services/SerialCommunication.cpp.gcda
+        -:    0:Runs:6
+        -:    1:// Project includes
+        -:    2:#include "services/SerialCommunication.h"
+        -:    3:#include "utils/Logger.h"
+        -:    4:
+        -:    5:// System includes (Linux serial communication)
+        -:    6:#include <fcntl.h>
+        -:    7:#include <unistd.h>
+        -:    8:#include <termios.h>
+        -:    9:#include <cstring>
+        -:   10:#include <cerrno>
+        -:   11:#include <filesystem>
+        -:   12:
+        -:   13:namespace media_player 
+        -:   14:{
+        -:   15:namespace services 
+        -:   16:{
+        -:   17:
+    #####:   18:SerialCommunication::SerialCommunication()
+    #####:   19:    : m_fileDescriptor(-1)
+    #####:   20:    , m_isOpen(false)
+    #####:   21:    , m_shouldStop(false)
+        -:   22:{
+    #####:   23:    LOG_INFO("SerialCommunication created");
+    #####:   24:}
+        -:   25:
+    #####:   26:SerialCommunication::~SerialCommunication() 
+        -:   27:{
+    #####:   28:    close();
+    #####:   29:    LOG_INFO("SerialCommunication destroyed");
+    #####:   30:}
+------------------
+_ZN12media_player8services19SerialCommunicationD0Ev:
+    #####:   26:SerialCommunication::~SerialCommunication() 
+        -:   27:{
+        -:   28:    close();
+        -:   29:    LOG_INFO("SerialCommunication destroyed");
+    #####:   30:}
+------------------
+_ZN12media_player8services19SerialCommunicationD2Ev:
+    #####:   26:SerialCommunication::~SerialCommunication() 
+        -:   27:{
+    #####:   28:    close();
+    #####:   29:    LOG_INFO("SerialCommunication destroyed");
+    #####:   30:}
+------------------
+        -:   31:
+    #####:   32:bool SerialCommunication::open(const std::string& portName, int baudRate) 
+        -:   33:{
+    #####:   34:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:   35:    
+    #####:   36:    if (m_isOpen) 
+        -:   37:    {
+    #####:   38:        LOG_WARNING("Serial port already open");
+    #####:   39:        return true;
+        -:   40:    }
+        -:   41:    
+    #####:   42:    LOG_INFO("Opening serial port: " + portName + " at " + std::to_string(baudRate) + " baud");
+        -:   43:
+    #####:   44:    std::error_code errorCode;
+    #####:   45:    if (!std::filesystem::exists(portName, errorCode))
+        -:   46:    {
+    #####:   47:        std::string errorMessage = "Serial port not found: " + portName;
+    #####:   48:        if (errorCode)
+        -:   49:        {
+    #####:   50:            errorMessage += " (" + errorCode.message() + ")";
+        -:   51:        }
+    #####:   52:        LOG_ERROR(errorMessage);
+    #####:   53:        notifyError("Serial port not found");
+    #####:   54:        return false;
+    #####:   55:    }
+        -:   56:
+    #####:   57:    if (errorCode)
+        -:   58:    {
+    #####:   59:        LOG_WARNING("Filesystem check error for serial port: " + errorCode.message());
+        -:   60:    }
+        -:   61:
+    #####:   62:    const auto status = std::filesystem::status(portName, errorCode);
+    #####:   63:    if (!errorCode && !std::filesystem::is_character_file(status))
+        -:   64:    {
+    #####:   65:        LOG_WARNING("Serial port path is not a character device: " + portName);
+        -:   66:    }
+        -:   67:
+    #####:   68:    if (::access(portName.c_str(), R_OK | W_OK) != 0)
+        -:   69:    {
+    #####:   70:        const int accessError = errno;
+    #####:   71:        LOG_ERROR(
+        -:   72:            "No permission to access serial port: " + portName +
+        -:   73:            " (" + std::string(std::strerror(accessError)) + ")"
+        -:   74:        );
+    #####:   75:        notifyError("Serial port permission denied");
+    #####:   76:        return false;
+        -:   77:    }
+        -:   78:    
+        -:   79:    // Open serial port
+    #####:   80:    m_fileDescriptor = ::open(portName.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
+        -:   81:    
+    #####:   82:    if (m_fileDescriptor == -1) 
+        -:   83:    {
+    #####:   84:        const int openError = errno;
+    #####:   85:        LOG_ERROR(
+        -:   86:            "Failed to open serial port: " + portName +
+        -:   87:            " (" + std::string(std::strerror(openError)) + ")"
+        -:   88:        );
+    #####:   89:        if (openError == EACCES || openError == EPERM)
+        -:   90:        {
+    #####:   91:            LOG_ERROR("Permission denied when opening serial port. Check dialout group permissions.");
+        -:   92:        }
+    #####:   93:        notifyError("Failed to open port: " + std::string(std::strerror(openError)));
+    #####:   94:        return false;
+        -:   95:    }
+        -:   96:    
+        -:   97:    // Configure serial port
+        -:   98:    struct termios options;
+        -:   99:    
+    #####:  100:    if (tcgetattr(m_fileDescriptor, &options) != 0) 
+        -:  101:    {
+    #####:  102:        LOG_ERROR("Failed to get serial port attributes");
+    #####:  103:        ::close(m_fileDescriptor);
+    #####:  104:        m_fileDescriptor = -1;
+    #####:  105:        return false;
+        -:  106:    }
+        -:  107:    
+        -:  108:    // Set baud rate
+    #####:  109:    speed_t speed = B115200; // Default to 115200
+        -:  110:    
+    #####:  111:    switch (baudRate) 
+        -:  112:    {
+    #####:  113:        case 9600: speed = B9600; break;
+    #####:  114:        case 19200: speed = B19200; break;
+    #####:  115:        case 38400: speed = B38400; break;
+    #####:  116:        case 57600: speed = B57600; break;
+    #####:  117:        case 115200: speed = B115200; break;
+    #####:  118:        default:
+    #####:  119:            LOG_WARNING("Unsupported baud rate, using 115200");
+    #####:  120:            break;
+        -:  121:    }
+        -:  122:    
+    #####:  123:    cfsetispeed(&options, speed);
+    #####:  124:    cfsetospeed(&options, speed);
+        -:  125:    
+        -:  126:    // 8N1 mode
+    #####:  127:    options.c_cflag &= ~PARENB; // No parity
+    #####:  128:    options.c_cflag &= ~CSTOPB; // 1 stop bit
+    #####:  129:    options.c_cflag &= ~CSIZE;
+    #####:  130:    options.c_cflag |= CS8; // 8 data bits
+        -:  131:    
+        -:  132:    // Enable receiver, ignore modem control lines
+    #####:  133:    options.c_cflag |= (CLOCAL | CREAD);
+        -:  134:    
+        -:  135:    // Raw input
+    #####:  136:    options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+        -:  137:    
+        -:  138:    // Raw output
+    #####:  139:    options.c_oflag &= ~OPOST;
+        -:  140:    
+        -:  141:    // Apply settings
+    #####:  142:    if (tcsetattr(m_fileDescriptor, TCSANOW, &options) != 0) 
+        -:  143:    {
+    #####:  144:        LOG_ERROR("Failed to set serial port attributes");
+    #####:  145:        ::close(m_fileDescriptor);
+    #####:  146:        m_fileDescriptor = -1;
+    #####:  147:        return false;
+        -:  148:    }
+        -:  149:    
+    #####:  150:    m_isOpen = true;
+    #####:  151:    m_shouldStop = false;
+        -:  152:    
+        -:  153:    // Start read thread
+    #####:  154:    m_readThread = std::make_unique<std::thread>(&SerialCommunication::readThread, this);
+        -:  155:    
+    #####:  156:    LOG_INFO("Serial port opened successfully");
+        -:  157:    
+    #####:  158:    return true;
+    #####:  159:}
+        -:  160:
+    #####:  161:void SerialCommunication::close() 
+        -:  162:{
+    #####:  163:    if (!m_isOpen) 
+        -:  164:    {
+    #####:  165:        return;
+        -:  166:    }
+        -:  167:    
+    #####:  168:    LOG_INFO("Closing serial port");
+        -:  169:    
+    #####:  170:    m_shouldStop = true;
+        -:  171:    
+    #####:  172:    if (m_readThread && m_readThread->joinable()) 
+        -:  173:    {
+    #####:  174:        m_readThread->join();
+        -:  175:    }
+        -:  176:    
+    #####:  177:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:  178:    
+    #####:  179:    if (m_fileDescriptor != -1) 
+        -:  180:    {
+    #####:  181:        ::close(m_fileDescriptor);
+    #####:  182:        m_fileDescriptor = -1;
+        -:  183:    }
+        -:  184:    
+    #####:  185:    m_isOpen = false;
+        -:  186:    
+    #####:  187:    LOG_INFO("Serial port closed");
+    #####:  188:}
+        -:  189:
+    #####:  190:bool SerialCommunication::isOpen() const 
+        -:  191:{
+    #####:  192:    return m_isOpen;
+        -:  193:}
+        -:  194:
+    #####:  195:bool SerialCommunication::sendData(const std::string& data) 
+        -:  196:{
+    #####:  197:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:  198:    
+    #####:  199:    if (!m_isOpen || m_fileDescriptor == -1) 
+        -:  200:    {
+    #####:  201:        LOG_ERROR("Serial port not open");
+    #####:  202:        return false;
+        -:  203:    }
+        -:  204:    
+    #####:  205:    ssize_t bytesWritten = write(m_fileDescriptor, data.c_str(), data.length());
+        -:  206:    
+    #####:  207:    if (bytesWritten < 0) 
+        -:  208:    {
+    #####:  209:        LOG_ERROR("Failed to write to serial port");
+    #####:  210:        notifyError("Write failed");
+    #####:  211:        return false;
+        -:  212:    }
+        -:  213:    
+    #####:  214:    LOG_DEBUG("Sent " + std::to_string(bytesWritten) + " bytes to serial port");
+        -:  215:    
+    #####:  216:    return true;
+    #####:  217:}
+        -:  218:
+    #####:  219:std::string SerialCommunication::readData() 
+        -:  220:{
+    #####:  221:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:  222:    
+    #####:  223:    if (!m_isOpen || m_fileDescriptor == -1) 
+        -:  224:    {
+    #####:  225:        return "";
+        -:  226:    }
+        -:  227:    
+        -:  228:    char buffer[256];
+    #####:  229:    ssize_t bytesRead = read(m_fileDescriptor, buffer, sizeof(buffer) - 1);
+        -:  230:    
+    #####:  231:    if (bytesRead > 0) 
+        -:  232:    {
+    #####:  233:        buffer[bytesRead] = '\0';
+    #####:  234:        return std::string(buffer);
+        -:  235:    }
+        -:  236:    
+    #####:  237:    return "";
+    #####:  238:}
+        -:  239:
+    #####:  240:void SerialCommunication::setDataCallback(SerialDataCallback callback) 
+        -:  241:{
+    #####:  242:    m_dataCallback = callback;
+    #####:  243:}
+        -:  244:
+    #####:  245:void SerialCommunication::setErrorCallback(SerialErrorCallback callback) 
+        -:  246:{
+    #####:  247:    m_errorCallback = callback;
+    #####:  248:}
+        -:  249:
+    #####:  250:void SerialCommunication::readThread() 
+        -:  251:{
+        -:  252:    char buffer[256];
+        -:  253:    
+    #####:  254:    while (!m_shouldStop) 
+        -:  255:    {
+    #####:  256:        int fd = -1;
+    #####:  257:        ssize_t bytesRead = 0;
+        -:  258:        
+        -:  259:        // Scope for lock - only hold while accessing shared resources (FD)
+        -:  260:        {
+    #####:  261:            std::lock_guard<std::mutex> lock(m_mutex);
+        -:  262:            
+    #####:  263:            if (!m_isOpen || m_fileDescriptor == -1) 
+        -:  264:            {
+        -:  265:                // Check if we should exit loop or just wait (if closed but not stopped)
+    #####:  266:                if (m_shouldStop) break;
+        -:  267:                
+        -:  268:                // If just closed but thread running, wait a bit
+        -:  269:                // Release lock via scope exit
+        -:  270:            }
+        -:  271:            else
+        -:  272:            {
+    #####:  273:                fd = m_fileDescriptor;
+        -:  274:                // Read inside lock because m_fileDescriptor must be valid
+        -:  275:                // O_NDELAY is set so this shouldn't block for long
+    #####:  276:                 bytesRead = read(fd, buffer, sizeof(buffer) - 1);
+        -:  277:            }
+    #####:  278:        } // Lock released here
+        -:  279:        
+        -:  280:        // Process result outside lock to allow other threads to sendData
+    #####:  281:        if (fd != -1)
+        -:  282:        {
+    #####:  283:            if (bytesRead > 0) 
+        -:  284:            {
+    #####:  285:                buffer[bytesRead] = '\0';
+    #####:  286:                std::string data(buffer);
+        -:  287:                
+        -:  288:                // LOG inside lock might use its own mutex, better to do it here
+        -:  289:                // LOG_DEBUG("Received " + std::to_string(bytesRead) + " bytes from serial port");
+        -:  290:                
+    #####:  291:                notifyData(data); // Callback outside lock
+    #####:  292:            }
+    #####:  293:            else if (bytesRead < 0) 
+        -:  294:            {
+    #####:  295:                if (errno != EAGAIN && errno != EWOULDBLOCK)
+        -:  296:                {
+        -:  297:                    // Only log real errors
+    #####:  298:                    LOG_WARNING("Error reading from serial port: " + std::string(strerror(errno)));
+    #####:  299:                    notifyError("Read error");
+        -:  300:                    
+    #####:  301:                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        -:  302:                }
+        -:  303:            }
+        -:  304:        }
+        -:  305:        else
+        -:  306:        {
+        -:  307:            // If FD was invalid but thread running, wait to avoid spinning
+    #####:  308:             std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        -:  309:        }
+        -:  310:
+        -:  311:        // Sleep outside lock to let other threads (sendData) acquire it
+    #####:  312:        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        -:  313:    }
+    #####:  314:}
+        -:  315:
+    #####:  316:void SerialCommunication::notifyData(const std::string& data) 
+        -:  317:{
+    #####:  318:    if (m_dataCallback) 
+        -:  319:    {
+    #####:  320:        m_dataCallback(data);
+        -:  321:    }
+    #####:  322:}
+        -:  323:
+    #####:  324:void SerialCommunication::notifyError(const std::string& error) 
+        -:  325:{
+    #####:  326:    if (m_errorCallback) 
+        -:  327:    {
+    #####:  328:        m_errorCallback(error);
+        -:  329:    }
+    #####:  330:}
+        -:  331:
+        -:  332:} // namespace services
+        -:  333:} // namespace media_player

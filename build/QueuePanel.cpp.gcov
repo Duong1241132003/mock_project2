@@ -1,0 +1,146 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/src/views/QueuePanel.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.gcda
+        -:    0:Runs:6
+        -:    1:// Project includes
+        -:    2:#include "views/QueuePanel.h"
+        -:    3:#include "utils/Logger.h"
+        -:    4:
+        -:    5:namespace media_player 
+        -:    6:{
+        -:    7:namespace views 
+        -:    8:{
+        -:    9:
+    #####:   10:QueuePanel::QueuePanel(
+        -:   11:    std::shared_ptr<controllers::QueueController> queueController,
+        -:   12:    std::shared_ptr<models::QueueModel> queueModel
+    #####:   13:)
+    #####:   14:    : m_queueController(queueController)
+    #####:   15:    , m_queueModel(queueModel)
+    #####:   16:    , m_isVisible(false)
+        -:   17:{
+    #####:   18:    LOG_INFO("QueuePanel created");
+    #####:   19:}
+        -:   20:
+    #####:   21:QueuePanel::~QueuePanel() 
+        -:   22:{
+    #####:   23:    LOG_INFO("QueuePanel destroyed");
+    #####:   24:}
+------------------
+_ZN12media_player5views10QueuePanelD0Ev:
+    #####:   21:QueuePanel::~QueuePanel() 
+        -:   22:{
+        -:   23:    LOG_INFO("QueuePanel destroyed");
+    #####:   24:}
+------------------
+_ZN12media_player5views10QueuePanelD2Ev:
+    #####:   21:QueuePanel::~QueuePanel() 
+        -:   22:{
+    #####:   23:    LOG_INFO("QueuePanel destroyed");
+    #####:   24:}
+------------------
+        -:   25:
+    #####:   26:void QueuePanel::show() 
+        -:   27:{
+    #####:   28:    m_isVisible = true;
+    #####:   29:    update();
+    #####:   30:    LOG_INFO("QueuePanel shown");
+    #####:   31:}
+        -:   32:
+    #####:   33:void QueuePanel::hide() 
+        -:   34:{
+    #####:   35:    m_isVisible = false;
+    #####:   36:    LOG_INFO("QueuePanel hidden");
+    #####:   37:}
+        -:   38:
+    #####:   39:void QueuePanel::update() 
+        -:   40:{
+    #####:   41:    if (!m_isVisible) 
+        -:   42:    {
+    #####:   43:        return;
+        -:   44:    }
+        -:   45:    
+    #####:   46:    displayQueue();
+        -:   47:}
+        -:   48:
+    #####:   49:bool QueuePanel::isVisible() const 
+        -:   50:{
+    #####:   51:    return m_isVisible;
+        -:   52:}
+        -:   53:
+    #####:   54:void QueuePanel::removeSelectedItem() 
+        -:   55:{
+    #####:   56:    size_t currentIndex = m_queueModel->getCurrentIndex();
+    #####:   57:    m_queueController->removeFromQueue(currentIndex);
+        -:   58:    
+    #####:   59:    LOG_INFO("Item removed from queue");
+    #####:   60:}
+        -:   61:
+    #####:   62:void QueuePanel::clearQueue() 
+        -:   63:{
+    #####:   64:    m_queueController->clearQueue();
+    #####:   65:    LOG_INFO("Queue cleared");
+    #####:   66:}
+        -:   67:
+    #####:   68:void QueuePanel::moveItemUp(size_t index) 
+        -:   69:{
+    #####:   70:    if (index > 0) 
+        -:   71:    {
+    #####:   72:        m_queueController->moveItem(index, index - 1);
+    #####:   73:        LOG_INFO("Item moved up in queue");
+        -:   74:    }
+    #####:   75:}
+        -:   76:
+    #####:   77:void QueuePanel::moveItemDown(size_t index) 
+        -:   78:{
+    #####:   79:    if (index < m_queueModel->size() - 1) 
+        -:   80:    {
+    #####:   81:        m_queueController->moveItem(index, index + 1);
+    #####:   82:        LOG_INFO("Item moved down in queue");
+        -:   83:    }
+    #####:   84:}
+        -:   85:
+    #####:   86:void QueuePanel::jumpToItem(size_t index) 
+        -:   87:{
+    #####:   88:    if (index < m_queueModel->size()) 
+        -:   89:    {
+        -:   90:        // TODO: Jump to this item in queue
+    #####:   91:        LOG_INFO("Jumped to queue item: " + std::to_string(index));
+        -:   92:    }
+    #####:   93:}
+        -:   94:
+    #####:   95:void QueuePanel::toggleShuffle() 
+        -:   96:{
+    #####:   97:    m_queueController->toggleShuffle();
+        -:   98:    
+    #####:   99:    bool shuffleEnabled = m_queueModel->isShuffleEnabled();
+    #####:  100:    LOG_INFO("Shuffle " + std::string(shuffleEnabled ? "enabled" : "disabled"));
+    #####:  101:}
+        -:  102:
+    #####:  103:void QueuePanel::toggleRepeat() 
+        -:  104:{
+    #####:  105:    m_queueController->toggleRepeat();
+        -:  106:    
+    #####:  107:    bool repeatEnabled = m_queueModel->isRepeatEnabled();
+    #####:  108:    LOG_INFO("Repeat " + std::string(repeatEnabled ? "enabled" : "disabled"));
+    #####:  109:}
+        -:  110:
+    #####:  111:void QueuePanel::displayQueue() 
+        -:  112:{
+    #####:  113:    auto items = m_queueModel->getAllItems();
+    #####:  114:    size_t currentIndex = m_queueModel->getCurrentIndex();
+        -:  115:    
+    #####:  116:    LOG_DEBUG("Queue (" + std::to_string(items.size()) + " items):");
+        -:  117:    
+    #####:  118:    for (size_t i = 0; i < items.size(); ++i) 
+        -:  119:    {
+    #####:  120:        std::string marker = (i == currentIndex) ? "▶" : " ";
+    #####:  121:        LOG_DEBUG(marker + " " + std::to_string(i + 1) + ". " + items[i].getFileName());
+    #####:  122:    }
+        -:  123:    
+    #####:  124:    LOG_DEBUG("Shuffle: " + std::string(m_queueModel->isShuffleEnabled() ? "ON" : "OFF"));
+    #####:  125:    LOG_DEBUG("Repeat: " + std::string(m_queueModel->isRepeatEnabled() ? "ON" : "OFF"));
+    #####:  126:}
+        -:  127:
+        -:  128:} // namespace views
+        -:  129:} // namespace media_player

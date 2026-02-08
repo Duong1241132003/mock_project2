@@ -1,6 +1,5 @@
 // Project includes
 #include "views/LibraryScreen.h"
-#include "utils/Logger.h"
 #include "config/AppConfig.h"
 
 namespace media_player 
@@ -19,25 +18,21 @@ LibraryScreen::LibraryScreen(
     , m_selectedIndex(-1)
     , m_isVisible(false)
 {
-    LOG_INFO("LibraryScreen created");
 }
 
 LibraryScreen::~LibraryScreen() 
 {
-    LOG_INFO("LibraryScreen destroyed");
 }
 
 void LibraryScreen::show() 
 {
     m_isVisible = true;
     refreshMediaList();
-    LOG_INFO("LibraryScreen shown");
 }
 
 void LibraryScreen::hide() 
 {
     m_isVisible = false;
-    LOG_INFO("LibraryScreen hidden");
 }
 
 void LibraryScreen::update() 
@@ -145,7 +140,6 @@ void LibraryScreen::playSelected()
     m_queueController->addToQueue(m_currentMediaList[m_selectedIndex]);
     
     // Trigger playback
-    LOG_INFO("Play selected: " + m_currentMediaList[m_selectedIndex].getFileName());
 }
 
 void LibraryScreen::addSelectedToQueue() 
@@ -156,7 +150,6 @@ void LibraryScreen::addSelectedToQueue()
     }
     
     m_queueController->addToQueue(m_currentMediaList[m_selectedIndex]);
-    LOG_INFO("Added to queue: " + m_currentMediaList[m_selectedIndex].getFileName());
 }
 
 void LibraryScreen::addAllToQueue() 
@@ -165,8 +158,6 @@ void LibraryScreen::addAllToQueue()
     {
         m_queueController->addToQueue(media);
     }
-    
-    LOG_INFO("Added all media to queue");
 }
 
 void LibraryScreen::refreshMediaList() 
@@ -180,14 +171,9 @@ void LibraryScreen::displayMediaList()
     size_t startIndex = m_currentPage * m_itemsPerPage;
     size_t endIndex = std::min(startIndex + m_itemsPerPage, m_currentMediaList.size());
     
-    LOG_DEBUG("Displaying page " + std::to_string(m_currentPage + 1));
-    
     for (size_t i = startIndex; i < endIndex; ++i) 
     {
         const auto& media = m_currentMediaList[i];
-        
-        std::string typeStr = media.isAudio() ? "[AUDIO]" : "[VIDEO]";
-        LOG_DEBUG(std::to_string(i + 1) + ". " + typeStr + " " + media.getFileName());
     }
 }
 

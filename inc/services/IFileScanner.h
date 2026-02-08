@@ -29,6 +29,9 @@ public:
     virtual void stopScanning() = 0;
     virtual bool isScanning() const = 0;
     
+    // Synchronous scan
+    virtual std::vector<models::MediaFileModel> scanDirectorySync(const std::string& rootPath) = 0;
+    
     // Callbacks
     virtual void setProgressCallback(ScanProgressCallback callback) = 0;
     virtual void setCompleteCallback(ScanCompleteCallback callback) = 0;

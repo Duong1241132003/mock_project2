@@ -1,0 +1,155 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/tests/controllers/PlaybackControllerTest.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerTest.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerTest.cpp.gcda
+        -:    0:Runs:6
+        -:    1:#include <gtest/gtest.h>
+        -:    2:#include <gmock/gmock.h>
+        -:    3:#include "controllers/PlaybackController.h"
+        -:    4:#include "models/QueueModel.h"
+        -:    5:#include "models/PlaybackStateModel.h"
+        -:    6:#include "repositories/HistoryRepository.h"
+        -:    7:// We need to mock AudioPlaybackEngine or test logic that doesn't trigger actual playback if possible.
+        -:    8:// PlaybackController uses concrete AudioPlaybackEngine internally?
+        -:    9:// Let's check PlaybackController.h
+        -:   10:
+        -:   11:using namespace media_player;
+        -:   12:using namespace testing;
+        -:   13:
+        -:   14:class PlaybackControllerTest : public Test {
+        -:   15:protected:
+       18:   16:    void SetUp() override {
+       18:   17:        queueModel = std::make_shared<models::QueueModel>();
+       18:   18:        playbackState = std::make_shared<models::PlaybackStateModel>();
+        -:   19:        
+        -:   20:        // Use a temp path for history to avoid messing with real data
+       18:   21:        std::string tempHistoryPath = "./test_data/history";
+       18:   22:        std::filesystem::create_directories(tempHistoryPath);
+       18:   23:        historyRepo = std::make_shared<repositories::HistoryRepository>(tempHistoryPath);
+        -:   24:        
+       18:   25:        controller = std::make_shared<controllers::PlaybackController>(
+       18:   26:            queueModel,
+       18:   27:            playbackState,
+       18:   28:            historyRepo
+       18:   29:        );
+       18:   30:    }
+        -:   31:    
+       18:   32:    void TearDown() override {
+       18:   33:        std::filesystem::remove_all("./test_data");
+       18:   34:    }
+        -:   35:
+        -:   36:    std::shared_ptr<models::QueueModel> queueModel;
+        -:   37:    std::shared_ptr<models::PlaybackStateModel> playbackState;
+        -:   38:    std::shared_ptr<repositories::HistoryRepository> historyRepo;
+        -:   39:    std::shared_ptr<controllers::PlaybackController> controller;
+        -:   40:};
+        -:   41:
+       24:   42:TEST_F(PlaybackControllerTest, PlayNextInQueue) {
+       12:   43:    auto media1 = models::MediaFileModel("/path/to/song1.mp3");
+        6:   44:    auto media2 = models::MediaFileModel("/path/to/song2.mp3");
+        -:   45:    
+        6:   46:    queueModel->addToEnd(media1);
+        6:   47:    queueModel->addToEnd(media2);
+        -:   48:    
+        -:   49:    // Logic to start playing -> this might trigger AudioPlaybackEngine which uses SDL_Mixer.
+        -:   50:    // Since we are not mocking AudioPlaybackEngine yet (it's hardcoded in controller?), this might fail if SDL init is required.
+        -:   51:    // We should check if PlaybackController initializes engine in constructor or lazily.
+        -:   52:    // And if we can mock it.
+        -:   53:    
+        -:   54:    // Assuming we can't easily mock engine without refactoring PlaybackController,
+        -:   55:    // we can test Queue manipulation logic that resides in Controller.
+        -:   56:    
+        6:   57:    controller->playNext();
+        -:   58:    // Verify state if possible
+        6:   59:}
+------------------
+_ZN43PlaybackControllerTest_PlayNextInQueue_TestC2Ev:
+        6:   42:TEST_F(PlaybackControllerTest, PlayNextInQueue) {
+------------------
+_ZN43PlaybackControllerTest_PlayNextInQueue_TestD0Ev:
+        6:   42:TEST_F(PlaybackControllerTest, PlayNextInQueue) {
+------------------
+_ZN43PlaybackControllerTest_PlayNextInQueue_TestD2Ev:
+        6:   42:TEST_F(PlaybackControllerTest, PlayNextInQueue) {
+------------------
+_ZN43PlaybackControllerTest_PlayNextInQueue_Test8TestBodyEv:
+        6:   42:TEST_F(PlaybackControllerTest, PlayNextInQueue) {
+       12:   43:    auto media1 = models::MediaFileModel("/path/to/song1.mp3");
+        6:   44:    auto media2 = models::MediaFileModel("/path/to/song2.mp3");
+        -:   45:    
+        6:   46:    queueModel->addToEnd(media1);
+        6:   47:    queueModel->addToEnd(media2);
+        -:   48:    
+        -:   49:    // Logic to start playing -> this might trigger AudioPlaybackEngine which uses SDL_Mixer.
+        -:   50:    // Since we are not mocking AudioPlaybackEngine yet (it's hardcoded in controller?), this might fail if SDL init is required.
+        -:   51:    // We should check if PlaybackController initializes engine in constructor or lazily.
+        -:   52:    // And if we can mock it.
+        -:   53:    
+        -:   54:    // Assuming we can't easily mock engine without refactoring PlaybackController,
+        -:   55:    // we can test Queue manipulation logic that resides in Controller.
+        -:   56:    
+        6:   57:    controller->playNext();
+        -:   58:    // Verify state if possible
+        6:   59:}
+------------------
+        -:   60:
+       24:   61:TEST_F(PlaybackControllerTest, SetVolume) {
+        6:   62:    controller->setVolume(50);
+       6*:   63:    EXPECT_EQ(playbackState->getVolume(), 50);
+        6:   64:}
+------------------
+_ZN37PlaybackControllerTest_SetVolume_TestC2Ev:
+        6:   61:TEST_F(PlaybackControllerTest, SetVolume) {
+------------------
+_ZN37PlaybackControllerTest_SetVolume_TestD0Ev:
+        6:   61:TEST_F(PlaybackControllerTest, SetVolume) {
+------------------
+_ZN37PlaybackControllerTest_SetVolume_TestD2Ev:
+        6:   61:TEST_F(PlaybackControllerTest, SetVolume) {
+------------------
+_ZN37PlaybackControllerTest_SetVolume_Test8TestBodyEv:
+        6:   61:TEST_F(PlaybackControllerTest, SetVolume) {
+        6:   62:    controller->setVolume(50);
+       6*:   63:    EXPECT_EQ(playbackState->getVolume(), 50);
+        6:   64:}
+------------------
+        -:   65:
+       24:   66:TEST_F(PlaybackControllerTest, TogglePlayPause) {
+        -:   67:    // Initial state is STOPPED
+        6:   68:    controller->togglePlayPause(); 
+        -:   69:    // If stopped, it might try to play first item in queue. If queue empty, nothing happens.
+       6*:   70:    EXPECT_EQ(playbackState->getState(), models::PlaybackState::STOPPED);
+        -:   71:    
+        -:   72:    // Add item
+        6:   73:    auto media1 = models::MediaFileModel("/path/to/song1.mp3");
+        6:   74:    queueModel->addToEnd(media1);
+        -:   75:    
+        -:   76:    // Now toggle -> Should try to play. 
+        -:   77:    // This will likely fail/crash if real audio engine is used and no audio device.
+        -:   78:    // We need to refactor PlaybackController to use IAudioPlaybackEngine.
+        6:   79:}
+------------------
+_ZN43PlaybackControllerTest_TogglePlayPause_TestC2Ev:
+        6:   66:TEST_F(PlaybackControllerTest, TogglePlayPause) {
+------------------
+_ZN43PlaybackControllerTest_TogglePlayPause_TestD0Ev:
+        6:   66:TEST_F(PlaybackControllerTest, TogglePlayPause) {
+------------------
+_ZN43PlaybackControllerTest_TogglePlayPause_TestD2Ev:
+        6:   66:TEST_F(PlaybackControllerTest, TogglePlayPause) {
+------------------
+_ZN43PlaybackControllerTest_TogglePlayPause_Test8TestBodyEv:
+        6:   66:TEST_F(PlaybackControllerTest, TogglePlayPause) {
+        -:   67:    // Initial state is STOPPED
+        6:   68:    controller->togglePlayPause(); 
+        -:   69:    // If stopped, it might try to play first item in queue. If queue empty, nothing happens.
+       6*:   70:    EXPECT_EQ(playbackState->getState(), models::PlaybackState::STOPPED);
+        -:   71:    
+        -:   72:    // Add item
+        6:   73:    auto media1 = models::MediaFileModel("/path/to/song1.mp3");
+        6:   74:    queueModel->addToEnd(media1);
+        -:   75:    
+        -:   76:    // Now toggle -> Should try to play. 
+        -:   77:    // This will likely fail/crash if real audio engine is used and no audio device.
+        -:   78:    // We need to refactor PlaybackController to use IAudioPlaybackEngine.
+        6:   79:}
+------------------

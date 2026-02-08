@@ -1,6 +1,5 @@
 // Project includes
 #include "controllers/MainController.h"
-#include "utils/Logger.h"
 
 namespace media_player 
 {
@@ -25,13 +24,11 @@ MainController::MainController(
     , m_systemStateModel(systemStateModel)
     , m_currentScreen(ScreenType::MAIN)
 {
-    LOG_INFO("MainController created");
 }
 
 MainController::~MainController() 
 {
     shutdown();
-    LOG_INFO("MainController destroyed");
 }
 
 void MainController::navigateTo(ScreenType screen) 
@@ -41,19 +38,14 @@ void MainController::navigateTo(ScreenType screen)
     switch (screen) 
     {
         case ScreenType::MAIN:
-            LOG_INFO("Navigated to Main Screen");
             break;
         case ScreenType::LIBRARY:
-            LOG_INFO("Navigated to Library Screen");
             break;
         case ScreenType::PLAYLIST:
-            LOG_INFO("Navigated to Playlist Screen");
             break;
         case ScreenType::QUEUE:
-            LOG_INFO("Navigated to Queue Panel");
             break;
         case ScreenType::SCAN:
-            LOG_INFO("Navigated to Scan Screen");
             break;
     }
 }
@@ -65,22 +57,17 @@ ScreenType MainController::getCurrentScreen() const
 
 bool MainController::initialize() 
 {
-    LOG_INFO("Initializing application...");
-    
     // Initialize hardware controller
     if (m_hardwareController) 
     {
         m_hardwareController->initialize();
     }
     
-    LOG_INFO("Application initialized successfully");
     return true;
 }
 
 void MainController::shutdown() 
 {
-    LOG_INFO("Shutting down application...");
-    
     // Stop playback
     if (m_playbackController) 
     {
@@ -99,18 +86,17 @@ void MainController::shutdown()
         m_hardwareController->disconnect();
     }
     
-    LOG_INFO("Application shutdown complete");
 }
 
 void MainController::handleGlobalKeyPress(int keyCode) 
 {
     // Handle global keyboard shortcuts
-    LOG_DEBUG("Global key press: " + std::to_string(keyCode));
+    (void)keyCode;
 }
 
 void MainController::handleGlobalEvent(const std::string& event) 
 {
-    LOG_DEBUG("Global event: " + event);
+    (void)event;
 }
 
 } // namespace controllers

@@ -164,10 +164,13 @@ CMakeFiles/MediaPlayerApp.dir/src/services/MetadataReader.cpp.o: \
  /usr/include/c++/13/bits/enable_special_members.h \
  /usr/include/c++/13/vector /usr/include/c++/13/bits/stl_vector.h \
  /usr/include/c++/13/bits/stl_bvector.h \
- /usr/include/c++/13/bits/vector.tcc \
- /home/duong/MediaPlayerApp/inc/utils/Logger.h \
- /usr/include/c++/13/fstream /usr/include/c++/13/istream \
- /usr/include/c++/13/ios /usr/include/c++/13/bits/ios_base.h \
+ /usr/include/c++/13/bits/vector.tcc /usr/include/taglib/fileref.h \
+ /usr/include/taglib/tfile.h /usr/include/taglib/taglib_export.h \
+ /usr/include/taglib/taglib.h /usr/include/taglib/taglib_config.h \
+ /usr/include/taglib/tag.h /usr/include/taglib/tstring.h \
+ /usr/include/taglib/tbytevector.h /usr/include/c++/13/iostream \
+ /usr/include/c++/13/ostream /usr/include/c++/13/ios \
+ /usr/include/c++/13/bits/ios_base.h \
  /usr/include/c++/13/bits/locale_classes.h \
  /usr/include/c++/13/bits/locale_classes.tcc \
  /usr/include/c++/13/system_error \
@@ -181,26 +184,13 @@ CMakeFiles/MediaPlayerApp.dir/src/services/MetadataReader.cpp.o: \
  /usr/include/c++/13/bits/streambuf_iterator.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/ctype_inline.h \
  /usr/include/c++/13/bits/locale_facets.tcc \
- /usr/include/c++/13/bits/basic_ios.tcc /usr/include/c++/13/ostream \
- /usr/include/c++/13/bits/ostream.tcc \
- /usr/include/c++/13/bits/istream.tcc /usr/include/c++/13/bits/codecvt.h \
- /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
- /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
- /usr/include/c++/13/bits/fstream.tcc /usr/include/c++/13/mutex \
- /usr/include/c++/13/bits/chrono.h /usr/include/c++/13/ratio \
- /usr/include/c++/13/cstdint /usr/include/c++/13/limits \
- /usr/include/c++/13/ctime /usr/include/c++/13/bits/parse_numbers.h \
- /usr/include/c++/13/bits/std_mutex.h \
- /usr/include/c++/13/bits/unique_lock.h /usr/include/taglib/fileref.h \
- /usr/include/taglib/tfile.h /usr/include/taglib/taglib_export.h \
- /usr/include/taglib/taglib.h /usr/include/taglib/taglib_config.h \
- /usr/include/taglib/tag.h /usr/include/taglib/tstring.h \
- /usr/include/taglib/tbytevector.h /usr/include/c++/13/iostream \
- /usr/include/taglib/tiostream.h /usr/include/taglib/tstringlist.h \
- /usr/include/taglib/tlist.h /usr/include/c++/13/list \
- /usr/include/c++/13/bits/stl_list.h /usr/include/c++/13/bits/list.tcc \
- /usr/include/taglib/tlist.tcc /usr/include/c++/13/algorithm \
- /usr/include/c++/13/bits/stl_algo.h \
+ /usr/include/c++/13/bits/basic_ios.tcc \
+ /usr/include/c++/13/bits/ostream.tcc /usr/include/c++/13/istream \
+ /usr/include/c++/13/bits/istream.tcc /usr/include/taglib/tiostream.h \
+ /usr/include/taglib/tstringlist.h /usr/include/taglib/tlist.h \
+ /usr/include/c++/13/list /usr/include/c++/13/bits/stl_list.h \
+ /usr/include/c++/13/bits/list.tcc /usr/include/taglib/tlist.tcc \
+ /usr/include/c++/13/algorithm /usr/include/c++/13/bits/stl_algo.h \
  /usr/include/c++/13/bits/algorithmfwd.h \
  /usr/include/c++/13/bits/stl_heap.h \
  /usr/include/c++/13/bits/uniform_int_dist.h \
@@ -213,4 +203,8 @@ CMakeFiles/MediaPlayerApp.dir/src/services/MetadataReader.cpp.o: \
  /usr/include/taglib/tmap.h /usr/include/taglib/tmap.tcc \
  /usr/include/taglib/id3v2framefactory.h /usr/include/taglib/id3v2frame.h \
  /usr/include/taglib/id3v2header.h /usr/include/taglib/id3v2frame.h \
- /usr/include/taglib/attachedpictureframe.h
+ /usr/include/taglib/attachedpictureframe.h /usr/include/c++/13/fstream \
+ /usr/include/c++/13/bits/codecvt.h \
+ /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
+ /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
+ /usr/include/c++/13/bits/fstream.tcc

@@ -200,9 +200,4 @@ CMakeFiles/MediaPlayerApp.dir/src/controllers/LibraryController.cpp.o: \
  /usr/include/c++/13/bits/erase_if.h \
  /home/duong/MediaPlayerApp/inc/repositories/IRepository.h \
  /home/duong/MediaPlayerApp/inc/services/IMetadataReader.h \
- /home/duong/MediaPlayerApp/inc/models/MetadataModel.h \
- /home/duong/MediaPlayerApp/inc/utils/Logger.h \
- /usr/include/c++/13/fstream \
- /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
- /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
- /usr/include/c++/13/bits/fstream.tcc
+ /home/duong/MediaPlayerApp/inc/models/MetadataModel.h

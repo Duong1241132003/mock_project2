@@ -1,7 +1,6 @@
 // Project includes
 #include "models/MediaFileModel.h"
 #include "config/AppConfig.h"
-#include "utils/Logger.h"
 
 // System includes
 #include <filesystem>
@@ -97,7 +96,6 @@ void MediaFileModel::extractFileInfo()
     }
     catch (const fs::filesystem_error& e) 
     {
-        LOG_ERROR("Error extracting file info: " + std::string(e.what()));
     }
 }
 

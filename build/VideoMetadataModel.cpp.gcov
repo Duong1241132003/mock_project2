@@ -1,0 +1,92 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/src/models/VideoMetadataModel.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/models/VideoMetadataModel.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/models/VideoMetadataModel.cpp.gcda
+        -:    0:Runs:6
+        -:    1:// Project includes
+        -:    2:#include "models/VideoMetadataModel.h"
+        -:    3:
+        -:    4:// System includes
+        -:    5:#include <sstream>
+        -:    6:#include <iomanip>
+        -:    7:
+        -:    8:namespace media_player 
+        -:    9:{
+        -:   10:namespace models 
+        -:   11:{
+        -:   12:
+    #####:   13:VideoMetadataModel::VideoMetadataModel(const std::string& filePath)
+        -:   14:{
+        -:   15:    // Constructor will be populated by VideoMetadataReader
+    #####:   16:}
+        -:   17:
+    #####:   18:std::string VideoMetadataModel::getResolutionString() const 
+        -:   19:{
+    #####:   20:    if (m_width == 0 || m_height == 0) 
+        -:   21:    {
+    #####:   22:        return "Unknown";
+        -:   23:    }
+        -:   24:    
+    #####:   25:    return std::to_string(m_width) + "x" + std::to_string(m_height);
+        -:   26:}
+        -:   27:
+    #####:   28:std::string VideoMetadataModel::getFormattedDuration() const 
+        -:   29:{
+    #####:   30:    int hours = m_durationSeconds / 3600;
+    #####:   31:    int minutes = (m_durationSeconds % 3600) / 60;
+    #####:   32:    int seconds = m_durationSeconds % 60;
+        -:   33:    
+    #####:   34:    std::ostringstream oss;
+        -:   35:    
+    #####:   36:    if (hours > 0) 
+        -:   37:    {
+    #####:   38:        oss << std::setfill('0') << std::setw(2) << hours << ":";
+        -:   39:    }
+        -:   40:    
+    #####:   41:    oss << std::setfill('0') << std::setw(2) << minutes << ":"
+    #####:   42:        << std::setfill('0') << std::setw(2) << seconds;
+        -:   43:    
+    #####:   44:    return oss.str();
+    #####:   45:}
+        -:   46:
+    #####:   47:std::string VideoMetadataModel::getFormattedBitrate() const 
+        -:   48:{
+    #####:   49:    if (m_bitrate == 0) 
+        -:   50:    {
+    #####:   51:        return "Unknown";
+        -:   52:    }
+        -:   53:    
+    #####:   54:    double kbps = m_bitrate / 1000.0;
+        -:   55:    
+    #####:   56:    if (kbps >= 1000) 
+        -:   57:    {
+    #####:   58:        double mbps = kbps / 1000.0;
+    #####:   59:        std::ostringstream oss;
+    #####:   60:        oss << std::fixed << std::setprecision(2) << mbps << " Mbps";
+    #####:   61:        return oss.str();
+    #####:   62:    }
+        -:   63:    
+    #####:   64:    std::ostringstream oss;
+    #####:   65:    oss << std::fixed << std::setprecision(0) << kbps << " kbps";
+    #####:   66:    return oss.str();
+    #####:   67:}
+        -:   68:
+    #####:   69:double VideoMetadataModel::getAspectRatio() const 
+        -:   70:{
+    #####:   71:    if (m_height == 0) 
+        -:   72:    {
+    #####:   73:        return 0.0;
+        -:   74:    }
+        -:   75:    
+    #####:   76:    return static_cast<double>(m_width) / static_cast<double>(m_height);
+        -:   77:}
+        -:   78:
+    #####:   79:bool VideoMetadataModel::isValid() const 
+        -:   80:{
+    #####:   81:    return m_width > 0 && 
+    #####:   82:           m_height > 0 && 
+    #####:   83:           m_durationSeconds > 0 && 
+    #####:   84:           !m_videoCodec.empty();
+        -:   85:}
+        -:   86:
+        -:   87:} // namespace models
+        -:   88:} // namespace media_player

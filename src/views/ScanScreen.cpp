@@ -1,6 +1,5 @@
 // Project includes
 #include "views/ScanScreen.h"
-#include "utils/Logger.h"
 
 namespace media_player 
 {
@@ -27,24 +26,21 @@ ScanScreen::ScanScreen(std::shared_ptr<controllers::SourceController> sourceCont
         }
     );
     
-    LOG_INFO("ScanScreen created");
+    
 }
 
 ScanScreen::~ScanScreen() 
 {
-    LOG_INFO("ScanScreen destroyed");
 }
 
 void ScanScreen::show() 
 {
     m_isVisible = true;
-    LOG_INFO("ScanScreen shown");
 }
 
 void ScanScreen::hide() 
 {
     m_isVisible = false;
-    LOG_INFO("ScanScreen hidden");
 }
 
 void ScanScreen::update() 
@@ -57,8 +53,6 @@ void ScanScreen::update()
     // Display scan progress
     if (m_sourceController->isScanning()) 
     {
-        LOG_DEBUG("Scanning: " + std::to_string(m_scannedCount) + " files found...");
-        LOG_DEBUG("Current: " + m_currentPath);
     }
 }
 
@@ -69,7 +63,6 @@ bool ScanScreen::isVisible() const
 
 void ScanScreen::startScan(const std::string& path) 
 {
-    LOG_INFO("Starting scan: " + path);
     
     m_scannedCount = 0;
     m_currentPath.clear();
@@ -80,7 +73,6 @@ void ScanScreen::startScan(const std::string& path)
 
 void ScanScreen::stopScan() 
 {
-    LOG_INFO("Stopping scan");
     m_sourceController->stopScan();
 }
 
@@ -92,7 +84,6 @@ void ScanScreen::onScanProgress(int count, const std::string& currentPath)
 
 void ScanScreen::onScanComplete(int totalFiles) 
 {
-    LOG_INFO("Scan complete! Found " + std::to_string(totalFiles) + " media files");
     m_scannedCount = totalFiles;
 }
 

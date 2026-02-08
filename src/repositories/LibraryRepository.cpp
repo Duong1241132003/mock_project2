@@ -1,6 +1,5 @@
 // Project includes
 #include "repositories/LibraryRepository.h"
-#include "utils/Logger.h"
 
 // System includes
 #include <fstream>
@@ -20,14 +19,11 @@ LibraryRepository::LibraryRepository(const std::string& storagePath)
 {
     ensureStorageDirectoryExists();
     loadFromDisk();
-    
-    LOG_INFO("LibraryRepository initialized with storage path: " + storagePath);
 }
 
 LibraryRepository::~LibraryRepository() 
 {
     saveToDisk();
-    LOG_INFO("LibraryRepository destroyed");
 }
 
 bool LibraryRepository::save(const models::MediaFileModel& media) 
@@ -37,7 +33,6 @@ bool LibraryRepository::save(const models::MediaFileModel& media)
     std::string id = generateId(media.getFilePath());
     m_cache[id] = media;
     
-    LOG_DEBUG("Media saved to library: " + media.getFileName());
     return true;
 }
 
@@ -78,12 +73,10 @@ bool LibraryRepository::update(const models::MediaFileModel& media)
     
     if (m_cache.find(id) == m_cache.end()) 
     {
-        LOG_WARNING("Cannot update non-existent media: " + media.getFilePath());
         return false;
     }
     
     m_cache[id] = media;
-    LOG_DEBUG("Media updated in library: " + media.getFileName());
     
     return true;
 }
@@ -99,10 +92,8 @@ bool LibraryRepository::remove(const std::string& id)
         return false;
     }
     
-    std::string fileName = it->second.getFileName();
     m_cache.erase(it);
     
-    LOG_DEBUG("Media removed from library: " + fileName);
     return true;
 }
 
@@ -122,7 +113,6 @@ bool LibraryRepository::saveAll(const std::vector<models::MediaFileModel>& media
         m_cache[id] = media;
     }
     
-    LOG_INFO("Saved " + std::to_string(mediaList.size()) + " media files to library");
     return true;
 }
 
@@ -131,7 +121,6 @@ void LibraryRepository::clear()
     std::lock_guard<std::mutex> lock(m_mutex);
     
     m_cache.clear();
-    LOG_INFO("Library cleared");
 }
 
 size_t LibraryRepository::count() const 
@@ -246,7 +235,6 @@ bool LibraryRepository::serializeLibrary()
         
         if (!file.is_open()) 
         {
-            LOG_ERROR("Failed to open library file for writing: " + filePath);
             return false;
         }
         
@@ -265,13 +253,12 @@ bool LibraryRepository::serializeLibrary()
         }
         
         file.close();
-        LOG_INFO("Library serialized successfully");
         
         return true;
     }
     catch (const std::exception& e) 
     {
-        LOG_ERROR("Exception serializing library: " + std::string(e.what()));
+        (void)e;
         return false;
     }
 }
@@ -284,7 +271,6 @@ bool LibraryRepository::deserializeLibrary()
         
         if (!fs::exists(filePath)) 
         {
-            LOG_INFO("Library file does not exist, starting with empty library");
             return true;
         }
         
@@ -292,7 +278,6 @@ bool LibraryRepository::deserializeLibrary()
         
         if (!file.is_open()) 
         {
-            LOG_ERROR("Failed to open library file for reading: " + filePath);
             return false;
         }
         
@@ -334,13 +319,12 @@ bool LibraryRepository::deserializeLibrary()
         }
         
         file.close();
-        LOG_INFO("Loaded " + std::to_string(loadedCount) + " media files from library");
         
         return true;
     }
     catch (const std::exception& e) 
     {
-        LOG_ERROR("Exception deserializing library: " + std::string(e.what()));
+        (void)e;
         return false;
     }
 }
@@ -352,12 +336,11 @@ void LibraryRepository::ensureStorageDirectoryExists()
         if (!fs::exists(m_storagePath)) 
         {
             fs::create_directories(m_storagePath);
-            LOG_INFO("Created storage directory: " + m_storagePath);
         }
     }
     catch (const fs::filesystem_error& e) 
     {
-        LOG_ERROR("Failed to create storage directory: " + std::string(e.what()));
+        (void)e;
     }
 }
 

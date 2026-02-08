@@ -398,11 +398,10 @@ CMakeFiles/MediaPlayerApp.dir/src/core/Application.cpp.o: \
  /home/duong/MediaPlayerApp/inc/controllers/PlaybackController.h \
  /home/duong/MediaPlayerApp/inc/ui/ImGuiManager.h \
  /usr/include/SDL2/SDL_ttf.h /usr/include/SDL2/SDL.h \
- /home/duong/MediaPlayerApp/inc/utils/Logger.h \
+ /home/duong/MediaPlayerApp/inc/config/AppConfig.h \
+ /home/duong/MediaPlayerApp/inc/services/MetadataReader.h \
+ /home/duong/MediaPlayerApp/inc/services/IMetadataReader.h \
  /usr/include/c++/13/fstream \
  /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
- /usr/include/c++/13/bits/fstream.tcc \
- /home/duong/MediaPlayerApp/inc/config/AppConfig.h \
- /home/duong/MediaPlayerApp/inc/services/MetadataReader.h \
- /home/duong/MediaPlayerApp/inc/services/IMetadataReader.h
+ /usr/include/c++/13/bits/fstream.tcc

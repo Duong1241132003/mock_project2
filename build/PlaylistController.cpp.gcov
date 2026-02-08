@@ -1,0 +1,200 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/src/controllers/PlaylistController.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/controllers/PlaylistController.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/controllers/PlaylistController.cpp.gcda
+        -:    0:Runs:6
+        -:    1:// Project includes
+        -:    2:#include "controllers/PlaylistController.h"
+        -:    3:#include "utils/Logger.h"
+        -:    4:
+        -:    5:namespace media_player 
+        -:    6:{
+        -:    7:namespace controllers 
+        -:    8:{
+        -:    9:
+    #####:   10:PlaylistController::PlaylistController(std::shared_ptr<repositories::PlaylistRepository> playlistRepo)
+    #####:   11:    : m_playlistRepo(playlistRepo)
+        -:   12:{
+    #####:   13:    LOG_INFO("PlaylistController initialized");
+    #####:   14:}
+        -:   15:
+    #####:   16:PlaylistController::~PlaylistController() 
+        -:   17:{
+    #####:   18:    LOG_INFO("PlaylistController destroyed");
+    #####:   19:}
+        -:   20:
+    #####:   21:bool PlaylistController::createPlaylist(const std::string& name) 
+        -:   22:{
+    #####:   23:    if (name.empty()) 
+        -:   24:    {
+    #####:   25:        LOG_ERROR("Playlist name cannot be empty");
+    #####:   26:        return false;
+        -:   27:    }
+        -:   28:    
+        -:   29:    // Check if playlist with same name exists
+    #####:   30:    if (m_playlistRepo->findByName(name)) 
+        -:   31:    {
+    #####:   32:        LOG_ERROR("Playlist with name '" + name + "' already exists");
+    #####:   33:        return false;
+        -:   34:    }
+        -:   35:    
+    #####:   36:    models::PlaylistModel playlist(name);
+        -:   37:    
+    #####:   38:    if (m_playlistRepo->save(playlist)) 
+        -:   39:    {
+    #####:   40:        LOG_INFO("Playlist created: " + name);
+    #####:   41:        return true;
+        -:   42:    }
+        -:   43:    
+    #####:   44:    LOG_ERROR("Failed to create playlist: " + name);
+    #####:   45:    return false;
+    #####:   46:}
+        -:   47:
+    #####:   48:bool PlaylistController::deletePlaylist(const std::string& playlistId) 
+        -:   49:{
+    #####:   50:    if (m_playlistRepo->remove(playlistId)) 
+        -:   51:    {
+    #####:   52:        LOG_INFO("Playlist deleted: " + playlistId);
+    #####:   53:        return true;
+        -:   54:    }
+        -:   55:    
+    #####:   56:    LOG_ERROR("Failed to delete playlist: " + playlistId);
+    #####:   57:    return false;
+        -:   58:}
+        -:   59:
+    #####:   60:bool PlaylistController::renamePlaylist(const std::string& playlistId, const std::string& newName) 
+        -:   61:{
+    #####:   62:    auto playlistOpt = m_playlistRepo->findById(playlistId);
+        -:   63:    
+    #####:   64:    if (!playlistOpt) 
+        -:   65:    {
+    #####:   66:        LOG_ERROR("Playlist not found: " + playlistId);
+    #####:   67:        return false;
+        -:   68:    }
+        -:   69:    
+    #####:   70:    models::PlaylistModel playlist = *playlistOpt;
+    #####:   71:    playlist.setName(newName);
+        -:   72:    
+    #####:   73:    if (m_playlistRepo->update(playlist)) 
+        -:   74:    {
+    #####:   75:        LOG_INFO("Playlist renamed to: " + newName);
+    #####:   76:        return true;
+        -:   77:    }
+        -:   78:    
+    #####:   79:    LOG_ERROR("Failed to rename playlist");
+    #####:   80:    return false;
+    #####:   81:}
+        -:   82:
+    #####:   83:std::vector<models::PlaylistModel> PlaylistController::getAllPlaylists() const 
+        -:   84:{
+    #####:   85:    return m_playlistRepo->findAll();
+        -:   86:}
+        -:   87:
+    #####:   88:std::optional<models::PlaylistModel> PlaylistController::getPlaylistById(const std::string& playlistId) const 
+        -:   89:{
+    #####:   90:    return m_playlistRepo->findById(playlistId);
+        -:   91:}
+        -:   92:
+    #####:   93:std::optional<models::PlaylistModel> PlaylistController::getPlaylistByName(const std::string& name) const 
+        -:   94:{
+    #####:   95:    return m_playlistRepo->findByName(name);
+        -:   96:}
+        -:   97:
+    #####:   98:std::vector<models::MediaFileModel> PlaylistController::getPlaylistItems(const std::string& playlistId) const 
+        -:   99:{
+    #####:  100:    auto playlistOpt = m_playlistRepo->findById(playlistId);
+        -:  101:    
+    #####:  102:    if (!playlistOpt) 
+        -:  103:    {
+    #####:  104:        LOG_ERROR("Playlist not found: " + playlistId);
+    #####:  105:        return {};
+        -:  106:    }
+        -:  107:    
+    #####:  108:    return playlistOpt->getItems();
+    #####:  109:}
+        -:  110:
+    #####:  111:bool PlaylistController::addMediaToPlaylist(const std::string& playlistId, const models::MediaFileModel& media) 
+        -:  112:{
+    #####:  113:    auto playlistOpt = m_playlistRepo->findById(playlistId);
+        -:  114:    
+    #####:  115:    if (!playlistOpt) 
+        -:  116:    {
+    #####:  117:        LOG_ERROR("Playlist not found: " + playlistId);
+    #####:  118:        return false;
+        -:  119:    }
+        -:  120:    
+    #####:  121:    models::PlaylistModel playlist = *playlistOpt;
+    #####:  122:    playlist.addItem(media);
+        -:  123:    
+    #####:  124:    if (m_playlistRepo->update(playlist)) 
+        -:  125:    {
+    #####:  126:        LOG_INFO("Media added to playlist: " + media.getFileName());
+    #####:  127:        return true;
+        -:  128:    }
+        -:  129:    
+    #####:  130:    LOG_ERROR("Failed to add media to playlist");
+    #####:  131:    return false;
+    #####:  132:}
+        -:  133:
+    #####:  134:bool PlaylistController::removeMediaFromPlaylist(const std::string& playlistId, size_t index) 
+        -:  135:{
+    #####:  136:    auto playlistOpt = m_playlistRepo->findById(playlistId);
+        -:  137:    
+    #####:  138:    if (!playlistOpt) 
+        -:  139:    {
+    #####:  140:        LOG_ERROR("Playlist not found: " + playlistId);
+    #####:  141:        return false;
+        -:  142:    }
+        -:  143:    
+    #####:  144:    models::PlaylistModel playlist = *playlistOpt;
+        -:  145:    
+    #####:  146:    if (!playlist.removeItem(index)) 
+        -:  147:    {
+    #####:  148:        LOG_ERROR("Failed to remove item from playlist");
+    #####:  149:        return false;
+        -:  150:    }
+        -:  151:    
+    #####:  152:    if (m_playlistRepo->update(playlist)) 
+        -:  153:    {
+    #####:  154:        LOG_INFO("Media removed from playlist");
+    #####:  155:        return true;
+        -:  156:    }
+        -:  157:    
+    #####:  158:    LOG_ERROR("Failed to update playlist");
+    #####:  159:    return false;
+    #####:  160:}
+        -:  161:
+    #####:  162:bool PlaylistController::moveItemInPlaylist(const std::string& playlistId, size_t fromIndex, size_t toIndex) 
+        -:  163:{
+    #####:  164:    auto playlistOpt = m_playlistRepo->findById(playlistId);
+        -:  165:    
+    #####:  166:    if (!playlistOpt) 
+        -:  167:    {
+    #####:  168:        LOG_ERROR("Playlist not found: " + playlistId);
+    #####:  169:        return false;
+        -:  170:    }
+        -:  171:    
+    #####:  172:    models::PlaylistModel playlist = *playlistOpt;
+        -:  173:    
+    #####:  174:    if (!playlist.moveItem(fromIndex, toIndex)) 
+        -:  175:    {
+    #####:  176:        LOG_ERROR("Failed to move item in playlist");
+    #####:  177:        return false;
+        -:  178:    }
+        -:  179:    
+    #####:  180:    if (m_playlistRepo->update(playlist)) 
+        -:  181:    {
+    #####:  182:        LOG_INFO("Item moved in playlist");
+    #####:  183:        return true;
+        -:  184:    }
+        -:  185:    
+    #####:  186:    LOG_ERROR("Failed to update playlist");
+    #####:  187:    return false;
+    #####:  188:}
+        -:  189:
+    #####:  190:size_t PlaylistController::getPlaylistCount() const 
+        -:  191:{
+    #####:  192:    return m_playlistRepo->count();
+        -:  193:}
+        -:  194:
+        -:  195:} // namespace controllers
+        -:  196:} // namespace media_player

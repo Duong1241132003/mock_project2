@@ -1,6 +1,5 @@
 // Project includes
 #include "views/NowPlayingBar.h"
-#include "utils/Logger.h"
 
 namespace media_player 
 {
@@ -15,25 +14,21 @@ NowPlayingBar::NowPlayingBar(
     , m_playbackController(playbackController)
     , m_isVisible(false)
 {
-    LOG_INFO("NowPlayingBar created");
 }
 
 NowPlayingBar::~NowPlayingBar() 
 {
-    LOG_INFO("NowPlayingBar destroyed");
 }
 
 void NowPlayingBar::show() 
 {
     m_isVisible = true;
     update();
-    LOG_INFO("NowPlayingBar shown");
 }
 
 void NowPlayingBar::hide() 
 {
     m_isVisible = false;
-    LOG_INFO("NowPlayingBar hidden");
 }
 
 void NowPlayingBar::update() 
@@ -92,7 +87,6 @@ void NowPlayingBar::updateDisplayInfo()
     std::string totalTime = m_playbackStateModel->getFormattedDuration();
     
     // TODO: Update UI labels
-    LOG_DEBUG("Time: " + currentTime + " / " + totalTime);
 }
 
 void NowPlayingBar::updateProgressBar() 
@@ -100,7 +94,6 @@ void NowPlayingBar::updateProgressBar()
     float progress = m_playbackStateModel->getProgressPercentage();
     
     // TODO: Update UI progress bar
-    LOG_DEBUG("Progress: " + std::to_string(progress) + "%");
 }
 
 void NowPlayingBar::updatePlayPauseButton() 
@@ -108,7 +101,6 @@ void NowPlayingBar::updatePlayPauseButton()
     bool isPlaying = m_playbackStateModel->isPlaying();
     
     // TODO: Update UI button icon (Play/Pause)
-    LOG_DEBUG("Play/Pause button: " + std::string(isPlaying ? "Pause" : "Play"));
 }
 
 } // namespace views

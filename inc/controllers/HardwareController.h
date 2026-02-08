@@ -48,7 +48,7 @@ class HardwareController
 {
 public:
     HardwareController(
-        std::shared_ptr<services::SerialCommunication> serialComm,
+        std::shared_ptr<services::ISerialCommunication> serialComm,
         std::shared_ptr<models::PlaybackStateModel> playbackStateModel
     );
     
@@ -91,7 +91,7 @@ private:
      */
     std::vector<std::string> scanAvailablePorts();
     
-    std::shared_ptr<services::SerialCommunication> m_serialComm;
+    std::shared_ptr<services::ISerialCommunication> m_serialComm;
     std::shared_ptr<models::PlaybackStateModel> m_playbackStateModel;
 
     // Trạng thái reconnect để thử kết nối lại theo chu kỳ
@@ -107,6 +107,8 @@ private:
     
     // Async scanning
     std::atomic<bool> m_isScanning{false};
+    std::atomic<bool> m_stopScan{false};
+    std::thread m_scanThread;
     std::mutex m_connectionMutex; // Bảo vệ quá trình kết nối/ngắt kết nối
 };
 

@@ -1,0 +1,118 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/src/utils/AVSyncClock.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/utils/AVSyncClock.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/utils/AVSyncClock.cpp.gcda
+        -:    0:Runs:6
+        -:    1:// Project includes
+        -:    2:#include "utils/AVSyncClock.h"
+        -:    3:
+        -:    4:namespace media_player 
+        -:    5:{
+        -:    6:namespace utils 
+        -:    7:{
+        -:    8:
+    #####:    9:AVSyncClock::AVSyncClock()
+    #####:   10:    : m_isRunning(false)
+    #####:   11:    , m_isPaused(false)
+    #####:   12:    , m_pausedDuration(0.0)
+    #####:   13:    , m_masterTimeOffset(0.0)
+        -:   14:{
+    #####:   15:}
+        -:   16:
+    #####:   17:void AVSyncClock::start() 
+        -:   18:{
+    #####:   19:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:   20:    
+    #####:   21:    m_startTime = std::chrono::high_resolution_clock::now();
+    #####:   22:    m_isRunning = true;
+    #####:   23:    m_isPaused = false;
+    #####:   24:    m_pausedDuration = 0.0;
+    #####:   25:}
+        -:   26:
+    #####:   27:void AVSyncClock::pause() 
+        -:   28:{
+    #####:   29:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:   30:    
+    #####:   31:    if (!m_isRunning || m_isPaused) 
+        -:   32:    {
+    #####:   33:        return;
+        -:   34:    }
+        -:   35:    
+    #####:   36:    m_pauseTime = std::chrono::high_resolution_clock::now();
+    #####:   37:    m_isPaused = true;
+    #####:   38:}
+        -:   39:
+    #####:   40:void AVSyncClock::resume() 
+        -:   41:{
+    #####:   42:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:   43:    
+    #####:   44:    if (!m_isRunning || !m_isPaused) 
+        -:   45:    {
+    #####:   46:        return;
+        -:   47:    }
+        -:   48:    
+    #####:   49:    auto now = std::chrono::high_resolution_clock::now();
+    #####:   50:    auto pauseDuration = std::chrono::duration_cast<std::chrono::microseconds>(
+    #####:   51:        now - m_pauseTime
+    #####:   52:    ).count() / 1000000.0;
+        -:   53:    
+    #####:   54:    m_pausedDuration += pauseDuration;
+    #####:   55:    m_isPaused = false;
+    #####:   56:}
+        -:   57:
+    #####:   58:void AVSyncClock::reset() 
+        -:   59:{
+    #####:   60:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:   61:    
+    #####:   62:    m_isRunning = false;
+    #####:   63:    m_isPaused = false;
+    #####:   64:    m_pausedDuration = 0.0;
+    #####:   65:    m_masterTimeOffset = 0.0;
+    #####:   66:}
+        -:   67:
+    #####:   68:double AVSyncClock::getCurrentTime() const 
+        -:   69:{
+    #####:   70:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:   71:    
+    #####:   72:    if (!m_isRunning) 
+        -:   73:    {
+    #####:   74:        return 0.0;
+        -:   75:    }
+        -:   76:    
+    #####:   77:    if (m_isPaused) 
+        -:   78:    {
+    #####:   79:        auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(
+    #####:   80:            m_pauseTime - m_startTime
+    #####:   81:        ).count() / 1000000.0;
+        -:   82:        
+    #####:   83:        return elapsed - m_pausedDuration + m_masterTimeOffset;
+        -:   84:    }
+        -:   85:    
+    #####:   86:    auto now = std::chrono::high_resolution_clock::now();
+    #####:   87:    auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(
+    #####:   88:        now - m_startTime
+    #####:   89:    ).count() / 1000000.0;
+        -:   90:    
+    #####:   91:    return elapsed - m_pausedDuration + m_masterTimeOffset;
+    #####:   92:}
+        -:   93:
+    #####:   94:double AVSyncClock::getElapsedTime() const 
+        -:   95:{
+    #####:   96:    return getCurrentTime();
+        -:   97:}
+        -:   98:
+    #####:   99:void AVSyncClock::setMasterTime(double timeSeconds) 
+        -:  100:{
+    #####:  101:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:  102:    
+    #####:  103:    double currentTime = getCurrentTime();
+    #####:  104:    m_masterTimeOffset = timeSeconds - currentTime;
+    #####:  105:}
+        -:  106:
+    #####:  107:double AVSyncClock::getTimeDrift() const 
+        -:  108:{
+    #####:  109:    std::lock_guard<std::mutex> lock(m_mutex);
+    #####:  110:    return m_masterTimeOffset;
+    #####:  111:}
+        -:  112:
+        -:  113:} // namespace utils
+        -:  114:} // namespace media_player

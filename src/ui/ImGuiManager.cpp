@@ -1,6 +1,5 @@
 // Project includes
 #include "ui/ImGuiManager.h"
-#include "utils/Logger.h"
 #include "models/MediaFileModel.h"
 #include "controllers/PlaybackController.h"
 #include "controllers/QueueController.h"
@@ -79,7 +78,6 @@ bool ImGuiManager::initialize(const std::string& title, int width, int height) {
     
     // Initialize SDL_ttf
     if (TTF_Init() < 0) {
-        LOG_ERROR("Failed to initialize SDL_ttf: " + std::string(TTF_GetError()));
         return false;
     }
     
@@ -94,7 +92,6 @@ bool ImGuiManager::initialize(const std::string& title, int width, int height) {
     );
     
     if (!m_window) {
-        LOG_ERROR("Failed to create window: " + std::string(SDL_GetError()));
         return false;
     }
     
@@ -106,7 +103,6 @@ bool ImGuiManager::initialize(const std::string& title, int width, int height) {
     );
     
     if (!m_renderer) {
-        LOG_ERROR("Failed to create renderer: " + std::string(SDL_GetError()));
         return false;
     }
     
@@ -127,16 +123,12 @@ bool ImGuiManager::initialize(const std::string& title, int width, int height) {
         if (m_font) {
             m_fontLarge = TTF_OpenFont(path, 20);
             m_fontSmall = TTF_OpenFont(path, 11);
-            LOG_INFO("Loaded font: " + std::string(path));
             break;
         }
     }
     
     if (!m_font) {
-        LOG_WARNING("No system font found, text rendering will be limited");
     }
-    
-    LOG_INFO("ImGuiManager initialized: " + std::to_string(width) + "x" + std::to_string(height));
     
     // Disable text input by default, enable only on focus
     SDL_StopTextInput();

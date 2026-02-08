@@ -1,6 +1,5 @@
 // Project includes
 #include "core/Application.h"
-#include "utils/Logger.h"
 #include "config/AppConfig.h"
 #include "ui/ImGuiManager.h"
 
@@ -65,7 +64,6 @@ Application::Application()
     : m_running(false)
     , m_sdlInitialized(false)
 {
-    LOG_INFO("Application instance created");
 }
 
 Application::~Application() 
@@ -77,7 +75,6 @@ Application::~Application()
         SDL_Quit();
     }
     
-    LOG_INFO("Application instance destroyed");
 }
 
 Application& Application::getInstance() 
@@ -88,11 +85,8 @@ Application& Application::getInstance()
 
 bool Application::initialize() 
 {
-    LOG_INFO("Initializing application...");
-    
     if (!initializeSDL()) 
     {
-        LOG_ERROR("Failed to initialize SDL");
         return false;
     }
     
@@ -100,19 +94,16 @@ bool Application::initialize()
     g_uiManager = std::make_unique<ui::ImGuiManager>();
     if (!g_uiManager->initialize("Media Player", 1280, 800)) 
     {
-        LOG_ERROR("Failed to initialize UI Manager");
         return false;
     }
     
     if (!createAllComponents()) 
     {
-        LOG_ERROR("Failed to create components");
         return false;
     }
     
     if (!wireUpDependencies()) 
     {
-        LOG_ERROR("Failed to wire up dependencies");
         return false;
     }
     
@@ -124,7 +115,6 @@ bool Application::initialize()
         m_sourceController->startMonitoring();
     }
     
-    LOG_INFO("Application initialized successfully");
     return true;
 }
 
@@ -132,12 +122,10 @@ bool Application::initializeSDL()
 {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) < 0) 
     {
-        LOG_ERROR("SDL_Init failed: " + std::string(SDL_GetError()));
         return false;
     }
     
     m_sdlInitialized = true;
-    LOG_INFO("SDL initialized");
     
     return true;
 }
@@ -157,7 +145,6 @@ void Application::setupUICallbacks()
         {
             auto mediaList = m_libraryModel->getAllMedia();
             const auto& media = mediaList[index];
-            LOG_INFO("Playing: " + media.getFileName());
             
             if (m_playbackController && m_playbackController->playMediaWithoutQueue(media))
             {
@@ -215,7 +202,6 @@ void Application::setupUICallbacks()
     
     // Cancel scan callback
     g_uiManager->setOnCancelScan([this]() {
-        LOG_INFO("User cancelled scan");
         g_scanCancelled = true;
         if (m_fileScanner && m_fileScanner->isScanning())
         {
@@ -259,7 +245,6 @@ void Application::setupUICallbacks()
             if (m_playbackController)
             {
                 m_playbackController->setVolume(volume);
-                LOG_INFO("Hardware volume set to: " + std::to_string(volume));
                 
                 // Cập nhật UI state
                 if (g_uiManager)
@@ -281,24 +266,20 @@ void Application::setupUICallbacks()
                 case controllers::HardwareButton::TOGGLE_PLAY_PAUSE:
                     // BTN 1: Toggle Play/Pause
                     m_playbackController->togglePlayPause();
-                    LOG_INFO("Hardware: Toggle Play/Pause");
                     break;
                     
                 case controllers::HardwareButton::NEXT:
                     // BTN 2: Next track
                     m_playbackController->playNext();
-                    LOG_INFO("Hardware: Next track");
                     break;
                     
                 case controllers::HardwareButton::PREVIOUS:
                     // BTN 3: Previous track
                     m_playbackController->playPrevious();
-                    LOG_INFO("Hardware: Previous track");
                     break;
                     
                 case controllers::HardwareButton::QUIT:
                     // BTN 4: Quit Application
-                    LOG_INFO("Hardware: Quit Application");
                     quit();
                     break;
             }
@@ -308,8 +289,6 @@ void Application::setupUICallbacks()
 
 bool Application::createAllComponents() 
 {
-    LOG_INFO("Creating application components...");
-    
     // Create models
     auto queueModel = std::make_shared<models::QueueModel>();
     auto playbackStateModel = std::make_shared<models::PlaybackStateModel>();
@@ -397,22 +376,17 @@ bool Application::createAllComponents()
         queueModel
     );
     
-    LOG_INFO("All components created successfully");
     return true;
 }
 
 bool Application::wireUpDependencies() 
 {
-    LOG_INFO("Wiring up dependencies...");
-    
     // Initialize main controller
     if (!m_mainController->initialize()) 
     {
-        LOG_ERROR("Failed to initialize main controller");
         return false;
     }
     
-    LOG_INFO("Dependencies wired successfully");
     return true;
 }
 
@@ -426,7 +400,6 @@ void Application::startScan(const std::string& path)
     g_scanCancelled = false;
     
     std::thread scanThread([this, path]() {
-        LOG_INFO("Starting media scan: " + path);
         if (m_fileScanner)
         {
             m_fileScanner->setProgressCallback([](int current, int total, const std::string& p) {
@@ -449,13 +422,8 @@ void Application::startScan(const std::string& path)
                     m_libraryModel->addMediaBatch(g_scannedMedia);
                 }
             }
-            else
-            {
-                LOG_INFO("Scan cancelled, keeping existing library");
-            }
         }
         g_scanComplete = true;
-        LOG_INFO("Media scan complete. Found " + std::to_string(g_scannedMedia.size()) + " files");
     });
     scanThread.detach();
 }
@@ -485,8 +453,6 @@ void Application::resetAndRescan(const std::string& path)
 
 int Application::run() 
 {
-    LOG_INFO("Starting main application loop...");
-    
     m_running = true;
     
     // Auto-start scan on launch to skip the "Select Source" screen
@@ -521,13 +487,11 @@ int Application::run()
         SDL_Delay(16);
     }
     
-    LOG_INFO("Main application loop ended");
     return 0;
 }
 
 void Application::quit() 
 {
-    LOG_INFO("Application quit requested");
     m_running = false;
 }
 
@@ -741,7 +705,6 @@ void Application::handleKeyboardEvent(const SDL_KeyboardEvent& event)
             {
                 auto mediaList = m_libraryModel->getAllMedia();
                 const auto& media = mediaList[state.selectedMediaIndex];
-                LOG_INFO("Playing: " + media.getFileName());
                 
                 if (m_playbackController && m_playbackController->playMediaWithoutQueue(media))
                 {

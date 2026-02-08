@@ -1,6 +1,5 @@
 // Project includes
 #include "controllers/SourceController.h"
-#include "utils/Logger.h"
 
 // System includes
 #include <algorithm>
@@ -12,7 +11,7 @@ namespace controllers
 {
 
 SourceController::SourceController(
-    std::shared_ptr<services::FileScanner> fileScanner,
+    std::shared_ptr<services::IFileScanner> fileScanner,
     std::shared_ptr<repositories::LibraryRepository> libraryRepo,
     std::shared_ptr<models::LibraryModel> libraryModel
 )
@@ -39,7 +38,7 @@ SourceController::SourceController(
     m_monitorRunning = false; // logic moved
     // m_usbMonitorThread = std::thread(&SourceController::monitorUsbLoop, this);
     
-    LOG_INFO("SourceController initialized");
+    
 }
 
 void SourceController::startMonitoring()
@@ -48,7 +47,6 @@ void SourceController::startMonitoring()
     
     m_monitorRunning = true;
     m_usbMonitorThread = std::thread(&SourceController::monitorUsbLoop, this);
-    LOG_INFO("USB Monitoring started");
 }
 
 SourceController::~SourceController() 
@@ -59,24 +57,20 @@ SourceController::~SourceController()
         m_usbMonitorThread.join();
     }
     stopScan();
-    LOG_INFO("SourceController destroyed");
 }
 
 void SourceController::selectDirectory(const std::string& path) 
 {
     m_currentSourcePath = path;
-    LOG_INFO("Source directory selected: " + path);
 }
 
 void SourceController::scanCurrentDirectory() 
 {
     if (m_currentSourcePath.empty()) 
     {
-        LOG_ERROR("No source directory selected");
         return;
     }
     
-    LOG_INFO("Starting scan of: " + m_currentSourcePath);
     m_fileScanner->scanDirectory(m_currentSourcePath);
 }
 
@@ -87,12 +81,10 @@ void SourceController::stopScan()
 
 void SourceController::handleUSBInserted(const std::string& mountPoint) 
 {
-    LOG_INFO("USB inserted at: " + mountPoint);
     
     // Check if this is a storage device (not S32K144)
     if (isStorageDevice(mountPoint)) 
     {
-        LOG_INFO("Storage device detected, showing popup: " + mountPoint);
         // Notify UI for storage devices
         if (m_usbInsertedCallback) 
         {
@@ -107,7 +99,6 @@ void SourceController::handleUSBInserted(const std::string& mountPoint)
     }
     else 
     {
-        LOG_INFO("S32K144 device detected, not showing popup: " + mountPoint);
         // For S32K144, we might want to handle differently in the future
         // For now, just log and don't show popup
     }
@@ -169,7 +160,6 @@ bool SourceController::isStorageDevice(const std::string& mountPoint)
         }
         catch (const std::filesystem::filesystem_error& e) 
         {
-            LOG_WARNING("Error checking USB device: " + std::string(e.what()));
         }
     }
     
@@ -187,7 +177,6 @@ bool SourceController::isS32K144Device(const std::string& mountPoint)
 
 void SourceController::handleUSBRemoved() 
 {
-    LOG_INFO("USB removed");
     
     stopScan();
     m_currentSourcePath.clear();
@@ -228,7 +217,6 @@ void SourceController::onScanProgress(int count, const std::string& path)
 
 void SourceController::onScanComplete(std::vector<models::MediaFileModel> results) 
 {
-    LOG_INFO("Scan complete. Found " + std::to_string(results.size()) + " files");
     
     // Clear old library
     m_libraryModel->clear();
@@ -247,16 +235,25 @@ void SourceController::onScanComplete(std::vector<models::MediaFileModel> result
     // Add system includes for filesystem if needed
     // #include <filesystem>  <-- Ensure this is available in the file or project
 
+void SourceController::setMediaRoot(const std::string& path)
+{
+    m_mediaRoot = path;
+}
+
 void SourceController::monitorUsbLoop() 
 {
     // Simple polling for new directories in /media/duong/ or /media/
     // Adjust based on typical linux mount points. 
     // Usually USBs mount at /media/USER/LABEL
     
-    std::string mediaRoot = "/media/duong"; // Adjust user name dynamically if needed, or check /media
+    std::string mediaRoot = m_mediaRoot;
     if (!std::filesystem::exists(mediaRoot)) 
     {
-         mediaRoot = "/media";
+         // Fallback if configured root doesn't exist
+         if (std::filesystem::exists("/media"))
+         {
+             mediaRoot = "/media";
+         }
     }
     
     std::vector<std::string> knownMounts;
@@ -349,6 +346,9 @@ void SourceController::monitorUsbLoop()
                 ++it;
             }
         }
+
+        
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 }
 

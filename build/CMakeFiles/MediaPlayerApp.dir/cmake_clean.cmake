@@ -55,8 +55,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/MediaPlayerApp.dir/src/ui/UIManager.cpp.o.d"
   "CMakeFiles/MediaPlayerApp.dir/src/utils/AVSyncClock.cpp.o"
   "CMakeFiles/MediaPlayerApp.dir/src/utils/AVSyncClock.cpp.o.d"
-  "CMakeFiles/MediaPlayerApp.dir/src/utils/Logger.cpp.o"
-  "CMakeFiles/MediaPlayerApp.dir/src/utils/Logger.cpp.o.d"
   "CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.o"
   "CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.o.d"
   "CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.o"

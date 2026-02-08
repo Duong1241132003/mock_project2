@@ -206,9 +206,4 @@ CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.o: \
  /home/duong/MediaPlayerApp/inc/controllers/QueueController.h \
  /home/duong/MediaPlayerApp/inc/models/QueueModel.h \
  /home/duong/MediaPlayerApp/inc/models/PlaylistModel.h \
- /home/duong/MediaPlayerApp/inc/utils/Logger.h \
- /usr/include/c++/13/fstream \
- /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
- /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
- /usr/include/c++/13/bits/fstream.tcc \
  /home/duong/MediaPlayerApp/inc/config/AppConfig.h

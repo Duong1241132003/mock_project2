@@ -1,0 +1,568 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/src/services/AudioPlaybackEngine.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/services/AudioPlaybackEngine.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/services/AudioPlaybackEngine.cpp.gcda
+        -:    0:Runs:6
+        -:    1:// Project includes
+        -:    2:#include "services/AudioPlaybackEngine.h"
+        -:    3:#include "utils/Logger.h"
+        -:    4:#include "config/AppConfig.h"
+        -:    5:
+        -:    6:// System includes
+        -:    7:#include <chrono>
+        -:    8:
+        -:    9:namespace media_player 
+        -:   10:{
+        -:   11:namespace services 
+        -:   12:{
+        -:   13:
+        -:   14:AudioPlaybackEngine* AudioPlaybackEngine::s_instance = nullptr;
+        -:   15:
+    #####:   16:void AudioPlaybackEngine::musicFinishedCallback()
+        -:   17:{
+    #####:   18:    if (s_instance)
+        -:   19:    {
+    #####:   20:        s_instance->onMusicFinished();
+        -:   21:    }
+    #####:   22:}
+        -:   23:
+       18:   24:AudioPlaybackEngine::AudioPlaybackEngine()
+       18:   25:    : m_music(nullptr)
+       18:   26:    , m_sdlInitialized(false)
+       18:   27:    , m_shouldStop(false)
+       18:   28:    , m_musicFinished(false)
+       18:   29:    , m_state(PlaybackState::STOPPED)
+       18:   30:    , m_volume(config::AppConfig::DEFAULT_VOLUME)
+       18:   31:    , m_currentPositionSeconds(0)
+       54:   32:    , m_totalDurationSeconds(0)
+        -:   33:{
+       18:   34:    s_instance = this;
+        -:   35:    
+       18:   36:    if (!initializeSDL()) 
+        -:   37:    {
+    #####:   38:        LOG_ERROR("Failed to initialize SDL/Mixer for audio playback");
+    #####:   39:        return;
+        -:   40:    }
+        -:   41:    
+       18:   42:    m_shouldStop = false;
+       18:   43:    m_updateThread = std::make_unique<std::thread>(&AudioPlaybackEngine::updateThread, this);
+        -:   44:    
+       54:   45:    LOG_INFO("AudioPlaybackEngine initialized successfully");
+    =====:   46:}
+        -:   47:
+       36:   48:AudioPlaybackEngine::~AudioPlaybackEngine() 
+        -:   49:{
+       18:   50:    stop();
+        -:   51:    
+       18:   52:    m_shouldStop = true;
+        -:   53:    
+      18*:   54:    if (m_updateThread && m_updateThread->joinable()) 
+        -:   55:    {
+       18:   56:        m_updateThread->join();
+        -:   57:    }
+        -:   58:    
+       18:   59:    unloadAudioFile();
+       18:   60:    cleanupSDL();
+        -:   61:    
+       18:   62:    s_instance = nullptr;
+        -:   63:    
+       36:   64:    LOG_INFO("AudioPlaybackEngine destroyed");
+       36:   65:}
+------------------
+_ZN12media_player8services19AudioPlaybackEngineD0Ev:
+       18:   48:AudioPlaybackEngine::~AudioPlaybackEngine() 
+        -:   49:{
+        -:   50:    stop();
+        -:   51:    
+        -:   52:    m_shouldStop = true;
+        -:   53:    
+        -:   54:    if (m_updateThread && m_updateThread->joinable()) 
+        -:   55:    {
+        -:   56:        m_updateThread->join();
+        -:   57:    }
+        -:   58:    
+        -:   59:    unloadAudioFile();
+        -:   60:    cleanupSDL();
+        -:   61:    
+        -:   62:    s_instance = nullptr;
+        -:   63:    
+        -:   64:    LOG_INFO("AudioPlaybackEngine destroyed");
+       18:   65:}
+------------------
+_ZN12media_player8services19AudioPlaybackEngineD2Ev:
+       18:   48:AudioPlaybackEngine::~AudioPlaybackEngine() 
+        -:   49:{
+       18:   50:    stop();
+        -:   51:    
+       18:   52:    m_shouldStop = true;
+        -:   53:    
+      18*:   54:    if (m_updateThread && m_updateThread->joinable()) 
+        -:   55:    {
+       18:   56:        m_updateThread->join();
+        -:   57:    }
+        -:   58:    
+       18:   59:    unloadAudioFile();
+       18:   60:    cleanupSDL();
+        -:   61:    
+       18:   62:    s_instance = nullptr;
+        -:   63:    
+       36:   64:    LOG_INFO("AudioPlaybackEngine destroyed");
+       18:   65:}
+------------------
+        -:   66:
+       18:   67:bool AudioPlaybackEngine::initializeSDL() 
+        -:   68:{
+       18:   69:    if (SDL_Init(SDL_INIT_AUDIO) < 0) 
+        -:   70:    {
+    #####:   71:        LOG_ERROR("SDL_Init failed: " + std::string(SDL_GetError()));
+    #####:   72:        return false;
+        -:   73:    }
+        -:   74:    
+        -:   75:    // Initialize SDL_mixer for MP3, OGG, FLAC support
+       18:   76:    int flags = MIX_INIT_MP3 | MIX_INIT_OGG | MIX_INIT_FLAC;
+       18:   77:    int initialized = Mix_Init(flags);
+        -:   78:    
+       18:   79:    if ((initialized & flags) != flags) 
+        -:   80:    {
+    #####:   81:        LOG_WARNING("Mix_Init: NOT all requested formats initialized. Missing: " + 
+        -:   82:                   std::to_string(flags ^ (initialized & flags)));
+    #####:   83:        LOG_WARNING("Mix_Init error: " + std::string(Mix_GetError()));
+        -:   84:        // Don't fail completely, try to continue
+        -:   85:    }
+        -:   86:    
+        -:   87:    // We don't open audio here yet, we open it on play/load to play nice with VideoEngine
+        -:   88:    // But Mix_LoadMUS might require open audio? No, usually not. 
+        -:   89:    // Wait, documentation says "You must call Mix_OpenAudio() before using any other functions in this library."
+        -:   90:    // Let's open it here, and if needed we can close it in stop().
+        -:   91:    // Update: opening/closing repeatedly might be buggy in some SDL versions.
+        -:   92:    // Ideally we keep it open. But we have VideoEngine which uses SDL_OpenAudioDevice.
+        -:   93:    // SDL_mixer uses SDL_OpenAudio. They CONFLICT. 
+        -:   94:    // We MUST open/close on demand or when switching engines.
+        -:   95:    
+       18:   96:    m_sdlInitialized = true;
+       36:   97:    LOG_INFO("SDL Audio & Mixer initialized successfully");
+        -:   98:    
+       18:   99:    return true;
+        -:  100:}
+        -:  101:
+       18:  102:void AudioPlaybackEngine::cleanupSDL() 
+        -:  103:{
+        -:  104:    // Ensure device is closed
+       18:  105:    Mix_CloseAudio();
+        -:  106:    
+       18:  107:    if (m_sdlInitialized) 
+        -:  108:    {
+       18:  109:        Mix_Quit();
+       18:  110:        SDL_Quit();
+       18:  111:        m_sdlInitialized = false;
+        -:  112:    }
+       18:  113:}
+        -:  114:
+       18:  115:void AudioPlaybackEngine::unloadAudioFile() 
+        -:  116:{
+       18:  117:    if (m_music) 
+        -:  118:    {
+    #####:  119:        Mix_FreeMusic(m_music);
+    #####:  120:        m_music = nullptr;
+        -:  121:    }
+        -:  122:    
+       18:  123:    m_currentPositionSeconds = 0;
+       18:  124:    m_totalDurationSeconds = 0;
+       18:  125:    m_currentFilePath.clear();
+       18:  126:}
+        -:  127:
+    #####:  128:bool AudioPlaybackEngine::loadFile(const std::string& filePath) 
+        -:  129:{
+    #####:  130:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:  131:    
+    #####:  132:    LOG_INFO("Loading audio file: " + filePath);
+        -:  133:    
+        -:  134:    try
+        -:  135:    {
+    #####:  136:        if (m_state != PlaybackState::STOPPED) 
+        -:  137:        {
+    #####:  138:            stop();
+        -:  139:        }
+        -:  140:        
+    #####:  141:        unloadAudioFile();
+        -:  142:        
+        -:  143:        // Kiểm tra file tồn tại
+    #####:  144:        if (filePath.empty())
+        -:  145:        {
+    #####:  146:            LOG_ERROR("Empty file path");
+    #####:  147:            notifyError("Empty file path");
+    #####:  148:            return false;
+        -:  149:        }
+        -:  150:        
+        -:  151:        // Check if audio is already open (query logic or just try open)
+        -:  152:        // Mix_OpenAudio can be called multiple times safely in some versions, but better to check
+    #####:  153:        int frequency = 44100;
+    #####:  154:        Uint16 format = MIX_DEFAULT_FORMAT;
+    #####:  155:        int channels = 2;
+    #####:  156:        int queryResult = Mix_QuerySpec(&frequency, &format, &channels);
+        -:  157:        
+    #####:  158:        if (queryResult == 0) // Not open
+        -:  159:        {
+        -:  160:            // Use 4096 sample buffer (approx 92ms latency) to prevent stuttering under load
+    #####:  161:            if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
+        -:  162:            {
+    #####:  163:                LOG_ERROR("Mix_OpenAudio failed: " + std::string(Mix_GetError()));
+    #####:  164:                notifyError("Failed to open audio device");
+    #####:  165:                return false;
+        -:  166:            }
+        -:  167:        }
+        -:  168:        
+    #####:  169:        m_music = Mix_LoadMUS(filePath.c_str());
+        -:  170:        
+    #####:  171:        if (!m_music) 
+        -:  172:        {
+    #####:  173:            std::string error = Mix_GetError();
+    #####:  174:            LOG_ERROR("Mix_LoadMUS failed: " + error);
+    #####:  175:            notifyError("Unsupported audio format: " + error);
+    #####:  176:            Mix_CloseAudio();
+    #####:  177:            return false;
+    #####:  178:        }
+        -:  179:        
+        -:  180:        // Set hook for music finished
+    #####:  181:        Mix_HookMusicFinished(AudioPlaybackEngine::musicFinishedCallback);
+        -:  182:        
+    #####:  183:        m_currentFilePath = filePath;
+    #####:  184:        m_state = PlaybackState::STOPPED;
+    #####:  185:        m_currentPositionSeconds = 0;
+        -:  186:        
+        -:  187:        // Estimate generic duration since Mix_LoadMUS doesn't direct give it for streams easily.
+        -:  188:        // For MP3s Mix_MusicDuration might work in newer SDL_mixer versions logic or we need TagLib.
+        -:  189:        // We already use TagLib in MetadataReader, so duration should come from there via Playlist/Library model?
+        -:  190:        // But PlaybackController expects valid duration here?
+        -:  191:        // Let's rely on MetadataReader previously read duration or file length approximation if possible.
+        -:  192:        // Since we don't have easy access to MetadataReader here without dependency refactor, 
+        -:  193:        // we can use Mix_MusicDuration if available (SDL2_mixer 2.6.0+).
+        -:  194:        // Assuming standard environment. If it fails we report 0 and UI handles it.
+        -:  195:        
+    #####:  196:        double duration = Mix_MusicDuration(m_music);
+    #####:  197:        if (duration > 0)
+        -:  198:        {
+    #####:  199:            m_totalDurationSeconds = static_cast<int>(duration);
+        -:  200:        }
+        -:  201:        else
+        -:  202:        {
+        -:  203:            // Fallback or leave as 0 (controller might fill it from metadata?)
+        -:  204:            // The PlaybackController calls onPositionChanged. 
+        -:  205:            // If we report 0 total, the UI progress bar behaves oddly but doesn't crash.
+        -:  206:            // Usually currentDuration is updated by UI from MediaModel, checking...
+        -:  207:            // UI uses m_state.playbackDuration which comes from PlaybackController.
+    #####:  208:            m_totalDurationSeconds = 0;
+        -:  209:        }
+        -:  210:        
+    #####:  211:        LOG_INFO("Audio file loaded successfully");
+    #####:  212:        notifyStateChange(PlaybackState::STOPPED);
+        -:  213:        
+    #####:  214:        return true;
+        -:  215:    }
+    =====:  216:    catch (const std::exception& e)
+        -:  217:    {
+    =====:  218:        LOG_ERROR("Exception in loadFile: " + std::string(e.what()));
+    =====:  219:        notifyError("Load error: " + std::string(e.what()));
+    =====:  220:        unloadAudioFile();
+    =====:  221:        return false;
+    =====:  222:    }
+    =====:  223:    catch (...)
+        -:  224:    {
+    =====:  225:        LOG_ERROR("Unknown exception in loadFile");
+    =====:  226:        notifyError("Unknown load error");
+    =====:  227:        unloadAudioFile();
+    =====:  228:        return false;
+    =====:  229:    }
+    #####:  230:}
+        -:  231:
+    #####:  232:bool AudioPlaybackEngine::play() 
+        -:  233:{
+    #####:  234:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:  235:    
+        -:  236:    try
+        -:  237:    {
+    #####:  238:        if (!m_music) 
+        -:  239:        {
+    #####:  240:            LOG_WARNING("No audio file loaded");
+    #####:  241:            return false;
+        -:  242:        }
+        -:  243:        
+    #####:  244:        if (m_state == PlaybackState::PLAYING) 
+        -:  245:        {
+    #####:  246:            return true;
+        -:  247:        }
+        -:  248:        
+        -:  249:        // Reset manual stop flag so natural finish will trigger notifyFinished
+    #####:  250:        m_manualStop = false;
+        -:  251:        
+    #####:  252:        if (m_state == PlaybackState::PAUSED)
+        -:  253:        {
+    #####:  254:            Mix_ResumeMusic();
+        -:  255:        }
+        -:  256:        else
+        -:  257:        {
+        -:  258:            // Play from start
+    #####:  259:            if (Mix_PlayMusic(m_music, 0) == -1) 
+        -:  260:            {
+    #####:  261:                std::string error = Mix_GetError();
+    #####:  262:                LOG_ERROR("Mix_PlayMusic failed: " + error);
+    #####:  263:                notifyError("Playback error: " + error);
+    #####:  264:                return false;
+    #####:  265:            }
+        -:  266:        }
+        -:  267:        
+    #####:  268:        Mix_VolumeMusic(m_volume * 128 / 100); // SDL_mixer volume is 0-128
+        -:  269:        
+    #####:  270:        m_state = PlaybackState::PLAYING;
+        -:  271:        
+    #####:  272:        LOG_INFO("Audio playback started");
+    #####:  273:        notifyStateChange(PlaybackState::PLAYING);
+        -:  274:        
+    #####:  275:        return true;
+        -:  276:    }
+    =====:  277:    catch (const std::exception& e)
+        -:  278:    {
+    =====:  279:        LOG_ERROR("Exception in play: " + std::string(e.what()));
+    =====:  280:        notifyError("Playback error: " + std::string(e.what()));
+    =====:  281:        return false;
+    =====:  282:    }
+    =====:  283:    catch (...)
+        -:  284:    {
+    =====:  285:        LOG_ERROR("Unknown exception in play");
+    =====:  286:        notifyError("Unknown playback error");
+    =====:  287:        return false;
+    =====:  288:    }
+    #####:  289:}
+        -:  290:
+    #####:  291:bool AudioPlaybackEngine::pause() 
+        -:  292:{
+    #####:  293:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:  294:    
+    #####:  295:    if (m_state != PlaybackState::PLAYING) 
+        -:  296:    {
+    #####:  297:        return false;
+        -:  298:    }
+        -:  299:    
+    #####:  300:    Mix_PauseMusic();
+    #####:  301:    m_state = PlaybackState::PAUSED;
+        -:  302:    
+    #####:  303:    LOG_INFO("Audio playback paused");
+    #####:  304:    notifyStateChange(PlaybackState::PAUSED);
+        -:  305:    
+    #####:  306:    return true;
+    #####:  307:}
+        -:  308:
+       18:  309:bool AudioPlaybackEngine::stop() 
+        -:  310:{
+       18:  311:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:  312:    
+       18:  313:    if (m_state == PlaybackState::STOPPED) 
+        -:  314:    {
+       18:  315:        return true;
+        -:  316:    }
+        -:  317:    
+        -:  318:    // Set manual stop flag BEFORE Mix_HaltMusic to prevent race condition
+        -:  319:    // This tells updateThread not to call notifyFinished()
+    #####:  320:    m_manualStop = true;
+        -:  321:    
+    #####:  322:    Mix_HaltMusic();
+        -:  323:    
+        -:  324:    // Clear the musicFinished flag in case it was set
+    #####:  325:    m_musicFinished = false;
+        -:  326:    
+        -:  327:    // DO NOT Close audio device here to avoid rapid open/close cycles
+        -:  328:    // Device will be closed via releaseResources when switching to Video
+        -:  329:    
+    #####:  330:    m_state = PlaybackState::STOPPED;
+    #####:  331:    m_currentPositionSeconds = 0;
+        -:  332:    
+    #####:  333:    LOG_INFO("Audio playback stopped");
+    #####:  334:    notifyStateChange(PlaybackState::STOPPED);
+        -:  335:    
+    #####:  336:    return true;
+       18:  337:}
+        -:  338:
+    #####:  339:void AudioPlaybackEngine::releaseResources()
+        -:  340:{
+    #####:  341:    std::lock_guard<std::mutex> lock(m_mutex);
+    #####:  342:    if (m_music)
+        -:  343:    {
+    #####:  344:        Mix_FreeMusic(m_music);
+    #####:  345:        m_music = nullptr;
+        -:  346:    }
+    #####:  347:    Mix_CloseAudio();
+    #####:  348:    LOG_INFO("Audio device closed");
+    #####:  349:}
+        -:  350:
+    #####:  351:bool AudioPlaybackEngine::seek(int positionSeconds)
+        -:  352:{
+    #####:  353:    std::lock_guard<std::mutex> lock(m_mutex);
+        -:  354:    
+    #####:  355:    if (!m_music) return false;
+        -:  356:    
+    #####:  357:    if (Mix_SetMusicPosition(static_cast<double>(positionSeconds)) == 0)
+        -:  358:    {
+    #####:  359:        m_currentPositionSeconds = positionSeconds;
+    #####:  360:        notifyPosition();
+    #####:  361:        return true;
+        -:  362:    }
+        -:  363:    
+    #####:  364:    return false;
+    #####:  365:}
+        -:  366:
+    #####:  367:PlaybackState AudioPlaybackEngine::getState() const
+        -:  368:{
+    #####:  369:    return m_state;
+        -:  370:}
+        -:  371:
+    #####:  372:int AudioPlaybackEngine::getCurrentPosition() const
+        -:  373:{
+    #####:  374:    return m_currentPositionSeconds;
+        -:  375:}
+        -:  376:
+    #####:  377:int AudioPlaybackEngine::getTotalDuration() const
+        -:  378:{
+    #####:  379:    return m_totalDurationSeconds;
+        -:  380:}
+        -:  381:
+    #####:  382:void AudioPlaybackEngine::setVolume(int volume)
+        -:  383:{
+    #####:  384:    std::lock_guard<std::mutex> lock(m_mutex);
+    #####:  385:    m_volume = volume;
+    #####:  386:    if (m_music)
+        -:  387:    {
+    #####:  388:        Mix_VolumeMusic(m_volume * 128 / 100);
+        -:  389:    }
+    #####:  390:}
+        -:  391:
+    #####:  392:int AudioPlaybackEngine::getVolume() const
+        -:  393:{
+    #####:  394:    return m_volume;
+        -:  395:}
+        -:  396:
+    #####:  397:bool AudioPlaybackEngine::supportsMediaType(models::MediaType type) const
+        -:  398:{
+    #####:  399:    return type == models::MediaType::AUDIO;
+        -:  400:}
+        -:  401:
+       18:  402:void AudioPlaybackEngine::setStateChangeCallback(PlaybackStateChangeCallback callback)
+        -:  403:{
+       18:  404:    m_stateChangeCallback = callback;
+       18:  405:}
+        -:  406:
+       18:  407:void AudioPlaybackEngine::setPositionCallback(PlaybackPositionCallback callback)
+        -:  408:{
+       18:  409:    m_positionCallback = callback;
+       18:  410:}
+        -:  411:
+       18:  412:void AudioPlaybackEngine::setErrorCallback(PlaybackErrorCallback callback)
+        -:  413:{
+       18:  414:    m_errorCallback = callback;
+       18:  415:}
+        -:  416:
+       18:  417:void AudioPlaybackEngine::setFinishedCallback(PlaybackFinishedCallback callback)
+        -:  418:{
+       18:  419:    m_finishedCallback = callback;
+       18:  420:}
+        -:  421:
+        -:  422:
+        -:  423:
+    #####:  424:void AudioPlaybackEngine::onMusicFinished()
+        -:  425:{
+        -:  426:    // Called on separate SDL mixer thread
+        -:  427:    // DO NOT call into complex logic here or call Mix_ functions
+        -:  428:    // Just set a flag for the update thread to handle
+    #####:  429:    m_musicFinished = true;
+    #####:  430:}
+        -:  431:
+       18:  432:void AudioPlaybackEngine::updateThread() 
+        -:  433:{
+        -:  434:    try
+        -:  435:    {
+       35:  436:        while (!m_shouldStop) 
+        -:  437:        {
+        -:  438:            // Check for music finished event from mixer thread
+       17:  439:            if (m_musicFinished)
+        -:  440:            {
+    #####:  441:                m_musicFinished = false;
+    #####:  442:                m_state = PlaybackState::STOPPED;
+    #####:  443:                notifyStateChange(PlaybackState::STOPPED);
+        -:  444:                
+        -:  445:                // Only call notifyFinished if this was NOT a manual stop
+    #####:  446:                if (!m_manualStop)
+        -:  447:                {
+    #####:  448:                    notifyFinished();
+        -:  449:                }
+    #####:  450:                m_manualStop = false;  // Reset for next time
+        -:  451:            }
+        -:  452:
+       17:  453:            if (m_state == PlaybackState::PLAYING) 
+        -:  454:            {
+        -:  455:                // Lock mutex to safely access m_music
+        -:  456:                {
+    #####:  457:                    std::lock_guard<std::mutex> lock(m_mutex);
+        -:  458:                    
+        -:  459:                    // Verify we are still playing and music exists under lock
+    #####:  460:                    if (m_state == PlaybackState::PLAYING && m_music)
+        -:  461:                    {
+        -:  462:                        // Mix_GetMusicPosition works in recent SDL_mixer versions.
+    #####:  463:                        double pos = Mix_GetMusicPosition(m_music);
+    #####:  464:                        if (pos >= 0)
+        -:  465:                        {
+    #####:  466:                            m_currentPositionSeconds = static_cast<int>(pos);
+        -:  467:                        }
+        -:  468:                    }
+    #####:  469:                }
+        -:  470:                // Unlock before notifying to avoid deadlock with Controller mutex
+        -:  471:
+    #####:  472:                notifyPosition();
+        -:  473:            }
+        -:  474:            
+       17:  475:            std::this_thread::sleep_for(
+       34:  476:                std::chrono::milliseconds(config::AppConfig::PLAYBACK_UPDATE_INTERVAL_MS)
+        -:  477:            );
+        -:  478:        }
+        -:  479:    }
+    =====:  480:    catch (const std::exception& e)
+        -:  481:    {
+    =====:  482:        LOG_ERROR("Audio update thread exception: " + std::string(e.what()));
+    =====:  483:    }
+    =====:  484:    catch (...)
+        -:  485:    {
+    =====:  486:        LOG_ERROR("Audio update thread: Unknown exception");
+    =====:  487:    }
+       18:  488:}
+        -:  489:
+    #####:  490:void AudioPlaybackEngine::notifyStateChange(PlaybackState newState) 
+        -:  491:{
+    #####:  492:    if (m_stateChangeCallback) 
+        -:  493:    {
+    #####:  494:        m_stateChangeCallback(newState);
+        -:  495:    }
+    #####:  496:}
+        -:  497:
+    #####:  498:void AudioPlaybackEngine::notifyPosition() 
+        -:  499:{
+    #####:  500:    if (m_positionCallback) 
+        -:  501:    {
+    #####:  502:        m_positionCallback(m_currentPositionSeconds, m_totalDurationSeconds);
+        -:  503:    }
+    #####:  504:}
+        -:  505:
+    #####:  506:void AudioPlaybackEngine::notifyError(const std::string& error) 
+        -:  507:{
+    #####:  508:    if (m_errorCallback) 
+        -:  509:    {
+    #####:  510:        m_errorCallback(error);
+        -:  511:    }
+    #####:  512:}
+        -:  513:
+    #####:  514:void AudioPlaybackEngine::notifyFinished() 
+        -:  515:{
+    #####:  516:    if (m_finishedCallback) 
+        -:  517:    {
+    #####:  518:        m_finishedCallback();
+        -:  519:    }
+    #####:  520:}
+        -:  521:
+        -:  522:} // namespace services
+        -:  523:} // namespace media_player

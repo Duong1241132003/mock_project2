@@ -1,0 +1,518 @@
+```mermaid
+sequenceDiagram
+%% Sequence – App Startup
+participant main
+participant Application
+participant ImGuiManager
+participant QueueModel
+participant PlaybackStateModel
+participant LibraryModel
+participant SystemStateModel
+participant FileScanner
+participant MetadataReader
+participant AudioPlaybackEngine
+participant SerialCommunication
+participant LibraryRepository
+participant PlaylistRepository
+participant HistoryRepository
+participant PlaybackController
+participant SourceController
+participant LibraryController
+participant PlaylistController
+participant QueueController
+participant HardwareController
+
+main->>Application: getInstance()
+main->>Application: initialize()
+Application->>Application: initializeSDL()
+Application->>ImGuiManager: initialize("Media Player", 1280, 800)
+Application->>Application: createAllComponents()
+Application->>QueueModel: new
+Application->>PlaybackStateModel: new
+Application->>LibraryModel: new
+Application->>SystemStateModel: new
+Application->>LibraryRepository: new(AppConfig::LIBRARY_STORAGE_PATH)
+Application->>PlaylistRepository: new(AppConfig::PLAYLIST_STORAGE_PATH)
+Application->>HistoryRepository: new(AppConfig::HISTORY_STORAGE_PATH)
+Application->>FileScanner: new
+Application->>SerialCommunication: new
+Application->>MetadataReader: new
+Application->>PlaybackController: new(queueModel, playbackStateModel, historyRepo)
+Application->>SourceController: new(fileScanner, libraryRepo, libraryModel)
+Application->>LibraryController: new(libraryModel, libraryRepo, metadataReader)
+Application->>PlaylistController: new(playlistRepo)
+Application->>QueueController: new(queueModel)
+Application->>HardwareController: new(serialComm, playbackStateModel)
+Application->>Application: wireUpDependencies()
+Application->>MainController: initialize()
+MainController->>HardwareController: initialize()
+HardwareController->>SerialCommunication: autoConnect() [async]
+Application->>Application: setupUICallbacks()
+Application->>ImGuiManager: setControllers(playback, queue, library, playlist)
+Application->>SourceController: startMonitoring()
+main->>Application: run()
+Application->>Application: processEvents()/update()/render() [loop]
+```
+
+```mermaid
+sequenceDiagram
+%% Sequence – Screen Navigation
+participant ImGuiManager
+participant MainController
+participant MainScreen
+participant LibraryScreen
+participant PlaylistScreen
+participant QueuePanel
+
+ImGuiManager->>MainController: navigateTo(ScreenType::LIBRARY)
+MainController->>MainController: m_currentScreen = LIBRARY
+ImGuiManager->>MainController: getCurrentScreen()
+MainController-->>ImGuiManager: ScreenType::LIBRARY
+opt Show view
+ImGuiManager->>LibraryScreen: show()
+end
+
+ImGuiManager->>MainController: navigateTo(ScreenType::PLAYLIST)
+MainController->>MainController: m_currentScreen = PLAYLIST
+opt Show view
+ImGuiManager->>PlaylistScreen: show()
+end
+
+ImGuiManager->>MainController: navigateTo(ScreenType::QUEUE)
+MainController->>MainController: m_currentScreen = QUEUE
+opt Show view
+ImGuiManager->>QueuePanel: show()
+end
+
+ImGuiManager->>MainController: navigateTo(ScreenType::MAIN)
+MainController->>MainController: m_currentScreen = MAIN
+opt Show view
+ImGuiManager->>MainScreen: show()
+end
+```
+
+```mermaid
+sequenceDiagram
+%% Sequence – Library Scan via SourceController
+participant ImGuiManager
+participant SourceController
+participant FileScanner
+participant LibraryModel
+participant LibraryRepository
+participant AppConfig
+
+ImGuiManager->>SourceController: selectDirectory(path)
+SourceController->>SourceController: m_currentSourcePath = path
+ImGuiManager->>SourceController: scanCurrentDirectory()
+SourceController->>FileScanner: scanDirectory(m_currentSourcePath) [thread]
+FileScanner->>FileScanner: setProgressCallback/onProgress
+loop Scanning files
+    FileScanner-->>SourceController: progress(count, currentPath)
+end
+FileScanner-->>SourceController: complete(results)
+SourceController->>LibraryModel: clear()
+SourceController->>LibraryRepository: clear()
+SourceController->>LibraryModel: addMediaBatch(results)
+SourceController->>LibraryRepository: saveAll(results)
+opt Unsupported extension
+    FileScanner->>AppConfig: SCANNABLE_EXTENSIONS check
+    FileScanner-->>SourceController: skip file
+end
+SourceController-->>ImGuiManager: complete(totalFiles)
+```
+
+```mermaid
+sequenceDiagram
+%% Sequence – Add From Library To Queue
+participant LibraryScreen
+participant QueueController
+participant QueueModel
+participant ImGuiManager
+
+LibraryScreen->>QueueController: addSelectedToQueue()
+QueueController->>QueueModel: addToEnd(media)
+QueueModel-->>QueueController: size()/getCurrentIndex()
+QueueController-->>ImGuiManager: getQueueSize()/getCurrentIndex()
+ImGuiManager->>ImGuiManager: update queue UI
+```
+
+```mermaid
+sequenceDiagram
+%% Sequence – Play From Queue (Happy Path)
+participant ImGuiManager
+participant PlaybackController
+participant QueueModel
+participant AudioPlaybackEngine
+participant PlaybackStateModel
+participant HistoryRepository
+
+ImGuiManager->>PlaybackController: play()
+PlaybackController->>QueueModel: getCurrentItem()
+QueueModel-->>PlaybackController: MediaFileModel
+PlaybackController->>PlaybackController: selectAndLoadEngine(media)
+PlaybackController->>AudioPlaybackEngine: loadFile(media.filePath)
+AudioPlaybackEngine-->>PlaybackController: true/false
+PlaybackController->>AudioPlaybackEngine: play()
+AudioPlaybackEngine-->>PlaybackController: notifyStateChange(PLAYING)
+PlaybackController->>PlaybackStateModel: setState(PLAYING)
+PlaybackController->>PlaybackStateModel: setCurrentFilePath/title/artist/type
+PlaybackController->>HistoryRepository: addEntry(currentItem)
+PlaybackController-->>ImGuiManager: state changed/position changed
+ImGuiManager->>ImGuiManager: update NowPlayingBar
+```
+
+```mermaid
+sequenceDiagram
+%% Sequence – Pause/Resume (UI or Hardware)
+participant ImGuiManager
+participant SerialCommunication
+participant HardwareController
+participant PlaybackController
+participant AudioPlaybackEngine
+participant PlaybackStateModel
+
+alt UI clicks Play/Pause
+    ImGuiManager->>PlaybackController: pause() / play()
+else Hardware BTN: "!BTN:1!"
+    SerialCommunication-->>HardwareController: data("!BTN:1!")
+    HardwareController->>HardwareController: parseS32K144Message
+    HardwareController-->>Application: buttonCallback(TOGGLE_PLAY_PAUSE)
+    Application->>PlaybackController: togglePlayPause()
+end
+PlaybackController->>AudioPlaybackEngine: pause()/play()
+AudioPlaybackEngine-->>PlaybackController: notifyStateChange(PAUSED/PLAYING)
+PlaybackController->>PlaybackStateModel: setState(PAUSED/PLAYING)
+PlaybackController-->>ImGuiManager: state changed
+ImGuiManager->>ImGuiManager: refresh playback controls
+```
+
+```mermaid
+sequenceDiagram
+%% Sequence – Seek To New Position
+participant ImGuiManager
+participant PlaybackController
+participant AudioPlaybackEngine
+participant PlaybackStateModel
+
+ImGuiManager->>PlaybackController: seek(seconds)
+PlaybackController->>AudioPlaybackEngine: seek(seconds)
+AudioPlaybackEngine-->>PlaybackController: notifyPosition(current,total)
+PlaybackController->>PlaybackStateModel: setCurrentPosition/currentDuration
+ImGuiManager->>ImGuiManager: update progress bar
+```
+
+```mermaid
+sequenceDiagram
+%% Sequence – Playlist Management
+participant PlaylistScreen
+participant PlaylistController
+participant PlaylistRepository
+participant PlaylistModel
+participant ImGuiManager
+
+PlaylistScreen->>PlaylistController: createPlaylist(name)
+PlaylistController->>PlaylistRepository: save(PlaylistModel)
+PlaylistRepository-->>PlaylistController: true/false
+PlaylistController-->>PlaylistScreen: getAllPlaylists()
+PlaylistScreen-->>ImGuiManager: refresh list
+alt Rename/Delete
+    PlaylistScreen->>PlaylistController: renamePlaylist(id,newName)
+    PlaylistController->>PlaylistRepository: update(PlaylistModel)
+    PlaylistScreen->>PlaylistController: deletePlaylist(id)
+    PlaylistController->>PlaylistRepository: remove(id)
+end
+```
+
+```mermaid
+sequenceDiagram
+%% Sequence – Read Metadata (Properties)
+participant ImGuiManager
+participant LibraryController
+participant IMetadataReader
+participant MetadataReader
+participant MetadataModel
+
+ImGuiManager->>LibraryController: readMetadata(filePath)
+LibraryController->>IMetadataReader: canReadFile(filePath)
+IMetadataReader-->>LibraryController: true/false
+alt Supported
+    LibraryController->>MetadataReader: readMetadata(filePath)
+    MetadataReader-->>LibraryController: MetadataModel
+    LibraryController-->>ImGuiManager: MetadataModel
+    ImGuiManager->>ImGuiManager: show Properties dialog
+else Unsupported
+    LibraryController-->>ImGuiManager: nullopt
+    ImGuiManager->>ImGuiManager: show error
+end
+```
+
+```mermaid
+sequenceDiagram
+%% Sequence – Hardware Signal Pipeline
+participant SerialCommunication
+participant HardwareController
+participant Application
+participant PlaybackController
+participant QueueController
+
+SerialCommunication-->>HardwareController: data("!ADC:V!"/"!BTN:B!")
+HardwareController->>HardwareController: onSerialDataReceived/processBuffer
+alt ADC volume
+    HardwareController-->>Application: volumeCallback(V)
+    Application->>PlaybackController: setVolume(V)
+else BTN 1 (Play/Pause)
+    HardwareController-->>Application: buttonCallback(TOGGLE_PLAY_PAUSE)
+    Application->>PlaybackController: togglePlayPause()
+else BTN 2 (Next)
+    HardwareController-->>Application: buttonCallback(NEXT)
+    Application->>PlaybackController: playNext()
+else BTN 3 (Previous)
+    HardwareController-->>Application: buttonCallback(PREVIOUS)
+    Application->>PlaybackController: playPrevious()
+else BTN 4 (Quit)
+    HardwareController-->>Application: buttonCallback(QUIT)
+    Application->>Application: quit()
+end
+```
+
+```mermaid
+sequenceDiagram
+%% Sequence – Settings: Change Library Path
+participant ImGuiManager
+participant Application
+participant FileScanner
+participant LibraryModel
+participant HistoryRepository
+participant AppConfig
+
+ImGuiManager->>Application: onChangeLibraryPath(path)
+Application->>Application: resetAndRescan(path)
+Application->>PlaybackController: stop()
+Application->>QueueController: clearQueue()
+Application->>HistoryRepository: clear()
+Application->>Application: startScan(path)
+Application->>FileScanner: scanDirectorySync(path) [thread]
+FileScanner-->>Application: progress(count,total,currentPath)
+FileScanner-->>Application: complete(results)
+Application->>LibraryModel: clear()
+Application->>LibraryModel: addMediaBatch(results)
+note over FileScanner,AppConfig: FileScanner uses AppConfig::SCANNABLE_EXTENSIONS
+opt Invalid path
+    Application-->>ImGuiManager: libraryPathError
+end
+```
+
+```mermaid
+sequenceDiagram
+%% Sequence – Safe Shutdown
+participant ImGuiManager
+participant Application
+participant SDL
+
+ImGuiManager->>Application: onQuit()
+Application->>Application: quit()
+Application->>Application: run() loop exits
+Application->>ImGuiManager: destructor reset()
+Application->>SDL: SDL_Quit()
+```
+
+```mermaid
+sequenceDiagram
+%% Sequence – Unsupported Format Handling
+participant FileScanner
+participant AppConfig
+participant PlaybackController
+participant QueueModel
+participant AudioPlaybackEngine
+participant ImGuiManager
+
+FileScanner->>AppConfig: SCANNABLE_EXTENSIONS check
+alt Not supported during scan
+    FileScanner-->>FileScanner: skip file
+else Supported
+    FileScanner-->>FileScanner: collect file
+end
+
+PlaybackController->>QueueModel: getCurrentItem()
+QueueModel-->>PlaybackController: MediaFileModel
+PlaybackController->>PlaybackController: selectAndLoadEngine(media)
+alt Unsupported in playback (non-AUDIO)
+    PlaybackController-->>ImGuiManager: error
+    PlaybackController->>QueueModel: removeByPath(currentPath)
+    PlaybackController->>PlaybackController: stop()/play next?
+else Supported (AUDIO)
+    PlaybackController->>AudioPlaybackEngine: loadFile(path)
+    AudioPlaybackEngine-->>PlaybackController: ok
+end
+```
+
+```mermaid
+sequenceDiagram
+%% Sequence – Track End & History
+participant AudioPlaybackEngine
+participant PlaybackController
+participant QueueModel
+participant HistoryRepository
+participant PlaybackStateModel
+participant ImGuiManager
+
+AudioPlaybackEngine-->>PlaybackController: finishedCallback()
+PlaybackController->>PlaybackController: onFinished()
+alt One-off media without queue
+    PlaybackController->>PlaybackController: check LoopOne
+    alt LoopOne
+        PlaybackController->>AudioPlaybackEngine: seek(0)
+        AudioPlaybackEngine-->>PlaybackController: ok
+        PlaybackController->>AudioPlaybackEngine: play()
+    else No loop
+        PlaybackController->>PlaybackController: cleanupCurrentEngine()
+        PlaybackController->>PlaybackController: stop()
+    end
+else Played from history
+    PlaybackController->>PlaybackController: cleanupCurrentEngine()
+    PlaybackController->>PlaybackController: play() (resume queue current)
+else Playing from queue
+    alt LoopOne
+        PlaybackController->>AudioPlaybackEngine: seek(0) or reload current
+        AudioPlaybackEngine-->>PlaybackController: ok
+        PlaybackController->>AudioPlaybackEngine: play()
+    else LoopAll/None
+        PlaybackController->>QueueModel: moveToNext()
+        PlaybackController->>PlaybackController: play() or stop at end
+    end
+end
+PlaybackController-->>HistoryRepository: entries already updated on play
+PlaybackController-->>ImGuiManager: update state/progress
+```
+
+```mermaid
+sequenceDiagram
+%% Sequence – NowPlayingBar & QueuePanel Interactions
+participant NowPlayingBar
+participant QueuePanel
+participant QueueController
+participant PlaybackController
+participant ImGuiManager
+
+NowPlayingBar->>PlaybackController: play()/pause()/next()/previous()
+PlaybackController-->>ImGuiManager: state changed/position changed
+QueuePanel->>QueueController: getPlaybackOrderItems()
+QueuePanel-->>ImGuiManager: render queue list
+QueuePanel->>PlaybackController: playItemAt(index)
+PlaybackController-->>ImGuiManager: update NowPlayingBar
+```
+
+```mermaid
+sequenceDiagram
+%% Sequence – AV Sync (Not Implemented)
+participant PlaybackController
+participant AudioPlaybackEngine
+
+note over PlaybackController,AudioPlaybackEngine: Video playback/AV sync removed from codebase
+PlaybackController->>AudioPlaybackEngine: play() [audio only]
+AudioPlaybackEngine-->>PlaybackController: notifyPosition/state (audio)
+```
+ 
+```mermaid
+sequenceDiagram
+%% Sequence – USB Detection & Popup → Scan
+participant SourceController
+participant Application
+participant SDL
+participant ImGuiManager
+participant FileScanner
+participant LibraryModel
+participant HistoryRepository
+participant QueueController
+participant PlaybackController
+ 
+SourceController->>SourceController: monitorUsbLoop() [thread]
+SourceController-->>Application: usbInsertedCallback(path)
+Application->>SDL: push EVENT_USB_INSERTED(path)
+SDL-->>ImGuiManager: processEvent(EVENT_USB_INSERTED)
+ImGuiManager->>ImGuiManager: showUsbPopup(path)
+alt User clicks Change Source
+    ImGuiManager-->>Application: onRequestScan(path)
+    Application->>Application: resetAndRescan(path)
+    Application->>PlaybackController: stop()
+    Application->>QueueController: clearQueue()
+    Application->>HistoryRepository: clear()
+    Application->>Application: startScan(path)
+    Application->>FileScanner: scanDirectorySync(path) [thread]
+    FileScanner-->>Application: complete(results)
+    Application->>LibraryModel: clear()/addMediaBatch(results)
+    ImGuiManager->>ImGuiManager: closeUsbPopup
+else User closes popup
+    ImGuiManager->>ImGuiManager: dismiss popup
+end
+```
+
+```mermaid
+flowchart LR
+%% Component Diagram – Architecture Overview
+subgraph UI
+    ImGuiManager
+end
+subgraph Controllers
+    MainController
+    PlaybackController
+    SourceController
+    LibraryController
+    PlaylistController
+    QueueController
+    HardwareController
+end
+subgraph Services
+    FileScanner
+    MetadataReader
+    AudioPlaybackEngine
+    SerialCommunication
+end
+subgraph Models
+    QueueModel
+    PlaybackStateModel
+    LibraryModel
+    SystemStateModel
+    MediaFileModel
+end
+subgraph Repositories
+    LibraryRepository
+    PlaylistRepository
+    HistoryRepository
+end
+subgraph Platform
+    SDL
+    SDL_mixer
+    TagLib
+    Filesystem
+end
+ 
+ImGuiManager --> MainController
+ImGuiManager --> PlaybackController
+ImGuiManager --> QueueController
+ImGuiManager --> LibraryController
+ImGuiManager --> PlaylistController
+MainController --> PlaybackController
+MainController --> SourceController
+MainController --> LibraryController
+MainController --> PlaylistController
+MainController --> QueueController
+MainController --> HardwareController
+PlaybackController --> AudioPlaybackEngine
+PlaybackController --> PlaybackStateModel
+PlaybackController --> QueueModel
+PlaybackController --> HistoryRepository
+SourceController --> FileScanner
+SourceController --> LibraryModel
+SourceController --> LibraryRepository
+LibraryController --> MetadataReader
+LibraryController --> LibraryModel
+LibraryController --> LibraryRepository
+PlaylistController --> PlaylistRepository
+QueueController --> QueueModel
+HardwareController --> SerialCommunication
+AudioPlaybackEngine --> SDL
+AudioPlaybackEngine --> SDL_mixer
+MetadataReader --> TagLib
+FileScanner --> Filesystem
+```

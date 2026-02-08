@@ -1,6 +1,5 @@
 // Project includes
 #include "controllers/HardwareController.h"
-#include "utils/Logger.h"
 #include "config/AppConfig.h"
 
 // System includes
@@ -8,6 +7,7 @@
 #include <regex>
 #include <filesystem>
 #include <algorithm>
+#include <thread>
 #include <dirent.h>
 
 namespace media_player 
@@ -26,7 +26,7 @@ static const std::regex ADC_PATTERN(R"(!ADC:\s*(\d{1,3})\s*!)");
 static const std::regex BTN_PATTERN(R"(!BTN:\s*(\d{1,2})\s*!)");
 
 HardwareController::HardwareController(
-    std::shared_ptr<services::SerialCommunication> serialComm,
+    std::shared_ptr<services::ISerialCommunication> serialComm,
     std::shared_ptr<models::PlaybackStateModel> playbackStateModel
 )
     : m_serialComm(serialComm)
@@ -46,17 +46,21 @@ HardwareController::HardwareController(
     m_serialComm->setErrorCallback(
         [](const std::string& error) 
         {
-            LOG_DEBUG("Serial error: " + error);
+            (void)error;
         }
     );
     
-    LOG_INFO("HardwareController initialized");
 }
 
 HardwareController::~HardwareController() 
 {
+    m_stopScan = true;
+    if (m_scanThread.joinable())
+    {
+        m_scanThread.join();
+    }
+
     disconnect();
-    LOG_INFO("HardwareController destroyed");
 }
 
 bool HardwareController::initialize() 
@@ -90,37 +94,38 @@ bool HardwareController::autoConnect()
     
     m_isScanning = true;
     
-    // Launch scanning in a separate thread to prevent UI blocking
-    std::thread([this]() {
-        LOG_INFO("Starting background hardware scan...");
-        
+    if (m_scanThread.joinable())
+    {
+        m_stopScan = true;
+        m_scanThread.join();
+    }
+    
+    m_stopScan = false;
+    m_isScanning = true;
+    
+    // Launch scanning in a managed thread
+    m_scanThread = std::thread([this]() {
         auto ports = scanAvailablePorts();
         bool connected = false;
         
         for (const auto& port : ports)
         {
-            // Check if we should stop scanning (e.g. app shutdown)
-            if (!m_isScanning) break;
-            
-            LOG_DEBUG("Trying port: " + port);
+            // Check if we should stop scanning 
+            if (m_stopScan) break;
             
             if (connect(port, BAUD_RATE_S32K144))
             {
-                LOG_INFO("Successfully connected to S32K144 on port: " + port);
                 connected = true;
                 break;
             }
         }
         
-        if (!connected)
-        {
-            LOG_WARNING("Auto-connect failed, no compatible device found");
-        }
+        (void)connected;
         
         m_isScanning = false;
-    }).detach();
+    });
     
-    return false; // Return false immediately as connection happens asynchronously
+    return false; // Connection happens asynchronously
 }
 
 std::vector<std::string> HardwareController::scanAvailablePorts()
@@ -184,22 +189,18 @@ std::vector<std::string> HardwareController::scanAvailablePorts()
         }
     }
     
-    LOG_INFO("Found " + std::to_string(ports.size()) + " serial ports: " + portListStream.str());
+    (void)portListStream;
     
     return ports;
 }
 
 bool HardwareController::connect(const std::string& portName, int baudRate) 
 {
-    LOG_INFO("Connecting to hardware on port: " + portName + " at " + std::to_string(baudRate) + " baud");
-    
     if (m_serialComm->open(portName, baudRate)) 
     {
-        LOG_INFO("Hardware connected successfully");
         return true;
     }
     
-    LOG_DEBUG("Failed to connect to hardware on port: " + portName);
     return false;
 }
 
@@ -208,7 +209,6 @@ void HardwareController::disconnect()
     if (m_serialComm->isOpen()) 
     {
         m_serialComm->close();
-        LOG_INFO("Hardware disconnected");
     }
     
     // Clear buffer khi disconnect
@@ -243,7 +243,6 @@ void HardwareController::refreshConnection()
     m_lastReconnectAttempt = now;
 
     // Trigger async auto connect
-    LOG_DEBUG("Hardware not connected, triggering background reconnect...");
     autoConnect();
 }
 
@@ -257,14 +256,8 @@ void HardwareController::sendCurrentSongInfo(const std::string& title, const std
     // Protocol gửi đi: SONG|title|artist\n
     std::string message = "SONG|" + title + "|" + artist + "\n";
     
-    if (m_serialComm->sendData(message)) 
-    {
-        LOG_DEBUG("Sent song info to hardware: " + title);
-    }
-    else 
-    {
-        LOG_ERROR("Failed to send song info to hardware");
-    }
+    (void)title;
+    m_serialComm->sendData(message);
 }
 
 void HardwareController::sendPlaybackState(bool isPlaying) 
@@ -278,14 +271,7 @@ void HardwareController::sendPlaybackState(bool isPlaying)
     std::string state = isPlaying ? "PLAYING" : "PAUSED";
     std::string message = "STATE|" + state + "\n";
     
-    if (m_serialComm->sendData(message)) 
-    {
-        LOG_DEBUG("Sent playback state to hardware: " + state);
-    }
-    else 
-    {
-        LOG_ERROR("Failed to send playback state to hardware");
-    }
+    m_serialComm->sendData(message);
 }
 
 void HardwareController::setButtonCallback(HardwareButtonCallback callback) 
@@ -300,8 +286,7 @@ void HardwareController::setVolumeCallback(HardwareVolumeCallback callback)
 
 void HardwareController::onSerialDataReceived(const std::string& data) 
 {
-    // Log ở mức DEBUG để tránh spam log
-    LOG_DEBUG("Received from hardware: " + data);
+    (void)data;
     
     // Thêm data vào buffer
     {
@@ -362,7 +347,6 @@ void HardwareController::processBuffer()
     const size_t MAX_BUFFER_SIZE = 1024;
     if (m_receiveBuffer.length() > MAX_BUFFER_SIZE)
     {
-        LOG_WARNING("Buffer overflow, clearing...");
         m_receiveBuffer.clear();
     }
 }
@@ -381,11 +365,8 @@ bool HardwareController::parseS32K144Message(const std::string& message)
             // Validate volume từ 0-100, loại bỏ message ngoài range
             if (volume < ADC_MIN_VALUE || volume > ADC_MAX_VALUE)
             {
-                LOG_WARNING("ADC value out of range: " + std::to_string(volume));
                 return false;
             }
-            
-            LOG_INFO("S32K144 ADC Volume: " + std::to_string(volume));
             
             if (m_volumeCallback)
             {
@@ -396,7 +377,7 @@ bool HardwareController::parseS32K144Message(const std::string& message)
         }
         catch (const std::exception& e)
         {
-            LOG_ERROR("Failed to parse ADC value: " + message);
+            (void)e;
         }
     }
     
@@ -412,8 +393,6 @@ bool HardwareController::parseS32K144Message(const std::string& message)
             {
                 HardwareButton button = static_cast<HardwareButton>(buttonId);
                 
-                LOG_INFO("S32K144 Button pressed: " + std::to_string(buttonId));
-                
                 if (m_buttonCallback)
                 {
                     m_buttonCallback(button);
@@ -423,16 +402,16 @@ bool HardwareController::parseS32K144Message(const std::string& message)
             }
             else
             {
-                LOG_WARNING("Invalid button ID: " + std::to_string(buttonId));
+                (void)buttonId;
             }
         }
         catch (const std::exception& e)
         {
-            LOG_ERROR("Failed to parse BTN value: " + message);
+            (void)e;
         }
     }
     
-    LOG_DEBUG("Unknown S32K144 message format: " + message);
+    (void)message;
     return false;
 }
 

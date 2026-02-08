@@ -1,0 +1,10 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/tests/test_main.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/tests/test_main.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/tests/test_main.cpp.gcda
+        -:    0:Runs:6
+        -:    1:#include <gtest/gtest.h>
+        -:    2:
+        6:    3:int main(int argc, char **argv) {
+        6:    4:    ::testing::InitGoogleTest(&argc, argv);
+        6:    5:    return RUN_ALL_TESTS();
+        -:    6:}

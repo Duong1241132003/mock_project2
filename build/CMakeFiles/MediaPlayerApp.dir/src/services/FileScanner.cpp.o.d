@@ -205,21 +205,15 @@ CMakeFiles/MediaPlayerApp.dir/src/services/FileScanner.cpp.o: \
  /usr/include/c++/13/bits/sstream.tcc /usr/include/c++/13/codecvt \
  /usr/include/c++/13/bits/fs_dir.h /usr/include/c++/13/bits/fs_ops.h \
  /home/duong/MediaPlayerApp/inc/config/AppConfig.h \
- /home/duong/MediaPlayerApp/inc/utils/Logger.h \
- /usr/include/c++/13/fstream \
- /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
- /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
- /usr/include/c++/13/bits/fstream.tcc /usr/include/c++/13/mutex \
- /usr/include/c++/13/bits/std_mutex.h \
- /usr/include/c++/13/bits/unique_lock.h /usr/include/taglib/fileref.h \
- /usr/include/taglib/tfile.h /usr/include/taglib/taglib_export.h \
- /usr/include/taglib/taglib.h /usr/include/taglib/taglib_config.h \
- /usr/include/taglib/tag.h /usr/include/taglib/tstring.h \
- /usr/include/taglib/tbytevector.h /usr/include/c++/13/iostream \
- /usr/include/taglib/tiostream.h /usr/include/taglib/tstringlist.h \
- /usr/include/taglib/tlist.h /usr/include/c++/13/list \
- /usr/include/c++/13/bits/stl_list.h /usr/include/c++/13/bits/list.tcc \
- /usr/include/taglib/tlist.tcc /usr/include/c++/13/algorithm \
+ /usr/include/taglib/fileref.h /usr/include/taglib/tfile.h \
+ /usr/include/taglib/taglib_export.h /usr/include/taglib/taglib.h \
+ /usr/include/taglib/taglib_config.h /usr/include/taglib/tag.h \
+ /usr/include/taglib/tstring.h /usr/include/taglib/tbytevector.h \
+ /usr/include/c++/13/iostream /usr/include/taglib/tiostream.h \
+ /usr/include/taglib/tstringlist.h /usr/include/taglib/tlist.h \
+ /usr/include/c++/13/list /usr/include/c++/13/bits/stl_list.h \
+ /usr/include/c++/13/bits/list.tcc /usr/include/taglib/tlist.tcc \
+ /usr/include/c++/13/algorithm \
  /usr/include/c++/13/pstl/glue_algorithm_defs.h \
  /usr/include/taglib/trefcounter.h /usr/include/taglib/tbytevectorlist.h \
  /usr/include/taglib/audioproperties.h /usr/include/taglib/tag.h \

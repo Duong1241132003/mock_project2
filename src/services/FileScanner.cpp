@@ -1,7 +1,6 @@
 // Project includes
 #include "services/FileScanner.h"
 #include "config/AppConfig.h"
-#include "utils/Logger.h"
 
 // TagLib includes
 #include <taglib/fileref.h>
@@ -40,28 +39,30 @@ void FileScanner::scanDirectory(const std::string& rootPath)
 {
     if (m_isScanning) 
     {
-        LOG_WARNING("Scan already in progress. Ignoring new scan request.");
         return;
     }
     
     if (!fs::exists(rootPath)) 
     {
-        LOG_ERROR("Directory does not exist: " + rootPath);
         return;
     }
     
     if (!fs::is_directory(rootPath)) 
     {
-        LOG_ERROR("Path is not a directory: " + rootPath);
         return;
     }
     
-    LOG_INFO("Starting scan of directory: " + rootPath);
     
     m_shouldStop = false;
     m_isScanning = true;
     m_foundFiles.clear();
     m_scannedCount = 0;
+    
+    // Ensure previous thread is joined before creating new one
+    if (m_scanThread && m_scanThread->joinable()) 
+    {
+        m_scanThread->join();
+    }
     
     // Start scanning in a separate thread
     m_scanThread = std::make_unique<std::thread>(&FileScanner::scanWorker, this, rootPath);
@@ -69,12 +70,6 @@ void FileScanner::scanDirectory(const std::string& rootPath)
 
 void FileScanner::stopScanning() 
 {
-    if (!m_isScanning) 
-    {
-        return;
-    }
-    
-    LOG_INFO("Stopping scan...");
     m_shouldStop = true;
     
     if (m_scanThread && m_scanThread->joinable()) 
@@ -83,7 +78,7 @@ void FileScanner::stopScanning()
     }
     
     m_isScanning = false;
-    LOG_INFO("Scan stopped.");
+    // Reduce log spam if already stopped
 }
 
 bool FileScanner::isScanning() const 
@@ -111,17 +106,14 @@ std::vector<models::MediaFileModel> FileScanner::scanDirectorySync(const std::st
 {
     if (!fs::exists(rootPath)) 
     {
-        LOG_ERROR("Directory does not exist: " + rootPath);
         return {};
     }
     
     if (!fs::is_directory(rootPath)) 
     {
-        LOG_ERROR("Path is not a directory: " + rootPath);
         return {};
     }
     
-    LOG_INFO("Starting synchronous scan of: " + rootPath);
     
     m_shouldStop = false;
     m_isScanning = true;
@@ -152,7 +144,6 @@ std::vector<models::MediaFileModel> FileScanner::scanDirectorySync(const std::st
     scanRecursive(rootPath, 0);
     
     m_isScanning = false;
-    LOG_INFO("Synchronous scan completed. Found " + std::to_string(m_foundFiles.size()) + " files");
     
     return m_foundFiles;
 }
@@ -175,17 +166,14 @@ void FileScanner::scanWorker(const std::string& rootPath)
         
         if (!m_shouldStop) 
         {
-            LOG_INFO("Scan completed. Found " + std::to_string(m_foundFiles.size()) + " media files.");
             notifyComplete(m_foundFiles);
         }
         else 
         {
-            LOG_INFO("Scan was stopped by user.");
         }
     }
     catch (const std::exception& e) 
     {
-        LOG_ERROR("Exception during scan: " + std::string(e.what()));
     }
     
     m_isScanning = false;
@@ -200,7 +188,6 @@ void FileScanner::scanRecursive(const std::string& dirPath, int currentDepth)
     
     if (currentDepth > m_maxDepth) 
     {
-        LOG_WARNING("Max depth reached at: " + dirPath);
         return;
     }
     
@@ -277,21 +264,18 @@ void FileScanner::scanRecursive(const std::string& dirPath, int currentDepth)
                     }
                     else
                     {
-                        // Log skipped file for verification
-                        // LOG_DEBUG("Skipping unsupported file: " + filePath);
                     }
                 }
             }
             catch (const fs::filesystem_error& e) 
             {
-                LOG_WARNING("Error accessing: " + entry.path().string() + " - " + e.what());
                 continue;
             }
         }
     }
     catch (const fs::filesystem_error& e) 
     {
-        LOG_ERROR("Error scanning directory: " + dirPath + " - " + e.what());
+        
     }
 }
 

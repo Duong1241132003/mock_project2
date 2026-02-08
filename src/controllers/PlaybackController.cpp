@@ -1,6 +1,5 @@
 // Project includes
 #include "controllers/PlaybackController.h"
-#include "utils/Logger.h"
 
 namespace media_player 
 {
@@ -50,13 +49,11 @@ PlaybackController::PlaybackController(
         }
     );
     
-    LOG_INFO("PlaybackController initialized (audio only)");
 }
 
 PlaybackController::~PlaybackController() 
 {
     stop();
-    LOG_INFO("PlaybackController destroyed");
 }
 
 bool PlaybackController::play() 
@@ -69,21 +66,18 @@ bool PlaybackController::play()
     
     if (!currentItem) 
     {
-        LOG_WARNING("No item in queue to play");
         return false;
     }
     
     // Skip items whose file no longer exists (deleted on disk)
     while (currentItem && !std::filesystem::exists(currentItem->getFilePath()))
     {
-        LOG_WARNING("File no longer exists, skipping: " + currentItem->getFilePath());
         m_queueModel->removeByPath(currentItem->getFilePath());
         cleanupCurrentEngine();
         currentItem = m_queueModel->getCurrentItem();
     }
     if (!currentItem)
     {
-        LOG_WARNING("No valid item in queue to play");
         stop();
         return false;
     }
@@ -99,7 +93,6 @@ bool PlaybackController::play()
     {
         if (!selectAndLoadEngine(*currentItem)) 
         {
-            LOG_ERROR("Failed to load media file (may have been deleted): " + currentItem->getFilePath());
             m_queueModel->removeByPath(currentItem->getFilePath());
             cleanupCurrentEngine();
             return play();
@@ -111,7 +104,6 @@ bool PlaybackController::play()
     
     if (!m_currentEngine) 
     {
-        LOG_ERROR("No engine available");
         return false;
     }
     
@@ -130,7 +122,6 @@ bool PlaybackController::play()
             m_historyRepo->addEntry(*currentItem);
         }
         
-        LOG_INFO("Playback started: " + currentItem->getFileName());
     }
     
     return success;
@@ -159,7 +150,6 @@ bool PlaybackController::togglePlayPause()
     else if (isPaused() && m_currentEngine)
     {
         // Resume the current track without changing queue
-        LOG_INFO("Resuming paused track");
         return m_currentEngine->play();
     }
     else 
@@ -171,13 +161,11 @@ bool PlaybackController::togglePlayPause()
             if (!m_playbackStateModel->getCurrentFilePath().empty())
             {
                 // Resume one-off media without clearing it
-                LOG_INFO("Resuming one-off media: " + m_oneOffMedia->getFileName());
                 return m_currentEngine->play();
             }
             else
             {
                 // Engine lost file, reload one-off media
-                LOG_INFO("Reloading one-off media: " + m_oneOffMedia->getFileName());
                 if (selectAndLoadEngine(*m_oneOffMedia))
                 {
                     m_playbackStateModel->setCurrentFilePath(m_oneOffMedia->getFilePath());
@@ -228,7 +216,6 @@ bool PlaybackController::playNext()
         cleanupCurrentEngine();
         return play();
     }
-    LOG_INFO("End of queue reached");
     stop();
     return false;
 }
@@ -279,7 +266,6 @@ bool PlaybackController::playPrevious()
     // Fallback: previous in queue (if no previous in history)
     if (!m_queueModel->hasPrevious())
     {
-        LOG_INFO("No previous item in queue or history");
         return false;
     }
     
@@ -300,7 +286,6 @@ bool PlaybackController::playItemAt(size_t index)
     
     if (!m_queueModel->jumpTo(index)) 
     {
-        LOG_ERROR("Failed to jump to index: " + std::to_string(index));
         return false;
     }
     
@@ -403,13 +388,11 @@ bool PlaybackController::selectAndLoadEngine(const models::MediaFileModel& media
     // Also block unsupported files
     if (newType == models::MediaType::UNSUPPORTED)
     {
-        LOG_WARNING("Cannot play unsupported media type");
         return false;
     }
 
     if (newType != models::MediaType::AUDIO) 
     {
-        LOG_ERROR("Video support removed, only audio files are supported");
         return false;
     }
     
@@ -418,12 +401,10 @@ bool PlaybackController::selectAndLoadEngine(const models::MediaFileModel& media
     m_currentMediaType = models::MediaType::AUDIO;
     
     // Always use audio engine now (video engine removed)
-    LOG_INFO("Selecting audio engine for: " + media.getFileName());
     m_currentEngine = m_audioEngine.get();
     
     if (!m_currentEngine->loadFile(media.getFilePath())) 
     {
-        LOG_ERROR("Failed to load audio file: " + media.getFilePath());
         m_currentEngine = nullptr;
         m_currentMediaType = models::MediaType::UNKNOWN;
         return false;
@@ -466,7 +447,6 @@ void PlaybackController::onStateChanged(services::PlaybackState state)
     
     m_playbackStateModel->setState(modelState);
     
-    LOG_INFO("Playback state changed");
 }
 
 void PlaybackController::onPositionChanged(int currentSeconds, int totalSeconds) 
@@ -479,7 +459,7 @@ void PlaybackController::onPositionChanged(int currentSeconds, int totalSeconds)
 void PlaybackController::onError(const std::string& error) 
 {
     std::lock_guard<std::recursive_mutex> lock(m_mutex);
-    LOG_ERROR("Playback error: " + error);
+    (void)error;
     
     bool wasFromHistory = m_playingFromHistory;
     bool wasOneOff = m_playingOneOffWithoutQueue;
@@ -500,7 +480,6 @@ void PlaybackController::onError(const std::string& error)
 void PlaybackController::onFinished() 
 {
     std::lock_guard<std::recursive_mutex> lock(m_mutex);
-    LOG_INFO("Playback finished");
     bool isLoopOne = m_queueModel->isLoopOneEnabled();
     if (m_playingOneOffWithoutQueue)
     {
@@ -569,5 +548,15 @@ void PlaybackController::onFinished()
     }
 }
 
+void PlaybackController::setAudioEngine(std::unique_ptr<services::IPlaybackEngine> engine)
+{
+    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+    m_audioEngine = std::move(engine);
+    m_audioEngine->setStateChangeCallback([this](services::PlaybackState state) { onStateChanged(state); });
+    m_audioEngine->setPositionCallback([this](int current, int total) { onPositionChanged(current, total); });
+    m_audioEngine->setErrorCallback([this](const std::string& error) { onError(error); });
+    m_audioEngine->setFinishedCallback([this]() { onFinished(); });
+    m_currentEngine = m_audioEngine.get();
+}
 } // namespace controllers
 } // namespace media_player

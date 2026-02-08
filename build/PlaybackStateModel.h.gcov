@@ -1,0 +1,239 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/inc/models/PlaybackStateModel.h
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.gcda
+        -:    0:Runs:6
+        -:    1:#ifndef PLAYBACK_STATE_MODEL_H
+        -:    2:#define PLAYBACK_STATE_MODEL_H
+        -:    3:
+        -:    4:// System includes
+        -:    5:#include <string>
+        -:    6:
+        -:    7:// Project includes
+        -:    8:// Project includes
+        -:    9:#include "MediaFileModel.h"
+        -:   10:
+        -:   11:// System includes
+        -:   12:#include <functional>
+        -:   13:#include <mutex>
+        -:   14:
+        -:   15:namespace media_player 
+        -:   16:{
+        -:   17:namespace models 
+        -:   18:{
+        -:   19:
+        -:   20:enum class PlaybackState 
+        -:   21:{
+        -:   22:    STOPPED,
+        -:   23:    PLAYING,
+        -:   24:    PAUSED
+        -:   25:};
+        -:   26:
+        -:   27:class PlaybackStateModel 
+        -:   28:{
+        -:   29:public:
+    #####:   30:    PlaybackStateModel() = default;
+        -:   31:    
+        -:   32:    // State
+    #####:   33:    PlaybackState getState() const 
+        -:   34:    { 
+    #####:   35:        return m_state; 
+        -:   36:    }
+        -:   37:    
+        -:   38:    // Callbacks
+        -:   39:    using StateChangeCallback = std::function<void(PlaybackState)>;
+        -:   40:    using MetadataChangeCallback = std::function<void()>;
+        -:   41:    using PositionChangeCallback = std::function<void(int)>;
+        -:   42:    using DurationChangeCallback = std::function<void(int)>;
+        -:   43:    
+        6:   44:    void setStateChangeCallback(StateChangeCallback callback) { 
+        6:   45:        std::lock_guard<std::mutex> lock(m_mutex);
+        6:   46:        m_stateChangeCallback = callback; 
+        6:   47:    }
+        6:   48:    void setMetadataChangeCallback(MetadataChangeCallback callback) { 
+        6:   49:        std::lock_guard<std::mutex> lock(m_mutex);
+        6:   50:        m_metadataChangeCallback = callback; 
+        6:   51:    }
+        -:   52:    
+       24:   53:    void setState(PlaybackState state) 
+        -:   54:    { 
+       24:   55:        std::lock_guard<std::mutex> lock(m_mutex);
+       24:   56:        if (m_state != state) {
+       24:   57:            m_state = state; 
+       24:   58:            if (m_stateChangeCallback) m_stateChangeCallback(m_state);
+        -:   59:        }
+       24:   60:    }
+        -:   61:    
+        -:   62:    // Position
+       12:   63:    int getCurrentPosition() const 
+        -:   64:    { 
+       12:   65:        std::lock_guard<std::mutex> lock(m_mutex);
+       12:   66:        return m_currentPositionSeconds; 
+       12:   67:    }
+        -:   68:    
+        6:   69:    void setCurrentPosition(int seconds) 
+        -:   70:    { 
+        6:   71:        std::lock_guard<std::mutex> lock(m_mutex);
+        6:   72:        m_currentPositionSeconds = seconds; 
+        6:   73:    }
+        -:   74:    
+       12:   75:    int getTotalDuration() const 
+        -:   76:    { 
+       12:   77:        std::lock_guard<std::mutex> lock(m_mutex);
+       12:   78:        return m_totalDurationSeconds; 
+       12:   79:    }
+        -:   80:    
+        6:   81:    void setTotalDuration(int seconds) 
+        -:   82:    { 
+        6:   83:        std::lock_guard<std::mutex> lock(m_mutex);
+        6:   84:        m_totalDurationSeconds = seconds; 
+        6:   85:    }
+        -:   86:    
+        -:   87:    // Volume
+    #####:   88:    int getVolume() const 
+        -:   89:    { 
+    #####:   90:        std::lock_guard<std::mutex> lock(m_mutex);
+    #####:   91:        return m_volume; 
+    #####:   92:    }
+        -:   93:    
+        -:   94:    void setVolume(int volume) { 
+        -:   95:        std::lock_guard<std::mutex> lock(m_mutex);
+        -:   96:        m_volume = volume; 
+        -:   97:    }
+        -:   98:    
+        -:   99:    // Current file
+        -:  100:    std::string getCurrentFilePath() const 
+        -:  101:    { 
+        -:  102:        std::lock_guard<std::mutex> lock(m_mutex);
+        -:  103:        return m_currentFilePath; 
+        -:  104:    }
+        -:  105:    
+        -:  106:    void setCurrentFilePath(const std::string& path) 
+        -:  107:    { 
+        -:  108:        std::lock_guard<std::mutex> lock(m_mutex);
+        -:  109:        m_currentFilePath = path; 
+        -:  110:        if (m_metadataChangeCallback) m_metadataChangeCallback();
+        -:  111:    }
+        -:  112:    
+        -:  113:    // Media type
+        -:  114:    MediaType getCurrentMediaType() const 
+        -:  115:    { 
+        -:  116:        std::lock_guard<std::mutex> lock(m_mutex);
+        -:  117:        return m_currentMediaType; 
+        -:  118:    }
+        -:  119:    
+        -:  120:    void setCurrentMediaType(MediaType type) 
+        -:  121:    { 
+        -:  122:        std::lock_guard<std::mutex> lock(m_mutex);
+        -:  123:        m_currentMediaType = type; 
+        -:  124:    }
+        -:  125:    
+        -:  126:    // Video-specific state
+        -:  127:    bool isFullscreen() const 
+        -:  128:    { 
+        -:  129:        std::lock_guard<std::mutex> lock(m_mutex);
+        -:  130:        return m_isFullscreen; 
+        -:  131:    }
+        -:  132:    
+        -:  133:    void setFullscreen(bool fullscreen) 
+        -:  134:    { 
+        -:  135:        std::lock_guard<std::mutex> lock(m_mutex);
+        -:  136:        m_isFullscreen = fullscreen; 
+        -:  137:    }
+        -:  138:    
+        -:  139:    double getAspectRatio() const 
+        -:  140:    { 
+        -:  141:        std::lock_guard<std::mutex> lock(m_mutex);
+        -:  142:        return m_aspectRatio; 
+        -:  143:    }
+        -:  144:    
+        -:  145:    void setAspectRatio(double ratio) 
+        -:  146:    { 
+        -:  147:        std::lock_guard<std::mutex> lock(m_mutex);
+        -:  148:        m_aspectRatio = ratio; 
+        -:  149:    }
+        -:  150:    
+        -:  151:    // Helpers
+       18:  152:    bool isPlaying() const 
+        -:  153:    { 
+       18:  154:        std::lock_guard<std::mutex> lock(m_mutex);
+       18:  155:        return m_state == PlaybackState::PLAYING; 
+       18:  156:    }
+        -:  157:    
+       18:  158:    bool isPaused() const 
+        -:  159:    { 
+       18:  160:        std::lock_guard<std::mutex> lock(m_mutex);
+       18:  161:        return m_state == PlaybackState::PAUSED; 
+       18:  162:    }
+        -:  163:    
+       12:  164:    bool isStopped() const 
+        -:  165:    { 
+       12:  166:        std::lock_guard<std::mutex> lock(m_mutex);
+       12:  167:        return m_state == PlaybackState::STOPPED; 
+       12:  168:    }
+        -:  169:    
+        -:  170:    bool isPlayingVideo() const 
+        -:  171:    { 
+        -:  172:        std::lock_guard<std::mutex> lock(m_mutex);
+        -:  173:        return m_currentMediaType == MediaType::VIDEO; 
+        -:  174:    }
+        -:  175:    
+        -:  176:    bool isPlayingAudio() const 
+        -:  177:    { 
+        -:  178:        std::lock_guard<std::mutex> lock(m_mutex);
+        -:  179:        return m_currentMediaType == MediaType::AUDIO; 
+        -:  180:    }
+        -:  181:    
+        -:  182:    std::string getFormattedPosition() const;
+        -:  183:    std::string getFormattedDuration() const;
+        -:  184:    float getProgressPercentage() const;
+        -:  185:    
+        -:  186:    // Metadata
+        6:  187:    std::string getCurrentTitle() const { 
+        6:  188:        std::lock_guard<std::mutex> lock(m_mutex);
+       12:  189:        return m_currentTitle; 
+        6:  190:    }
+        6:  191:    void setCurrentTitle(const std::string& title) { 
+        -:  192:        {
+        6:  193:            std::lock_guard<std::mutex> lock(m_mutex);
+        6:  194:            m_currentTitle = title; 
+        6:  195:        }
+        6:  196:        if (m_metadataChangeCallback) m_metadataChangeCallback();
+        6:  197:    }
+        -:  198:    
+        6:  199:    std::string getCurrentArtist() const { 
+        6:  200:        std::lock_guard<std::mutex> lock(m_mutex);
+       12:  201:        return m_currentArtist; 
+        6:  202:    }
+        6:  203:    void setCurrentArtist(const std::string& artist) { 
+        -:  204:        {
+        6:  205:            std::lock_guard<std::mutex> lock(m_mutex);
+        6:  206:            m_currentArtist = artist;
+        6:  207:        }
+        6:  208:        if (m_metadataChangeCallback) m_metadataChangeCallback();
+        6:  209:    }
+        -:  210:
+        -:  211:private:
+        -:  212:    mutable std::mutex m_mutex;
+        -:  213:    PlaybackState m_state = PlaybackState::STOPPED;
+        -:  214:    int m_currentPositionSeconds = 0;
+        -:  215:    int m_totalDurationSeconds = 0;
+        -:  216:    // Track Metadata
+        -:  217:    std::string m_currentTitle;
+        -:  218:    std::string m_currentArtist;
+        -:  219:    int m_volume = 70;
+        -:  220:    std::string m_currentFilePath;
+        -:  221:    MediaType m_currentMediaType = MediaType::UNKNOWN;
+        -:  222:    
+        -:  223:    // Video-specific
+        -:  224:    bool m_isFullscreen = false;
+        -:  225:    double m_aspectRatio = 16.0 / 9.0;
+        -:  226:    
+        -:  227:    // Callbacks
+        -:  228:    StateChangeCallback m_stateChangeCallback;
+        -:  229:    MetadataChangeCallback m_metadataChangeCallback;
+        -:  230:};
+        -:  231:
+        -:  232:} // namespace models
+        -:  233:} // namespace media_player
+        -:  234:
+        -:  235:#endif // PLAYBACK_STATE_MODEL_H

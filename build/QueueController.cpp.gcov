@@ -1,0 +1,238 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/src/controllers/QueueController.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/controllers/QueueController.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/controllers/QueueController.cpp.gcda
+        -:    0:Runs:6
+        -:    1:// Project includes
+        -:    2:#include "controllers/QueueController.h"
+        -:    3:#include "utils/Logger.h"
+        -:    4:
+        -:    5:namespace media_player 
+        -:    6:{
+        -:    7:namespace controllers 
+        -:    8:{
+        -:    9:
+    #####:   10:QueueController::QueueController(std::shared_ptr<models::QueueModel> queueModel)
+    #####:   11:    : m_queueModel(queueModel)
+        -:   12:{
+    #####:   13:    LOG_INFO("QueueController initialized");
+    #####:   14:}
+        -:   15:
+    #####:   16:QueueController::~QueueController() 
+        -:   17:{
+    #####:   18:    LOG_INFO("QueueController destroyed");
+    #####:   19:}
+        -:   20:
+    #####:   21:void QueueController::addToQueue(const models::MediaFileModel& media) 
+        -:   22:{
+    #####:   23:    m_queueModel->addToEnd(media);
+    #####:   24:    LOG_INFO("Added to queue: " + media.getFileName());
+    #####:   25:}
+        -:   26:
+    #####:   27:void QueueController::addToQueueNext(const models::MediaFileModel& media) 
+        -:   28:{
+    #####:   29:    m_queueModel->addNext(media);
+    #####:   30:    LOG_INFO("Added to queue next: " + media.getFileName());
+    #####:   31:}
+        -:   32:
+    #####:   33:void QueueController::addPlaylistToQueue(const models::PlaylistModel& playlist) 
+        -:   34:{
+    #####:   35:    auto items = playlist.getItems();
+        -:   36:    
+    #####:   37:    for (const auto& item : items) 
+        -:   38:    {
+    #####:   39:        m_queueModel->addToEnd(item);
+        -:   40:    }
+        -:   41:    
+    #####:   42:    LOG_INFO("Playlist added to queue: " + playlist.getName() + " (" + std::to_string(items.size()) + " items)");
+    #####:   43:}
+        -:   44:
+    #####:   45:void QueueController::addMultipleToQueue(const std::vector<models::MediaFileModel>& mediaList) 
+        -:   46:{
+    #####:   47:    for (const auto& media : mediaList) 
+        -:   48:    {
+    #####:   49:        m_queueModel->addToEnd(media);
+        -:   50:    }
+        -:   51:    
+    #####:   52:    LOG_INFO("Added " + std::to_string(mediaList.size()) + " items to queue");
+    #####:   53:}
+        -:   54:
+    #####:   55:bool QueueController::removeFromQueue(size_t index) 
+        -:   56:{
+    #####:   57:    if (m_queueModel->removeAt(index)) 
+        -:   58:    {
+    #####:   59:        LOG_INFO("Removed item from queue at index: " + std::to_string(index));
+    #####:   60:        return true;
+        -:   61:    }
+        -:   62:    
+    #####:   63:    LOG_ERROR("Failed to remove item from queue");
+    #####:   64:    return false;
+        -:   65:}
+        -:   66:
+    #####:   67:bool QueueController::removeByPath(const std::string& filePath) 
+        -:   68:{
+    #####:   69:    if (m_queueModel->removeByPath(filePath)) 
+        -:   70:    {
+    #####:   71:        LOG_INFO("Removed item from queue: " + filePath);
+    #####:   72:        return true;
+        -:   73:    }
+        -:   74:    
+    #####:   75:    LOG_ERROR("Failed to remove item from queue");
+    #####:   76:    return false;
+        -:   77:}
+        -:   78:
+    #####:   79:void QueueController::clearQueue() 
+        -:   80:{
+    #####:   81:    m_queueModel->clear();
+    #####:   82:    LOG_INFO("Queue cleared");
+    #####:   83:}
+        -:   84:
+    #####:   85:bool QueueController::jumpToIndex(size_t index) 
+        -:   86:{
+    #####:   87:    if (m_queueModel->jumpTo(index)) 
+        -:   88:    {
+    #####:   89:        LOG_INFO("Jumped to queue index: " + std::to_string(index));
+    #####:   90:        return true;
+        -:   91:    }
+        -:   92:    
+    #####:   93:    LOG_ERROR("Failed to jump to queue index");
+    #####:   94:    return false;
+        -:   95:}
+        -:   96:
+    #####:   97:bool QueueController::moveToNext() 
+        -:   98:{
+    #####:   99:    if (m_queueModel->moveToNext()) 
+        -:  100:    {
+    #####:  101:        LOG_INFO("Moved to next item in queue");
+    #####:  102:        return true;
+        -:  103:    }
+        -:  104:    
+    #####:  105:    LOG_ERROR("No next item in queue");
+    #####:  106:    return false;
+        -:  107:}
+        -:  108:
+    #####:  109:bool QueueController::moveToPrevious() 
+        -:  110:{
+    #####:  111:    if (m_queueModel->moveToPrevious()) 
+        -:  112:    {
+    #####:  113:        LOG_INFO("Moved to previous item in queue");
+    #####:  114:        return true;
+        -:  115:    }
+        -:  116:    
+    #####:  117:    LOG_ERROR("No previous item in queue");
+    #####:  118:    return false;
+        -:  119:}
+        -:  120:
+    #####:  121:bool QueueController::moveItem(size_t fromIndex, size_t toIndex) 
+        -:  122:{
+    #####:  123:    if (m_queueModel->moveItem(fromIndex, toIndex)) 
+        -:  124:    {
+    #####:  125:        LOG_INFO("Moved item in queue from " + std::to_string(fromIndex) + " to " + std::to_string(toIndex));
+    #####:  126:        return true;
+        -:  127:    }
+        -:  128:    
+    #####:  129:    LOG_ERROR("Failed to move item in queue");
+    #####:  130:    return false;
+        -:  131:}
+        -:  132:
+    #####:  133:void QueueController::toggleShuffle() 
+        -:  134:{
+    #####:  135:    bool currentShuffle = m_queueModel->isShuffleEnabled();
+    #####:  136:    m_queueModel->setShuffleMode(!currentShuffle);
+    #####:  137:    LOG_INFO("Shuffle " + std::string(!currentShuffle ? "enabled" : "disabled"));
+    #####:  138:}
+        -:  139:
+    #####:  140:void QueueController::cycleRepeatMode() 
+        -:  141:{
+    #####:  142:    auto mode = m_queueModel->getRepeatMode();
+    #####:  143:    models::RepeatMode next = (mode == models::RepeatMode::None) ? models::RepeatMode::LoopOne :
+    #####:  144:                             (mode == models::RepeatMode::LoopOne) ? models::RepeatMode::LoopAll :
+        -:  145:                             models::RepeatMode::None;
+    #####:  146:    m_queueModel->setRepeatMode(next);
+    #####:  147:    const char* name = (next == models::RepeatMode::None) ? "None" :
+        -:  148:                      (next == models::RepeatMode::LoopOne) ? "LoopOne" : "LoopAll";
+    #####:  149:    LOG_INFO("Repeat mode: " + std::string(name));
+    #####:  150:}
+        -:  151:
+    #####:  152:void QueueController::toggleRepeat() 
+        -:  153:{
+    #####:  154:    cycleRepeatMode();
+    #####:  155:}
+        -:  156:
+    #####:  157:void QueueController::setShuffle(bool enabled) 
+        -:  158:{
+    #####:  159:    m_queueModel->setShuffleMode(enabled);
+    #####:  160:    LOG_INFO("Shuffle " + std::string(enabled ? "enabled" : "disabled"));
+    #####:  161:}
+        -:  162:
+    #####:  163:void QueueController::setRepeat(models::RepeatMode mode) 
+        -:  164:{
+    #####:  165:    m_queueModel->setRepeatMode(mode);
+    #####:  166:}
+        -:  167:
+    #####:  168:bool QueueController::isShuffleEnabled() const 
+        -:  169:{
+    #####:  170:    return m_queueModel->isShuffleEnabled();
+        -:  171:}
+        -:  172:
+    #####:  173:models::RepeatMode QueueController::getRepeatMode() const 
+        -:  174:{
+    #####:  175:    return m_queueModel->getRepeatMode();
+        -:  176:}
+        -:  177:
+    #####:  178:bool QueueController::isLoopOneEnabled() const 
+        -:  179:{
+    #####:  180:    return m_queueModel->isLoopOneEnabled();
+        -:  181:}
+        -:  182:
+    #####:  183:bool QueueController::isLoopAllEnabled() const 
+        -:  184:{
+    #####:  185:    return m_queueModel->isLoopAllEnabled();
+        -:  186:}
+        -:  187:
+    #####:  188:bool QueueController::isRepeatEnabled() const 
+        -:  189:{
+    #####:  190:    return m_queueModel->getRepeatMode() != models::RepeatMode::None;
+        -:  191:}
+        -:  192:
+    #####:  193:size_t QueueController::getQueueSize() const 
+        -:  194:{
+    #####:  195:    return m_queueModel->size();
+        -:  196:}
+        -:  197:
+    #####:  198:bool QueueController::isEmpty() const 
+        -:  199:{
+    #####:  200:    return m_queueModel->isEmpty();
+        -:  201:}
+        -:  202:
+    #####:  203:bool QueueController::hasNext() const 
+        -:  204:{
+    #####:  205:    return m_queueModel->hasNext();
+        -:  206:}
+        -:  207:
+    #####:  208:bool QueueController::hasPrevious() const 
+        -:  209:{
+    #####:  210:    return m_queueModel->hasPrevious();
+        -:  211:}
+        -:  212:
+    #####:  213:std::vector<models::MediaFileModel> QueueController::getAllItems() const 
+        -:  214:{
+    #####:  215:    return m_queueModel->getAllItems();
+        -:  216:}
+        -:  217:
+    #####:  218:std::vector<models::MediaFileModel> QueueController::getPlaybackOrderItems() const
+        -:  219:{
+    #####:  220:    return m_queueModel->getItemsInPlaybackOrder();
+        -:  221:}
+        -:  222:
+    #####:  223:std::optional<models::MediaFileModel> QueueController::getCurrentItem() const 
+        -:  224:{
+    #####:  225:    return m_queueModel->getCurrentItem();
+        -:  226:}
+        -:  227:
+    #####:  228:size_t QueueController::getCurrentIndex() const
+        -:  229:{
+    #####:  230:    return m_queueModel->getCurrentIndex();
+        -:  231:}
+        -:  232:
+        -:  233:} // namespace controllers
+        -:  234:} // namespace media_player

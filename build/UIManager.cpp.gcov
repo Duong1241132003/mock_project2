@@ -1,0 +1,352 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/src/ui/UIManager.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.gcda
+        -:    0:Runs:6
+        -:    1:// Project includes
+        -:    2:#include "ui/UIManager.h"
+        -:    3:#include "utils/Logger.h"
+        -:    4:
+        -:    5:// System includes
+        -:    6:#include <sstream>
+        -:    7:
+        -:    8:namespace media_player 
+        -:    9:{
+        -:   10:namespace ui 
+        -:   11:{
+        -:   12:
+    #####:   13:UIManager::UIManager()
+    #####:   14:    : m_window(nullptr)
+    #####:   15:    , m_renderer(nullptr)
+    #####:   16:    , m_font(nullptr)
+    #####:   17:    , m_fontLarge(nullptr)
+    #####:   18:    , m_fontSmall(nullptr)
+    #####:   19:    , m_width(0)
+    #####:   20:    , m_height(0)
+        -:   21:{
+    #####:   22:}
+        -:   23:
+    #####:   24:UIManager::~UIManager() 
+        -:   25:{
+    #####:   26:    shutdown();
+    #####:   27:}
+        -:   28:
+    #####:   29:bool UIManager::initialize(const std::string& title, int width, int height) 
+        -:   30:{
+    #####:   31:    m_width = width;
+    #####:   32:    m_height = height;
+        -:   33:    
+        -:   34:    // Initialize SDL_ttf
+    #####:   35:    if (TTF_Init() < 0) 
+        -:   36:    {
+    #####:   37:        LOG_ERROR("Failed to initialize SDL_ttf: " + std::string(TTF_GetError()));
+    #####:   38:        return false;
+        -:   39:    }
+        -:   40:    
+        -:   41:    // Create window
+    #####:   42:    m_window = SDL_CreateWindow(
+        -:   43:        title.c_str(),
+        -:   44:        SDL_WINDOWPOS_CENTERED,
+        -:   45:        SDL_WINDOWPOS_CENTERED,
+        -:   46:        width,
+        -:   47:        height,
+        -:   48:        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
+        -:   49:    );
+        -:   50:    
+    #####:   51:    if (!m_window) 
+        -:   52:    {
+    #####:   53:        LOG_ERROR("Failed to create window: " + std::string(SDL_GetError()));
+    #####:   54:        return false;
+        -:   55:    }
+        -:   56:    
+        -:   57:    // Create renderer
+    #####:   58:    m_renderer = SDL_CreateRenderer(
+        -:   59:        m_window,
+        -:   60:        -1,
+        -:   61:        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
+        -:   62:    );
+        -:   63:    
+    #####:   64:    if (!m_renderer) 
+        -:   65:    {
+    #####:   66:        LOG_ERROR("Failed to create renderer: " + std::string(SDL_GetError()));
+    #####:   67:        return false;
+        -:   68:    }
+        -:   69:    
+        -:   70:    // Enable alpha blending
+    #####:   71:    SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
+        -:   72:    
+        -:   73:    // Load built-in font fallback (using SDL primitives if no font)
+        -:   74:    // Try to load system font
+    #####:   75:    const char* fontPaths[] = {
+        -:   76:        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        -:   77:        "/usr/share/fonts/truetype/freefont/FreeSans.ttf",
+        -:   78:        "/usr/share/fonts/TTF/DejaVuSans.ttf",
+        -:   79:        "/usr/share/fonts/liberation/LiberationSans-Regular.ttf"
+        -:   80:    };
+        -:   81:    
+    #####:   82:    for (const char* path : fontPaths) 
+        -:   83:    {
+    #####:   84:        m_font = TTF_OpenFont(path, 16);
+    #####:   85:        if (m_font) 
+        -:   86:        {
+    #####:   87:            m_fontLarge = TTF_OpenFont(path, 24);
+    #####:   88:            m_fontSmall = TTF_OpenFont(path, 12);
+    #####:   89:            LOG_INFO("Loaded font: " + std::string(path));
+    #####:   90:            break;
+        -:   91:        }
+        -:   92:    }
+        -:   93:    
+    #####:   94:    if (!m_font) 
+        -:   95:    {
+    #####:   96:        LOG_WARNING("No system font found, text rendering will be limited");
+        -:   97:    }
+        -:   98:    
+    #####:   99:    LOG_INFO("UIManager initialized with " + std::to_string(width) + "x" + std::to_string(height));
+    #####:  100:    return true;
+        -:  101:}
+        -:  102:
+    #####:  103:void UIManager::shutdown() 
+        -:  104:{
+    #####:  105:    if (m_fontSmall) 
+        -:  106:    {
+    #####:  107:        TTF_CloseFont(m_fontSmall);
+    #####:  108:        m_fontSmall = nullptr;
+        -:  109:    }
+        -:  110:    
+    #####:  111:    if (m_fontLarge) 
+        -:  112:    {
+    #####:  113:        TTF_CloseFont(m_fontLarge);
+    #####:  114:        m_fontLarge = nullptr;
+        -:  115:    }
+        -:  116:    
+    #####:  117:    if (m_font) 
+        -:  118:    {
+    #####:  119:        TTF_CloseFont(m_font);
+    #####:  120:        m_font = nullptr;
+        -:  121:    }
+        -:  122:    
+    #####:  123:    if (m_renderer) 
+        -:  124:    {
+    #####:  125:        SDL_DestroyRenderer(m_renderer);
+    #####:  126:        m_renderer = nullptr;
+        -:  127:    }
+        -:  128:    
+    #####:  129:    if (m_window) 
+        -:  130:    {
+    #####:  131:        SDL_DestroyWindow(m_window);
+    #####:  132:        m_window = nullptr;
+        -:  133:    }
+        -:  134:    
+    #####:  135:    TTF_Quit();
+    #####:  136:}
+        -:  137:
+    #####:  138:void UIManager::beginFrame() 
+        -:  139:{
+    #####:  140:    clear();
+    #####:  141:}
+        -:  142:
+    #####:  143:void UIManager::endFrame() 
+        -:  144:{
+    #####:  145:    SDL_RenderPresent(m_renderer);
+    #####:  146:}
+        -:  147:
+    #####:  148:void UIManager::clear() 
+        -:  149:{
+    #####:  150:    Color bg = Color::background();
+    #####:  151:    SDL_SetRenderDrawColor(m_renderer, bg.r, bg.g, bg.b, bg.a);
+    #####:  152:    SDL_RenderClear(m_renderer);
+    #####:  153:}
+        -:  154:
+    #####:  155:void UIManager::drawRect(int x, int y, int w, int h, const Color& color, bool filled) 
+        -:  156:{
+    #####:  157:    SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
+    #####:  158:    SDL_Rect rect = {x, y, w, h};
+        -:  159:    
+    #####:  160:    if (filled) 
+        -:  161:    {
+    #####:  162:        SDL_RenderFillRect(m_renderer, &rect);
+        -:  163:    }
+        -:  164:    else 
+        -:  165:    {
+    #####:  166:        SDL_RenderDrawRect(m_renderer, &rect);
+        -:  167:    }
+    #####:  168:}
+        -:  169:
+    #####:  170:void UIManager::drawText(const std::string& text, int x, int y, const Color& color, int fontSize) 
+        -:  171:{
+    #####:  172:    if (!m_font || text.empty()) 
+        -:  173:    {
+    #####:  174:        return;
+        -:  175:    }
+        -:  176:    
+    #####:  177:    TTF_Font* font = m_font;
+    #####:  178:    if (fontSize >= 20 && m_fontLarge) 
+        -:  179:    {
+    #####:  180:        font = m_fontLarge;
+        -:  181:    }
+    #####:  182:    else if (fontSize <= 12 && m_fontSmall) 
+        -:  183:    {
+    #####:  184:        font = m_fontSmall;
+        -:  185:    }
+        -:  186:    
+    #####:  187:    SDL_Color sdlColor = {color.r, color.g, color.b, color.a};
+    #####:  188:    SDL_Surface* surface = TTF_RenderUTF8_Blended(font, text.c_str(), sdlColor);
+        -:  189:    
+    #####:  190:    if (!surface) 
+        -:  191:    {
+    #####:  192:        return;
+        -:  193:    }
+        -:  194:    
+    #####:  195:    SDL_Texture* texture = SDL_CreateTextureFromSurface(m_renderer, surface);
+        -:  196:    
+    #####:  197:    if (texture) 
+        -:  198:    {
+    #####:  199:        SDL_Rect destRect = {x, y, surface->w, surface->h};
+    #####:  200:        SDL_RenderCopy(m_renderer, texture, nullptr, &destRect);
+    #####:  201:        SDL_DestroyTexture(texture);
+        -:  202:    }
+        -:  203:    
+    #####:  204:    SDL_FreeSurface(surface);
+        -:  205:}
+        -:  206:
+    #####:  207:void UIManager::drawButton(const std::string& text, int x, int y, int w, int h, bool hover) 
+        -:  208:{
+    #####:  209:    Color bg = hover ? Color::highlight() : Color::secondary();
+    #####:  210:    drawRect(x, y, w, h, bg, true);
+    #####:  211:    drawRect(x, y, w, h, Color::primary(), false);
+        -:  212:    
+        -:  213:    // Center text in button
+    #####:  214:    if (m_font) 
+        -:  215:    {
+        -:  216:        int textW, textH;
+    #####:  217:        TTF_SizeUTF8(m_font, text.c_str(), &textW, &textH);
+    #####:  218:        int textX = x + (w - textW) / 2;
+    #####:  219:        int textY = y + (h - textH) / 2;
+    #####:  220:        drawText(text, textX, textY, Color::text(), 16);
+        -:  221:    }
+    #####:  222:}
+        -:  223:
+    #####:  224:void UIManager::drawProgressBar(int x, int y, int w, int h, float progress, const Color& fg, const Color& bg) 
+        -:  225:{
+        -:  226:    // Background
+    #####:  227:    drawRect(x, y, w, h, bg, true);
+        -:  228:    
+        -:  229:    // Progress
+    #####:  230:    int progressWidth = static_cast<int>(w * progress);
+    #####:  231:    if (progressWidth > 0) 
+        -:  232:    {
+    #####:  233:        drawRect(x, y, progressWidth, h, fg, true);
+        -:  234:    }
+        -:  235:    
+        -:  236:    // Border
+    #####:  237:    drawRect(x, y, w, h, Color::primary(), false);
+    #####:  238:}
+        -:  239:
+    #####:  240:void UIManager::drawMediaItem(const models::MediaFileModel& media, int x, int y, int w, int h, 
+        -:  241:                              bool selected, bool playing) 
+        -:  242:{
+        -:  243:    // Background
+    #####:  244:    Color bg = selected ? Color::highlight() : Color::secondary();
+    #####:  245:    drawRect(x, y, w, h, bg, true);
+        -:  246:    
+        -:  247:    // Playing indicator
+    #####:  248:    if (playing) 
+        -:  249:    {
+    #####:  250:        drawRect(x, y, 4, h, Color::success(), true);
+        -:  251:    }
+        -:  252:    
+        -:  253:    // Media type icon area
+    #####:  254:    int iconX = x + 10;
+    #####:  255:    Color iconColor = media.isAudio() ? Color::primary() : Color::warning();
+    #####:  256:    drawRect(iconX, y + 8, 30, h - 16, iconColor, true);
+        -:  257:    
+    #####:  258:    std::string typeLabel = media.isAudio() ? "A" : "V";
+    #####:  259:    drawText(typeLabel, iconX + 10, y + 12, Color::text(), 16);
+        -:  260:    
+        -:  261:    // Filename
+    #####:  262:    int textX = x + 50;
+    #####:  263:    drawText(media.getFileName(), textX, y + 10, Color::text(), 16);
+        -:  264:    
+        -:  265:    // File size
+    #####:  266:    std::stringstream ss;
+    #####:  267:    float sizeMB = static_cast<float>(media.getFileSize()) / (1024 * 1024);
+    #####:  268:    ss.precision(2);
+    #####:  269:    ss << std::fixed << sizeMB << " MB";
+    #####:  270:    drawText(ss.str(), x + w - 100, y + 10, Color::textDim(), 12);
+    #####:  271:}
+        -:  272:
+    #####:  273:void UIManager::drawHeader(const std::string& title, int itemCount) 
+        -:  274:{
+        -:  275:    // Header background
+    #####:  276:    drawRect(0, 0, m_width, 60, Color::secondary(), true);
+        -:  277:    
+        -:  278:    // Title
+    #####:  279:    drawText(title, 20, 15, Color::text(), 24);
+        -:  280:    
+        -:  281:    // Item count
+    #####:  282:    std::string countText = std::to_string(itemCount) + " items";
+    #####:  283:    drawText(countText, m_width - 150, 20, Color::textDim(), 16);
+    #####:  284:}
+        -:  285:
+    #####:  286:void UIManager::drawStatusBar(const std::string& status) 
+        -:  287:{
+    #####:  288:    int y = m_height - 30;
+        -:  289:    
+        -:  290:    // Background
+    #####:  291:    drawRect(0, y, m_width, 30, Color::secondary(), true);
+        -:  292:    
+        -:  293:    // Status text
+    #####:  294:    drawText(status, 20, y + 5, Color::textDim(), 12);
+    #####:  295:}
+        -:  296:
+    #####:  297:void UIManager::drawScanProgress(const std::string& path, int current, int total) 
+        -:  298:{
+    #####:  299:    int centerY = m_height / 2 - 50;
+        -:  300:    
+        -:  301:    // Box background
+    #####:  302:    int boxW = 500;
+    #####:  303:    int boxH = 120;
+    #####:  304:    int boxX = (m_width - boxW) / 2;
+    #####:  305:    int boxY = centerY;
+        -:  306:    
+    #####:  307:    drawRect(boxX, boxY, boxW, boxH, Color::secondary(), true);
+    #####:  308:    drawRect(boxX, boxY, boxW, boxH, Color::primary(), false);
+        -:  309:    
+        -:  310:    // Title
+    #####:  311:    drawText("Scanning Media Files...", boxX + 20, boxY + 15, Color::text(), 20);
+        -:  312:    
+        -:  313:    // Path
+    #####:  314:    std::string shortPath = path;
+    #####:  315:    if (shortPath.length() > 50) 
+        -:  316:    {
+    #####:  317:        shortPath = "..." + shortPath.substr(shortPath.length() - 47);
+        -:  318:    }
+    #####:  319:    drawText(shortPath, boxX + 20, boxY + 45, Color::textDim(), 12);
+        -:  320:    
+        -:  321:    // Progress bar
+    #####:  322:    float progress = total > 0 ? static_cast<float>(current) / total : 0;
+    #####:  323:    drawProgressBar(boxX + 20, boxY + 70, boxW - 40, 20, progress, Color::primary(), Color::background());
+        -:  324:    
+        -:  325:    // Count
+    #####:  326:    std::string countText = std::to_string(current) + " / " + std::to_string(total) + " files";
+    #####:  327:    drawText(countText, boxX + 20, boxY + 95, Color::textDim(), 12);
+    #####:  328:}
+        -:  329:
+    #####:  330:bool UIManager::loadFont(const std::string& path, int size) 
+        -:  331:{
+    #####:  332:    TTF_Font* font = TTF_OpenFont(path.c_str(), size);
+        -:  333:    
+    #####:  334:    if (font) 
+        -:  335:    {
+    #####:  336:        if (m_font) 
+        -:  337:        {
+    #####:  338:            TTF_CloseFont(m_font);
+        -:  339:        }
+    #####:  340:        m_font = font;
+    #####:  341:        return true;
+        -:  342:    }
+        -:  343:    
+    #####:  344:    return false;
+        -:  345:}
+        -:  346:
+        -:  347:} // namespace ui
+        -:  348:} // namespace media_player

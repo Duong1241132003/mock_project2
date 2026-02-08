@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/duong/MediaPlayerApp/inc -I/usr/include/taglib -isystem /usr/include/SDL2
+CXX_INCLUDES = -I/home/duong/MediaPlayerApp/inc -I/usr/include/taglib -I/home/duong/MediaPlayerApp/build/_deps/googletest-src/googletest/include -I/home/duong/MediaPlayerApp/build/_deps/googletest-src/googlemock/include -isystem /usr/include/SDL2
 
 CXX_FLAGS = -std=c++17 -Wall -Wextra -Wpedantic
 

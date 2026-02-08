@@ -1,6 +1,5 @@
 // Project includes
 #include "services/MetadataReader.h"
-#include "utils/Logger.h"
 
 // TagLib includes
 #include <taglib/fileref.h>
@@ -22,19 +21,16 @@ namespace services
 
 MetadataReader::MetadataReader() 
 {
-    LOG_INFO("MetadataReader initialized");
 }
 
 MetadataReader::~MetadataReader() 
 {
-    LOG_INFO("MetadataReader destroyed");
 }
 
 std::unique_ptr<models::MetadataModel> MetadataReader::readMetadata(const std::string& filePath) 
 {
     if (!canReadFile(filePath)) 
     {
-        LOG_ERROR("Cannot read file: " + filePath);
         return nullptr;
     }
     
@@ -46,7 +42,6 @@ std::unique_ptr<models::MetadataModel> MetadataReader::readMetadata(const std::s
         
         if (file.isNull()) 
         {
-            LOG_ERROR("TagLib could not open file: " + filePath);
             return nullptr;
         }
         
@@ -103,12 +98,10 @@ std::unique_ptr<models::MetadataModel> MetadataReader::readMetadata(const std::s
             }
         }
         
-        LOG_INFO("Successfully read metadata from: " + filePath);
         return metadata;
     }
     catch (const std::exception& e) 
     {
-        LOG_ERROR("Exception reading metadata: " + std::string(e.what()));
         return nullptr;
     }
 }
@@ -122,7 +115,6 @@ bool MetadataReader::writeMetadata(const std::string& filePath, const models::Me
 {
     if (!canReadFile(filePath)) 
     {
-        LOG_ERROR("Cannot write to file: " + filePath);
         return false;
     }
     
@@ -132,7 +124,6 @@ bool MetadataReader::writeMetadata(const std::string& filePath, const models::Me
         
         if (file.isNull()) 
         {
-            LOG_ERROR("TagLib could not open file for writing: " + filePath);
             return false;
         }
         
@@ -140,7 +131,6 @@ bool MetadataReader::writeMetadata(const std::string& filePath, const models::Me
         
         if (!tag) 
         {
-            LOG_ERROR("No tag available in file: " + filePath);
             return false;
         }
         
@@ -161,25 +151,21 @@ bool MetadataReader::writeMetadata(const std::string& filePath, const models::Me
         }
         catch (const std::exception& e) 
         {
-            LOG_WARNING("Invalid year format: " + metadata.getYear());
         }
         
         bool success = file.save();
         
         if (success) 
         {
-            LOG_INFO("Successfully wrote metadata to: " + filePath);
         }
         else 
         {
-            LOG_ERROR("Failed to save metadata to: " + filePath);
         }
         
         return success;
     }
     catch (const std::exception& e) 
     {
-        LOG_ERROR("Exception writing metadata: " + std::string(e.what()));
         return false;
     }
 }
@@ -190,7 +176,6 @@ bool MetadataReader::extractCoverArt(const std::string& filePath, const std::str
     
     if (extension != ".mp3") 
     {
-        LOG_WARNING("Cover art extraction only supported for MP3 files");
         return false;
     }
     
@@ -200,7 +185,6 @@ bool MetadataReader::extractCoverArt(const std::string& filePath, const std::str
         
         if (!mp3File.isValid() || !mp3File.ID3v2Tag()) 
         {
-            LOG_ERROR("Invalid MP3 file or no ID3v2 tag: " + filePath);
             return false;
         }
         
@@ -209,7 +193,6 @@ bool MetadataReader::extractCoverArt(const std::string& filePath, const std::str
         
         if (frameList.isEmpty()) 
         {
-            LOG_WARNING("No cover art found in: " + filePath);
             return false;
         }
         
@@ -228,14 +211,12 @@ bool MetadataReader::extractCoverArt(const std::string& filePath, const std::str
         
         if (success) 
         {
-            LOG_INFO("Cover art extracted to: " + outputPath);
         }
         
         return success;
     }
     catch (const std::exception& e) 
     {
-        LOG_ERROR("Exception extracting cover art: " + std::string(e.what()));
         return false;
     }
 }
@@ -246,7 +227,6 @@ bool MetadataReader::embedCoverArt(const std::string& filePath, const std::strin
     
     if (extension != ".mp3") 
     {
-        LOG_WARNING("Cover art embedding only supported for MP3 files");
         return false;
     }
     
@@ -256,7 +236,6 @@ bool MetadataReader::embedCoverArt(const std::string& filePath, const std::strin
         
         if (imageData.empty()) 
         {
-            LOG_ERROR("Failed to read image file: " + imagePath);
             return false;
         }
         
@@ -264,7 +243,6 @@ bool MetadataReader::embedCoverArt(const std::string& filePath, const std::strin
         
         if (!mp3File.isValid()) 
         {
-            LOG_ERROR("Invalid MP3 file: " + filePath);
             return false;
         }
         
@@ -272,7 +250,6 @@ bool MetadataReader::embedCoverArt(const std::string& filePath, const std::strin
         
         if (!id3v2) 
         {
-            LOG_ERROR("Could not create/access ID3v2 tag");
             return false;
         }
         
@@ -292,18 +269,15 @@ bool MetadataReader::embedCoverArt(const std::string& filePath, const std::strin
         
         if (success) 
         {
-            LOG_INFO("Cover art embedded successfully in: " + filePath);
         }
         else 
         {
-            LOG_ERROR("Failed to save file with cover art: " + filePath);
         }
         
         return success;
     }
     catch (const std::exception& e) 
     {
-        LOG_ERROR("Exception embedding cover art: " + std::string(e.what()));
         return false;
     }
 }

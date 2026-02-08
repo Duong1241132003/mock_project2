@@ -1,6 +1,5 @@
 // Project includes
 #include "services/VideoMetadataReader.h"
-#include "utils/Logger.h"
 #include "config/AppConfig.h"
 
 // FFmpeg includes
@@ -22,19 +21,16 @@ namespace services
 
 VideoMetadataReader::VideoMetadataReader() 
 {
-    LOG_INFO("VideoMetadataReader initialized");
 }
 
 VideoMetadataReader::~VideoMetadataReader() 
 {
-    LOG_INFO("VideoMetadataReader destroyed");
 }
 
 std::unique_ptr<models::VideoMetadataModel> VideoMetadataReader::readMetadata(const std::string& filePath) 
 {
     if (!canReadFile(filePath)) 
     {
-        LOG_ERROR("Cannot read video file: " + filePath);
         return nullptr;
     }
     
@@ -44,13 +40,11 @@ std::unique_ptr<models::VideoMetadataModel> VideoMetadataReader::readMetadata(co
     
     if (avformat_open_input(&formatContext, filePath.c_str(), nullptr, nullptr) != 0) 
     {
-        LOG_ERROR("Could not open video file: " + filePath);
         return nullptr;
     }
     
     if (avformat_find_stream_info(formatContext, nullptr) < 0) 
     {
-        LOG_ERROR("Could not find stream info: " + filePath);
         avformat_close_input(&formatContext);
         return nullptr;
     }
@@ -75,7 +69,6 @@ std::unique_ptr<models::VideoMetadataModel> VideoMetadataReader::readMetadata(co
     
     if (videoStreamIndex == -1) 
     {
-        LOG_ERROR("No video stream found in file: " + filePath);
         avformat_close_input(&formatContext);
         return nullptr;
     }
@@ -138,7 +131,6 @@ std::unique_ptr<models::VideoMetadataModel> VideoMetadataReader::readMetadata(co
     
     avformat_close_input(&formatContext);
     
-    LOG_INFO("Successfully read video metadata from: " + filePath);
     return metadata;
 }
 
@@ -155,7 +147,6 @@ bool VideoMetadataReader::extractThumbnail(const std::string& filePath,
     
     if (avformat_open_input(&formatContext, filePath.c_str(), nullptr, nullptr) != 0) 
     {
-        LOG_ERROR("Could not open video file for thumbnail: " + filePath);
         return false;
     }
     
@@ -220,7 +211,6 @@ bool VideoMetadataReader::extractThumbnail(const std::string& filePath,
                 {
                     // Frame extracted - save as image (simplified)
                     // In real implementation, use libpng or libjpeg to save
-                    LOG_INFO("Thumbnail frame extracted (saving not implemented)");
                     thumbnailExtracted = true;
                     break;
                 }

@@ -355,11 +355,6 @@ CMakeFiles/MediaPlayerApp.dir/src/ui/ImGuiManager.cpp.o: \
  /usr/include/c++/13/map /usr/include/c++/13/bits/stl_tree.h \
  /usr/include/c++/13/bits/stl_map.h \
  /usr/include/c++/13/bits/stl_multimap.h \
- /home/duong/MediaPlayerApp/inc/utils/Logger.h \
- /usr/include/c++/13/fstream \
- /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
- /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
- /usr/include/c++/13/bits/fstream.tcc \
  /home/duong/MediaPlayerApp/inc/controllers/PlaybackController.h \
  /home/duong/MediaPlayerApp/inc/services/IPlaybackEngine.h \
  /home/duong/MediaPlayerApp/inc/services/AudioPlaybackEngine.h \
@@ -382,4 +377,8 @@ CMakeFiles/MediaPlayerApp.dir/src/ui/ImGuiManager.cpp.o: \
  /home/duong/MediaPlayerApp/inc/repositories/IRepository.h \
  /home/duong/MediaPlayerApp/inc/services/IMetadataReader.h \
  /home/duong/MediaPlayerApp/inc/controllers/PlaylistController.h \
- /home/duong/MediaPlayerApp/inc/repositories/PlaylistRepository.h
+ /home/duong/MediaPlayerApp/inc/repositories/PlaylistRepository.h \
+ /usr/include/c++/13/fstream \
+ /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
+ /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
+ /usr/include/c++/13/bits/fstream.tcc

@@ -65,6 +65,16 @@ CMAKE_BINARY_DIR = /home/duong/MediaPlayerApp/build
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running tests..."
+	/usr/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "No interactive CMake dialog available..."
@@ -87,7 +97,7 @@ rebuild_cache/fast: rebuild_cache
 
 # Special rule for the target list_install_components
 list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Available install components are: \"Unspecified\""
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Available install components are: \"Unspecified\" \"gmock\" \"gtest\""
 .PHONY : list_install_components
 
 # Special rule for the target list_install_components
@@ -174,12 +184,91 @@ MediaPlayerApp/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/build
 .PHONY : MediaPlayerApp/fast
 
+#=============================================================================
+# Target rules for targets named RunTests
+
+# Build rule for target.
+RunTests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 RunTests
+.PHONY : RunTests
+
+# fast build rule for target.
+RunTests/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/build
+.PHONY : RunTests/fast
+
+#=============================================================================
+# Target rules for targets named coverage
+
+# Build rule for target.
+coverage: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 coverage
+.PHONY : coverage
+
+# fast build rule for target.
+coverage/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/coverage.dir/build.make CMakeFiles/coverage.dir/build
+.PHONY : coverage/fast
+
+#=============================================================================
+# Target rules for targets named gmock
+
+# Build rule for target.
+gmock: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gmock
+.PHONY : gmock
+
+# fast build rule for target.
+gmock/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/build
+.PHONY : gmock/fast
+
+#=============================================================================
+# Target rules for targets named gmock_main
+
+# Build rule for target.
+gmock_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gmock_main
+.PHONY : gmock_main
+
+# fast build rule for target.
+gmock_main/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build
+.PHONY : gmock_main/fast
+
+#=============================================================================
+# Target rules for targets named gtest
+
+# Build rule for target.
+gtest: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest
+.PHONY : gtest
+
+# fast build rule for target.
+gtest/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build
+.PHONY : gtest/fast
+
+#=============================================================================
+# Target rules for targets named gtest_main
+
+# Build rule for target.
+gtest_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest_main
+.PHONY : gtest_main
+
+# fast build rule for target.
+gtest_main/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build
+.PHONY : gtest_main/fast
+
 src/config/AppConfig.o: src/config/AppConfig.cpp.o
 .PHONY : src/config/AppConfig.o
 
 # target to build an object file
 src/config/AppConfig.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/config/AppConfig.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.o
 .PHONY : src/config/AppConfig.cpp.o
 
 src/config/AppConfig.i: src/config/AppConfig.cpp.i
@@ -188,6 +277,7 @@ src/config/AppConfig.i: src/config/AppConfig.cpp.i
 # target to preprocess a source file
 src/config/AppConfig.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/config/AppConfig.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.i
 .PHONY : src/config/AppConfig.cpp.i
 
 src/config/AppConfig.s: src/config/AppConfig.cpp.s
@@ -196,6 +286,7 @@ src/config/AppConfig.s: src/config/AppConfig.cpp.s
 # target to generate assembly for a file
 src/config/AppConfig.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/config/AppConfig.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.s
 .PHONY : src/config/AppConfig.cpp.s
 
 src/controllers/HardwareController.o: src/controllers/HardwareController.cpp.o
@@ -204,6 +295,7 @@ src/controllers/HardwareController.o: src/controllers/HardwareController.cpp.o
 # target to build an object file
 src/controllers/HardwareController.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/HardwareController.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.o
 .PHONY : src/controllers/HardwareController.cpp.o
 
 src/controllers/HardwareController.i: src/controllers/HardwareController.cpp.i
@@ -212,6 +304,7 @@ src/controllers/HardwareController.i: src/controllers/HardwareController.cpp.i
 # target to preprocess a source file
 src/controllers/HardwareController.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/HardwareController.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.i
 .PHONY : src/controllers/HardwareController.cpp.i
 
 src/controllers/HardwareController.s: src/controllers/HardwareController.cpp.s
@@ -220,6 +313,7 @@ src/controllers/HardwareController.s: src/controllers/HardwareController.cpp.s
 # target to generate assembly for a file
 src/controllers/HardwareController.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/HardwareController.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.s
 .PHONY : src/controllers/HardwareController.cpp.s
 
 src/controllers/LibraryController.o: src/controllers/LibraryController.cpp.o
@@ -228,6 +322,7 @@ src/controllers/LibraryController.o: src/controllers/LibraryController.cpp.o
 # target to build an object file
 src/controllers/LibraryController.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/LibraryController.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/LibraryController.cpp.o
 .PHONY : src/controllers/LibraryController.cpp.o
 
 src/controllers/LibraryController.i: src/controllers/LibraryController.cpp.i
@@ -236,6 +331,7 @@ src/controllers/LibraryController.i: src/controllers/LibraryController.cpp.i
 # target to preprocess a source file
 src/controllers/LibraryController.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/LibraryController.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/LibraryController.cpp.i
 .PHONY : src/controllers/LibraryController.cpp.i
 
 src/controllers/LibraryController.s: src/controllers/LibraryController.cpp.s
@@ -244,6 +340,7 @@ src/controllers/LibraryController.s: src/controllers/LibraryController.cpp.s
 # target to generate assembly for a file
 src/controllers/LibraryController.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/LibraryController.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/LibraryController.cpp.s
 .PHONY : src/controllers/LibraryController.cpp.s
 
 src/controllers/MainController.o: src/controllers/MainController.cpp.o
@@ -252,6 +349,7 @@ src/controllers/MainController.o: src/controllers/MainController.cpp.o
 # target to build an object file
 src/controllers/MainController.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/MainController.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/MainController.cpp.o
 .PHONY : src/controllers/MainController.cpp.o
 
 src/controllers/MainController.i: src/controllers/MainController.cpp.i
@@ -260,6 +358,7 @@ src/controllers/MainController.i: src/controllers/MainController.cpp.i
 # target to preprocess a source file
 src/controllers/MainController.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/MainController.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/MainController.cpp.i
 .PHONY : src/controllers/MainController.cpp.i
 
 src/controllers/MainController.s: src/controllers/MainController.cpp.s
@@ -268,6 +367,7 @@ src/controllers/MainController.s: src/controllers/MainController.cpp.s
 # target to generate assembly for a file
 src/controllers/MainController.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/MainController.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/MainController.cpp.s
 .PHONY : src/controllers/MainController.cpp.s
 
 src/controllers/PlaybackController.o: src/controllers/PlaybackController.cpp.o
@@ -276,6 +376,7 @@ src/controllers/PlaybackController.o: src/controllers/PlaybackController.cpp.o
 # target to build an object file
 src/controllers/PlaybackController.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/PlaybackController.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/PlaybackController.cpp.o
 .PHONY : src/controllers/PlaybackController.cpp.o
 
 src/controllers/PlaybackController.i: src/controllers/PlaybackController.cpp.i
@@ -284,6 +385,7 @@ src/controllers/PlaybackController.i: src/controllers/PlaybackController.cpp.i
 # target to preprocess a source file
 src/controllers/PlaybackController.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/PlaybackController.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/PlaybackController.cpp.i
 .PHONY : src/controllers/PlaybackController.cpp.i
 
 src/controllers/PlaybackController.s: src/controllers/PlaybackController.cpp.s
@@ -292,6 +394,7 @@ src/controllers/PlaybackController.s: src/controllers/PlaybackController.cpp.s
 # target to generate assembly for a file
 src/controllers/PlaybackController.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/PlaybackController.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/PlaybackController.cpp.s
 .PHONY : src/controllers/PlaybackController.cpp.s
 
 src/controllers/PlaylistController.o: src/controllers/PlaylistController.cpp.o
@@ -300,6 +403,7 @@ src/controllers/PlaylistController.o: src/controllers/PlaylistController.cpp.o
 # target to build an object file
 src/controllers/PlaylistController.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/PlaylistController.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/PlaylistController.cpp.o
 .PHONY : src/controllers/PlaylistController.cpp.o
 
 src/controllers/PlaylistController.i: src/controllers/PlaylistController.cpp.i
@@ -308,6 +412,7 @@ src/controllers/PlaylistController.i: src/controllers/PlaylistController.cpp.i
 # target to preprocess a source file
 src/controllers/PlaylistController.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/PlaylistController.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/PlaylistController.cpp.i
 .PHONY : src/controllers/PlaylistController.cpp.i
 
 src/controllers/PlaylistController.s: src/controllers/PlaylistController.cpp.s
@@ -316,6 +421,7 @@ src/controllers/PlaylistController.s: src/controllers/PlaylistController.cpp.s
 # target to generate assembly for a file
 src/controllers/PlaylistController.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/PlaylistController.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/PlaylistController.cpp.s
 .PHONY : src/controllers/PlaylistController.cpp.s
 
 src/controllers/QueueController.o: src/controllers/QueueController.cpp.o
@@ -324,6 +430,7 @@ src/controllers/QueueController.o: src/controllers/QueueController.cpp.o
 # target to build an object file
 src/controllers/QueueController.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/QueueController.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/QueueController.cpp.o
 .PHONY : src/controllers/QueueController.cpp.o
 
 src/controllers/QueueController.i: src/controllers/QueueController.cpp.i
@@ -332,6 +439,7 @@ src/controllers/QueueController.i: src/controllers/QueueController.cpp.i
 # target to preprocess a source file
 src/controllers/QueueController.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/QueueController.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/QueueController.cpp.i
 .PHONY : src/controllers/QueueController.cpp.i
 
 src/controllers/QueueController.s: src/controllers/QueueController.cpp.s
@@ -340,6 +448,7 @@ src/controllers/QueueController.s: src/controllers/QueueController.cpp.s
 # target to generate assembly for a file
 src/controllers/QueueController.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/QueueController.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/QueueController.cpp.s
 .PHONY : src/controllers/QueueController.cpp.s
 
 src/controllers/SourceController.o: src/controllers/SourceController.cpp.o
@@ -348,6 +457,7 @@ src/controllers/SourceController.o: src/controllers/SourceController.cpp.o
 # target to build an object file
 src/controllers/SourceController.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/SourceController.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.o
 .PHONY : src/controllers/SourceController.cpp.o
 
 src/controllers/SourceController.i: src/controllers/SourceController.cpp.i
@@ -356,6 +466,7 @@ src/controllers/SourceController.i: src/controllers/SourceController.cpp.i
 # target to preprocess a source file
 src/controllers/SourceController.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/SourceController.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.i
 .PHONY : src/controllers/SourceController.cpp.i
 
 src/controllers/SourceController.s: src/controllers/SourceController.cpp.s
@@ -364,6 +475,7 @@ src/controllers/SourceController.s: src/controllers/SourceController.cpp.s
 # target to generate assembly for a file
 src/controllers/SourceController.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/SourceController.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.s
 .PHONY : src/controllers/SourceController.cpp.s
 
 src/core/Application.o: src/core/Application.cpp.o
@@ -372,6 +484,7 @@ src/core/Application.o: src/core/Application.cpp.o
 # target to build an object file
 src/core/Application.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/core/Application.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/core/Application.cpp.o
 .PHONY : src/core/Application.cpp.o
 
 src/core/Application.i: src/core/Application.cpp.i
@@ -380,6 +493,7 @@ src/core/Application.i: src/core/Application.cpp.i
 # target to preprocess a source file
 src/core/Application.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/core/Application.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/core/Application.cpp.i
 .PHONY : src/core/Application.cpp.i
 
 src/core/Application.s: src/core/Application.cpp.s
@@ -388,6 +502,7 @@ src/core/Application.s: src/core/Application.cpp.s
 # target to generate assembly for a file
 src/core/Application.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/core/Application.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/core/Application.cpp.s
 .PHONY : src/core/Application.cpp.s
 
 src/main.o: src/main.cpp.o
@@ -420,6 +535,7 @@ src/models/LibraryModel.o: src/models/LibraryModel.cpp.o
 # target to build an object file
 src/models/LibraryModel.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/LibraryModel.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/LibraryModel.cpp.o
 .PHONY : src/models/LibraryModel.cpp.o
 
 src/models/LibraryModel.i: src/models/LibraryModel.cpp.i
@@ -428,6 +544,7 @@ src/models/LibraryModel.i: src/models/LibraryModel.cpp.i
 # target to preprocess a source file
 src/models/LibraryModel.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/LibraryModel.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/LibraryModel.cpp.i
 .PHONY : src/models/LibraryModel.cpp.i
 
 src/models/LibraryModel.s: src/models/LibraryModel.cpp.s
@@ -436,6 +553,7 @@ src/models/LibraryModel.s: src/models/LibraryModel.cpp.s
 # target to generate assembly for a file
 src/models/LibraryModel.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/LibraryModel.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/LibraryModel.cpp.s
 .PHONY : src/models/LibraryModel.cpp.s
 
 src/models/MediaFileModel.o: src/models/MediaFileModel.cpp.o
@@ -444,6 +562,7 @@ src/models/MediaFileModel.o: src/models/MediaFileModel.cpp.o
 # target to build an object file
 src/models/MediaFileModel.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/MediaFileModel.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/MediaFileModel.cpp.o
 .PHONY : src/models/MediaFileModel.cpp.o
 
 src/models/MediaFileModel.i: src/models/MediaFileModel.cpp.i
@@ -452,6 +571,7 @@ src/models/MediaFileModel.i: src/models/MediaFileModel.cpp.i
 # target to preprocess a source file
 src/models/MediaFileModel.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/MediaFileModel.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/MediaFileModel.cpp.i
 .PHONY : src/models/MediaFileModel.cpp.i
 
 src/models/MediaFileModel.s: src/models/MediaFileModel.cpp.s
@@ -460,6 +580,7 @@ src/models/MediaFileModel.s: src/models/MediaFileModel.cpp.s
 # target to generate assembly for a file
 src/models/MediaFileModel.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/MediaFileModel.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/MediaFileModel.cpp.s
 .PHONY : src/models/MediaFileModel.cpp.s
 
 src/models/MetadataModel.o: src/models/MetadataModel.cpp.o
@@ -468,6 +589,7 @@ src/models/MetadataModel.o: src/models/MetadataModel.cpp.o
 # target to build an object file
 src/models/MetadataModel.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/MetadataModel.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/MetadataModel.cpp.o
 .PHONY : src/models/MetadataModel.cpp.o
 
 src/models/MetadataModel.i: src/models/MetadataModel.cpp.i
@@ -476,6 +598,7 @@ src/models/MetadataModel.i: src/models/MetadataModel.cpp.i
 # target to preprocess a source file
 src/models/MetadataModel.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/MetadataModel.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/MetadataModel.cpp.i
 .PHONY : src/models/MetadataModel.cpp.i
 
 src/models/MetadataModel.s: src/models/MetadataModel.cpp.s
@@ -484,6 +607,7 @@ src/models/MetadataModel.s: src/models/MetadataModel.cpp.s
 # target to generate assembly for a file
 src/models/MetadataModel.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/MetadataModel.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/MetadataModel.cpp.s
 .PHONY : src/models/MetadataModel.cpp.s
 
 src/models/PlaybackStateModel.o: src/models/PlaybackStateModel.cpp.o
@@ -492,6 +616,7 @@ src/models/PlaybackStateModel.o: src/models/PlaybackStateModel.cpp.o
 # target to build an object file
 src/models/PlaybackStateModel.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/PlaybackStateModel.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/PlaybackStateModel.cpp.o
 .PHONY : src/models/PlaybackStateModel.cpp.o
 
 src/models/PlaybackStateModel.i: src/models/PlaybackStateModel.cpp.i
@@ -500,6 +625,7 @@ src/models/PlaybackStateModel.i: src/models/PlaybackStateModel.cpp.i
 # target to preprocess a source file
 src/models/PlaybackStateModel.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/PlaybackStateModel.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/PlaybackStateModel.cpp.i
 .PHONY : src/models/PlaybackStateModel.cpp.i
 
 src/models/PlaybackStateModel.s: src/models/PlaybackStateModel.cpp.s
@@ -508,6 +634,7 @@ src/models/PlaybackStateModel.s: src/models/PlaybackStateModel.cpp.s
 # target to generate assembly for a file
 src/models/PlaybackStateModel.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/PlaybackStateModel.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/PlaybackStateModel.cpp.s
 .PHONY : src/models/PlaybackStateModel.cpp.s
 
 src/models/PlaylistModel.o: src/models/PlaylistModel.cpp.o
@@ -516,6 +643,7 @@ src/models/PlaylistModel.o: src/models/PlaylistModel.cpp.o
 # target to build an object file
 src/models/PlaylistModel.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/PlaylistModel.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/PlaylistModel.cpp.o
 .PHONY : src/models/PlaylistModel.cpp.o
 
 src/models/PlaylistModel.i: src/models/PlaylistModel.cpp.i
@@ -524,6 +652,7 @@ src/models/PlaylistModel.i: src/models/PlaylistModel.cpp.i
 # target to preprocess a source file
 src/models/PlaylistModel.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/PlaylistModel.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/PlaylistModel.cpp.i
 .PHONY : src/models/PlaylistModel.cpp.i
 
 src/models/PlaylistModel.s: src/models/PlaylistModel.cpp.s
@@ -532,6 +661,7 @@ src/models/PlaylistModel.s: src/models/PlaylistModel.cpp.s
 # target to generate assembly for a file
 src/models/PlaylistModel.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/PlaylistModel.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/PlaylistModel.cpp.s
 .PHONY : src/models/PlaylistModel.cpp.s
 
 src/models/QueueModel.o: src/models/QueueModel.cpp.o
@@ -540,6 +670,7 @@ src/models/QueueModel.o: src/models/QueueModel.cpp.o
 # target to build an object file
 src/models/QueueModel.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/QueueModel.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/QueueModel.cpp.o
 .PHONY : src/models/QueueModel.cpp.o
 
 src/models/QueueModel.i: src/models/QueueModel.cpp.i
@@ -548,6 +679,7 @@ src/models/QueueModel.i: src/models/QueueModel.cpp.i
 # target to preprocess a source file
 src/models/QueueModel.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/QueueModel.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/QueueModel.cpp.i
 .PHONY : src/models/QueueModel.cpp.i
 
 src/models/QueueModel.s: src/models/QueueModel.cpp.s
@@ -556,6 +688,7 @@ src/models/QueueModel.s: src/models/QueueModel.cpp.s
 # target to generate assembly for a file
 src/models/QueueModel.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/QueueModel.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/QueueModel.cpp.s
 .PHONY : src/models/QueueModel.cpp.s
 
 src/models/VideoMetadataModel.o: src/models/VideoMetadataModel.cpp.o
@@ -564,6 +697,7 @@ src/models/VideoMetadataModel.o: src/models/VideoMetadataModel.cpp.o
 # target to build an object file
 src/models/VideoMetadataModel.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/VideoMetadataModel.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/VideoMetadataModel.cpp.o
 .PHONY : src/models/VideoMetadataModel.cpp.o
 
 src/models/VideoMetadataModel.i: src/models/VideoMetadataModel.cpp.i
@@ -572,6 +706,7 @@ src/models/VideoMetadataModel.i: src/models/VideoMetadataModel.cpp.i
 # target to preprocess a source file
 src/models/VideoMetadataModel.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/VideoMetadataModel.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/VideoMetadataModel.cpp.i
 .PHONY : src/models/VideoMetadataModel.cpp.i
 
 src/models/VideoMetadataModel.s: src/models/VideoMetadataModel.cpp.s
@@ -580,6 +715,7 @@ src/models/VideoMetadataModel.s: src/models/VideoMetadataModel.cpp.s
 # target to generate assembly for a file
 src/models/VideoMetadataModel.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/VideoMetadataModel.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/VideoMetadataModel.cpp.s
 .PHONY : src/models/VideoMetadataModel.cpp.s
 
 src/repositories/HistoryRepository.o: src/repositories/HistoryRepository.cpp.o
@@ -588,6 +724,7 @@ src/repositories/HistoryRepository.o: src/repositories/HistoryRepository.cpp.o
 # target to build an object file
 src/repositories/HistoryRepository.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/repositories/HistoryRepository.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/repositories/HistoryRepository.cpp.o
 .PHONY : src/repositories/HistoryRepository.cpp.o
 
 src/repositories/HistoryRepository.i: src/repositories/HistoryRepository.cpp.i
@@ -596,6 +733,7 @@ src/repositories/HistoryRepository.i: src/repositories/HistoryRepository.cpp.i
 # target to preprocess a source file
 src/repositories/HistoryRepository.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/repositories/HistoryRepository.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/repositories/HistoryRepository.cpp.i
 .PHONY : src/repositories/HistoryRepository.cpp.i
 
 src/repositories/HistoryRepository.s: src/repositories/HistoryRepository.cpp.s
@@ -604,6 +742,7 @@ src/repositories/HistoryRepository.s: src/repositories/HistoryRepository.cpp.s
 # target to generate assembly for a file
 src/repositories/HistoryRepository.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/repositories/HistoryRepository.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/repositories/HistoryRepository.cpp.s
 .PHONY : src/repositories/HistoryRepository.cpp.s
 
 src/repositories/LibraryRepository.o: src/repositories/LibraryRepository.cpp.o
@@ -612,6 +751,7 @@ src/repositories/LibraryRepository.o: src/repositories/LibraryRepository.cpp.o
 # target to build an object file
 src/repositories/LibraryRepository.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/repositories/LibraryRepository.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/repositories/LibraryRepository.cpp.o
 .PHONY : src/repositories/LibraryRepository.cpp.o
 
 src/repositories/LibraryRepository.i: src/repositories/LibraryRepository.cpp.i
@@ -620,6 +760,7 @@ src/repositories/LibraryRepository.i: src/repositories/LibraryRepository.cpp.i
 # target to preprocess a source file
 src/repositories/LibraryRepository.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/repositories/LibraryRepository.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/repositories/LibraryRepository.cpp.i
 .PHONY : src/repositories/LibraryRepository.cpp.i
 
 src/repositories/LibraryRepository.s: src/repositories/LibraryRepository.cpp.s
@@ -628,6 +769,7 @@ src/repositories/LibraryRepository.s: src/repositories/LibraryRepository.cpp.s
 # target to generate assembly for a file
 src/repositories/LibraryRepository.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/repositories/LibraryRepository.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/repositories/LibraryRepository.cpp.s
 .PHONY : src/repositories/LibraryRepository.cpp.s
 
 src/repositories/PlaylistRepository.o: src/repositories/PlaylistRepository.cpp.o
@@ -636,6 +778,7 @@ src/repositories/PlaylistRepository.o: src/repositories/PlaylistRepository.cpp.o
 # target to build an object file
 src/repositories/PlaylistRepository.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/repositories/PlaylistRepository.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/repositories/PlaylistRepository.cpp.o
 .PHONY : src/repositories/PlaylistRepository.cpp.o
 
 src/repositories/PlaylistRepository.i: src/repositories/PlaylistRepository.cpp.i
@@ -644,6 +787,7 @@ src/repositories/PlaylistRepository.i: src/repositories/PlaylistRepository.cpp.i
 # target to preprocess a source file
 src/repositories/PlaylistRepository.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/repositories/PlaylistRepository.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/repositories/PlaylistRepository.cpp.i
 .PHONY : src/repositories/PlaylistRepository.cpp.i
 
 src/repositories/PlaylistRepository.s: src/repositories/PlaylistRepository.cpp.s
@@ -652,6 +796,7 @@ src/repositories/PlaylistRepository.s: src/repositories/PlaylistRepository.cpp.s
 # target to generate assembly for a file
 src/repositories/PlaylistRepository.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/repositories/PlaylistRepository.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/repositories/PlaylistRepository.cpp.s
 .PHONY : src/repositories/PlaylistRepository.cpp.s
 
 src/services/AudioPlaybackEngine.o: src/services/AudioPlaybackEngine.cpp.o
@@ -660,6 +805,7 @@ src/services/AudioPlaybackEngine.o: src/services/AudioPlaybackEngine.cpp.o
 # target to build an object file
 src/services/AudioPlaybackEngine.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/AudioPlaybackEngine.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/services/AudioPlaybackEngine.cpp.o
 .PHONY : src/services/AudioPlaybackEngine.cpp.o
 
 src/services/AudioPlaybackEngine.i: src/services/AudioPlaybackEngine.cpp.i
@@ -668,6 +814,7 @@ src/services/AudioPlaybackEngine.i: src/services/AudioPlaybackEngine.cpp.i
 # target to preprocess a source file
 src/services/AudioPlaybackEngine.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/AudioPlaybackEngine.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/services/AudioPlaybackEngine.cpp.i
 .PHONY : src/services/AudioPlaybackEngine.cpp.i
 
 src/services/AudioPlaybackEngine.s: src/services/AudioPlaybackEngine.cpp.s
@@ -676,6 +823,7 @@ src/services/AudioPlaybackEngine.s: src/services/AudioPlaybackEngine.cpp.s
 # target to generate assembly for a file
 src/services/AudioPlaybackEngine.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/AudioPlaybackEngine.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/services/AudioPlaybackEngine.cpp.s
 .PHONY : src/services/AudioPlaybackEngine.cpp.s
 
 src/services/FileScanner.o: src/services/FileScanner.cpp.o
@@ -684,6 +832,7 @@ src/services/FileScanner.o: src/services/FileScanner.cpp.o
 # target to build an object file
 src/services/FileScanner.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/FileScanner.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/services/FileScanner.cpp.o
 .PHONY : src/services/FileScanner.cpp.o
 
 src/services/FileScanner.i: src/services/FileScanner.cpp.i
@@ -692,6 +841,7 @@ src/services/FileScanner.i: src/services/FileScanner.cpp.i
 # target to preprocess a source file
 src/services/FileScanner.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/FileScanner.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/services/FileScanner.cpp.i
 .PHONY : src/services/FileScanner.cpp.i
 
 src/services/FileScanner.s: src/services/FileScanner.cpp.s
@@ -700,6 +850,7 @@ src/services/FileScanner.s: src/services/FileScanner.cpp.s
 # target to generate assembly for a file
 src/services/FileScanner.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/FileScanner.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/services/FileScanner.cpp.s
 .PHONY : src/services/FileScanner.cpp.s
 
 src/services/MetadataReader.o: src/services/MetadataReader.cpp.o
@@ -708,6 +859,7 @@ src/services/MetadataReader.o: src/services/MetadataReader.cpp.o
 # target to build an object file
 src/services/MetadataReader.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/MetadataReader.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.o
 .PHONY : src/services/MetadataReader.cpp.o
 
 src/services/MetadataReader.i: src/services/MetadataReader.cpp.i
@@ -716,6 +868,7 @@ src/services/MetadataReader.i: src/services/MetadataReader.cpp.i
 # target to preprocess a source file
 src/services/MetadataReader.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/MetadataReader.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.i
 .PHONY : src/services/MetadataReader.cpp.i
 
 src/services/MetadataReader.s: src/services/MetadataReader.cpp.s
@@ -724,6 +877,7 @@ src/services/MetadataReader.s: src/services/MetadataReader.cpp.s
 # target to generate assembly for a file
 src/services/MetadataReader.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/MetadataReader.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.s
 .PHONY : src/services/MetadataReader.cpp.s
 
 src/services/SerialCommunication.o: src/services/SerialCommunication.cpp.o
@@ -732,6 +886,7 @@ src/services/SerialCommunication.o: src/services/SerialCommunication.cpp.o
 # target to build an object file
 src/services/SerialCommunication.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/SerialCommunication.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/services/SerialCommunication.cpp.o
 .PHONY : src/services/SerialCommunication.cpp.o
 
 src/services/SerialCommunication.i: src/services/SerialCommunication.cpp.i
@@ -740,6 +895,7 @@ src/services/SerialCommunication.i: src/services/SerialCommunication.cpp.i
 # target to preprocess a source file
 src/services/SerialCommunication.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/SerialCommunication.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/services/SerialCommunication.cpp.i
 .PHONY : src/services/SerialCommunication.cpp.i
 
 src/services/SerialCommunication.s: src/services/SerialCommunication.cpp.s
@@ -748,6 +904,7 @@ src/services/SerialCommunication.s: src/services/SerialCommunication.cpp.s
 # target to generate assembly for a file
 src/services/SerialCommunication.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/SerialCommunication.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/services/SerialCommunication.cpp.s
 .PHONY : src/services/SerialCommunication.cpp.s
 
 src/services/VideoMetadataReader.o: src/services/VideoMetadataReader.cpp.o
@@ -756,6 +913,7 @@ src/services/VideoMetadataReader.o: src/services/VideoMetadataReader.cpp.o
 # target to build an object file
 src/services/VideoMetadataReader.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/VideoMetadataReader.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/services/VideoMetadataReader.cpp.o
 .PHONY : src/services/VideoMetadataReader.cpp.o
 
 src/services/VideoMetadataReader.i: src/services/VideoMetadataReader.cpp.i
@@ -764,6 +922,7 @@ src/services/VideoMetadataReader.i: src/services/VideoMetadataReader.cpp.i
 # target to preprocess a source file
 src/services/VideoMetadataReader.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/VideoMetadataReader.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/services/VideoMetadataReader.cpp.i
 .PHONY : src/services/VideoMetadataReader.cpp.i
 
 src/services/VideoMetadataReader.s: src/services/VideoMetadataReader.cpp.s
@@ -772,6 +931,7 @@ src/services/VideoMetadataReader.s: src/services/VideoMetadataReader.cpp.s
 # target to generate assembly for a file
 src/services/VideoMetadataReader.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/services/VideoMetadataReader.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/services/VideoMetadataReader.cpp.s
 .PHONY : src/services/VideoMetadataReader.cpp.s
 
 src/ui/ImGuiManager.o: src/ui/ImGuiManager.cpp.o
@@ -780,6 +940,7 @@ src/ui/ImGuiManager.o: src/ui/ImGuiManager.cpp.o
 # target to build an object file
 src/ui/ImGuiManager.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/ui/ImGuiManager.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/ui/ImGuiManager.cpp.o
 .PHONY : src/ui/ImGuiManager.cpp.o
 
 src/ui/ImGuiManager.i: src/ui/ImGuiManager.cpp.i
@@ -788,6 +949,7 @@ src/ui/ImGuiManager.i: src/ui/ImGuiManager.cpp.i
 # target to preprocess a source file
 src/ui/ImGuiManager.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/ui/ImGuiManager.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/ui/ImGuiManager.cpp.i
 .PHONY : src/ui/ImGuiManager.cpp.i
 
 src/ui/ImGuiManager.s: src/ui/ImGuiManager.cpp.s
@@ -796,6 +958,7 @@ src/ui/ImGuiManager.s: src/ui/ImGuiManager.cpp.s
 # target to generate assembly for a file
 src/ui/ImGuiManager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/ui/ImGuiManager.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/ui/ImGuiManager.cpp.s
 .PHONY : src/ui/ImGuiManager.cpp.s
 
 src/ui/UIManager.o: src/ui/UIManager.cpp.o
@@ -804,6 +967,7 @@ src/ui/UIManager.o: src/ui/UIManager.cpp.o
 # target to build an object file
 src/ui/UIManager.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/ui/UIManager.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.o
 .PHONY : src/ui/UIManager.cpp.o
 
 src/ui/UIManager.i: src/ui/UIManager.cpp.i
@@ -812,6 +976,7 @@ src/ui/UIManager.i: src/ui/UIManager.cpp.i
 # target to preprocess a source file
 src/ui/UIManager.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/ui/UIManager.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.i
 .PHONY : src/ui/UIManager.cpp.i
 
 src/ui/UIManager.s: src/ui/UIManager.cpp.s
@@ -820,6 +985,7 @@ src/ui/UIManager.s: src/ui/UIManager.cpp.s
 # target to generate assembly for a file
 src/ui/UIManager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/ui/UIManager.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.s
 .PHONY : src/ui/UIManager.cpp.s
 
 src/utils/AVSyncClock.o: src/utils/AVSyncClock.cpp.o
@@ -828,6 +994,7 @@ src/utils/AVSyncClock.o: src/utils/AVSyncClock.cpp.o
 # target to build an object file
 src/utils/AVSyncClock.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/utils/AVSyncClock.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/utils/AVSyncClock.cpp.o
 .PHONY : src/utils/AVSyncClock.cpp.o
 
 src/utils/AVSyncClock.i: src/utils/AVSyncClock.cpp.i
@@ -836,6 +1003,7 @@ src/utils/AVSyncClock.i: src/utils/AVSyncClock.cpp.i
 # target to preprocess a source file
 src/utils/AVSyncClock.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/utils/AVSyncClock.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/utils/AVSyncClock.cpp.i
 .PHONY : src/utils/AVSyncClock.cpp.i
 
 src/utils/AVSyncClock.s: src/utils/AVSyncClock.cpp.s
@@ -844,31 +1012,8 @@ src/utils/AVSyncClock.s: src/utils/AVSyncClock.cpp.s
 # target to generate assembly for a file
 src/utils/AVSyncClock.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/utils/AVSyncClock.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/utils/AVSyncClock.cpp.s
 .PHONY : src/utils/AVSyncClock.cpp.s
-
-src/utils/Logger.o: src/utils/Logger.cpp.o
-.PHONY : src/utils/Logger.o
-
-# target to build an object file
-src/utils/Logger.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/utils/Logger.cpp.o
-.PHONY : src/utils/Logger.cpp.o
-
-src/utils/Logger.i: src/utils/Logger.cpp.i
-.PHONY : src/utils/Logger.i
-
-# target to preprocess a source file
-src/utils/Logger.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/utils/Logger.cpp.i
-.PHONY : src/utils/Logger.cpp.i
-
-src/utils/Logger.s: src/utils/Logger.cpp.s
-.PHONY : src/utils/Logger.s
-
-# target to generate assembly for a file
-src/utils/Logger.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/utils/Logger.cpp.s
-.PHONY : src/utils/Logger.cpp.s
 
 src/views/LibraryScreen.o: src/views/LibraryScreen.cpp.o
 .PHONY : src/views/LibraryScreen.o
@@ -876,6 +1021,7 @@ src/views/LibraryScreen.o: src/views/LibraryScreen.cpp.o
 # target to build an object file
 src/views/LibraryScreen.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o
 .PHONY : src/views/LibraryScreen.cpp.o
 
 src/views/LibraryScreen.i: src/views/LibraryScreen.cpp.i
@@ -884,6 +1030,7 @@ src/views/LibraryScreen.i: src/views/LibraryScreen.cpp.i
 # target to preprocess a source file
 src/views/LibraryScreen.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.i
 .PHONY : src/views/LibraryScreen.cpp.i
 
 src/views/LibraryScreen.s: src/views/LibraryScreen.cpp.s
@@ -892,6 +1039,7 @@ src/views/LibraryScreen.s: src/views/LibraryScreen.cpp.s
 # target to generate assembly for a file
 src/views/LibraryScreen.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.s
 .PHONY : src/views/LibraryScreen.cpp.s
 
 src/views/MainScreen.o: src/views/MainScreen.cpp.o
@@ -900,6 +1048,7 @@ src/views/MainScreen.o: src/views/MainScreen.cpp.o
 # target to build an object file
 src/views/MainScreen.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o
 .PHONY : src/views/MainScreen.cpp.o
 
 src/views/MainScreen.i: src/views/MainScreen.cpp.i
@@ -908,6 +1057,7 @@ src/views/MainScreen.i: src/views/MainScreen.cpp.i
 # target to preprocess a source file
 src/views/MainScreen.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.i
 .PHONY : src/views/MainScreen.cpp.i
 
 src/views/MainScreen.s: src/views/MainScreen.cpp.s
@@ -916,6 +1066,7 @@ src/views/MainScreen.s: src/views/MainScreen.cpp.s
 # target to generate assembly for a file
 src/views/MainScreen.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.s
 .PHONY : src/views/MainScreen.cpp.s
 
 src/views/NowPlayingBar.o: src/views/NowPlayingBar.cpp.o
@@ -924,6 +1075,7 @@ src/views/NowPlayingBar.o: src/views/NowPlayingBar.cpp.o
 # target to build an object file
 src/views/NowPlayingBar.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/NowPlayingBar.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.o
 .PHONY : src/views/NowPlayingBar.cpp.o
 
 src/views/NowPlayingBar.i: src/views/NowPlayingBar.cpp.i
@@ -932,6 +1084,7 @@ src/views/NowPlayingBar.i: src/views/NowPlayingBar.cpp.i
 # target to preprocess a source file
 src/views/NowPlayingBar.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/NowPlayingBar.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.i
 .PHONY : src/views/NowPlayingBar.cpp.i
 
 src/views/NowPlayingBar.s: src/views/NowPlayingBar.cpp.s
@@ -940,6 +1093,7 @@ src/views/NowPlayingBar.s: src/views/NowPlayingBar.cpp.s
 # target to generate assembly for a file
 src/views/NowPlayingBar.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/NowPlayingBar.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.s
 .PHONY : src/views/NowPlayingBar.cpp.s
 
 src/views/PlaylistScreen.o: src/views/PlaylistScreen.cpp.o
@@ -948,6 +1102,7 @@ src/views/PlaylistScreen.o: src/views/PlaylistScreen.cpp.o
 # target to build an object file
 src/views/PlaylistScreen.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/PlaylistScreen.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.o
 .PHONY : src/views/PlaylistScreen.cpp.o
 
 src/views/PlaylistScreen.i: src/views/PlaylistScreen.cpp.i
@@ -956,6 +1111,7 @@ src/views/PlaylistScreen.i: src/views/PlaylistScreen.cpp.i
 # target to preprocess a source file
 src/views/PlaylistScreen.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/PlaylistScreen.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.i
 .PHONY : src/views/PlaylistScreen.cpp.i
 
 src/views/PlaylistScreen.s: src/views/PlaylistScreen.cpp.s
@@ -964,6 +1120,7 @@ src/views/PlaylistScreen.s: src/views/PlaylistScreen.cpp.s
 # target to generate assembly for a file
 src/views/PlaylistScreen.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/PlaylistScreen.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.s
 .PHONY : src/views/PlaylistScreen.cpp.s
 
 src/views/QueuePanel.o: src/views/QueuePanel.cpp.o
@@ -972,6 +1129,7 @@ src/views/QueuePanel.o: src/views/QueuePanel.cpp.o
 # target to build an object file
 src/views/QueuePanel.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/QueuePanel.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.o
 .PHONY : src/views/QueuePanel.cpp.o
 
 src/views/QueuePanel.i: src/views/QueuePanel.cpp.i
@@ -980,6 +1138,7 @@ src/views/QueuePanel.i: src/views/QueuePanel.cpp.i
 # target to preprocess a source file
 src/views/QueuePanel.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/QueuePanel.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.i
 .PHONY : src/views/QueuePanel.cpp.i
 
 src/views/QueuePanel.s: src/views/QueuePanel.cpp.s
@@ -988,6 +1147,7 @@ src/views/QueuePanel.s: src/views/QueuePanel.cpp.s
 # target to generate assembly for a file
 src/views/QueuePanel.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/QueuePanel.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.s
 .PHONY : src/views/QueuePanel.cpp.s
 
 src/views/ScanScreen.o: src/views/ScanScreen.cpp.o
@@ -996,6 +1156,7 @@ src/views/ScanScreen.o: src/views/ScanScreen.cpp.o
 # target to build an object file
 src/views/ScanScreen.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/ScanScreen.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.o
 .PHONY : src/views/ScanScreen.cpp.o
 
 src/views/ScanScreen.i: src/views/ScanScreen.cpp.i
@@ -1004,6 +1165,7 @@ src/views/ScanScreen.i: src/views/ScanScreen.cpp.i
 # target to preprocess a source file
 src/views/ScanScreen.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/ScanScreen.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.i
 .PHONY : src/views/ScanScreen.cpp.i
 
 src/views/ScanScreen.s: src/views/ScanScreen.cpp.s
@@ -1012,7 +1174,440 @@ src/views/ScanScreen.s: src/views/ScanScreen.cpp.s
 # target to generate assembly for a file
 src/views/ScanScreen.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/ScanScreen.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.s
 .PHONY : src/views/ScanScreen.cpp.s
+
+tests/controllers/HardwareControllerInvalidTest.o: tests/controllers/HardwareControllerInvalidTest.cpp.o
+.PHONY : tests/controllers/HardwareControllerInvalidTest.o
+
+# target to build an object file
+tests/controllers/HardwareControllerInvalidTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerInvalidTest.cpp.o
+.PHONY : tests/controllers/HardwareControllerInvalidTest.cpp.o
+
+tests/controllers/HardwareControllerInvalidTest.i: tests/controllers/HardwareControllerInvalidTest.cpp.i
+.PHONY : tests/controllers/HardwareControllerInvalidTest.i
+
+# target to preprocess a source file
+tests/controllers/HardwareControllerInvalidTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerInvalidTest.cpp.i
+.PHONY : tests/controllers/HardwareControllerInvalidTest.cpp.i
+
+tests/controllers/HardwareControllerInvalidTest.s: tests/controllers/HardwareControllerInvalidTest.cpp.s
+.PHONY : tests/controllers/HardwareControllerInvalidTest.s
+
+# target to generate assembly for a file
+tests/controllers/HardwareControllerInvalidTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerInvalidTest.cpp.s
+.PHONY : tests/controllers/HardwareControllerInvalidTest.cpp.s
+
+tests/controllers/HardwareControllerParseTest.o: tests/controllers/HardwareControllerParseTest.cpp.o
+.PHONY : tests/controllers/HardwareControllerParseTest.o
+
+# target to build an object file
+tests/controllers/HardwareControllerParseTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerParseTest.cpp.o
+.PHONY : tests/controllers/HardwareControllerParseTest.cpp.o
+
+tests/controllers/HardwareControllerParseTest.i: tests/controllers/HardwareControllerParseTest.cpp.i
+.PHONY : tests/controllers/HardwareControllerParseTest.i
+
+# target to preprocess a source file
+tests/controllers/HardwareControllerParseTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerParseTest.cpp.i
+.PHONY : tests/controllers/HardwareControllerParseTest.cpp.i
+
+tests/controllers/HardwareControllerParseTest.s: tests/controllers/HardwareControllerParseTest.cpp.s
+.PHONY : tests/controllers/HardwareControllerParseTest.s
+
+# target to generate assembly for a file
+tests/controllers/HardwareControllerParseTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerParseTest.cpp.s
+.PHONY : tests/controllers/HardwareControllerParseTest.cpp.s
+
+tests/controllers/HardwareControllerTest.o: tests/controllers/HardwareControllerTest.cpp.o
+.PHONY : tests/controllers/HardwareControllerTest.o
+
+# target to build an object file
+tests/controllers/HardwareControllerTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerTest.cpp.o
+.PHONY : tests/controllers/HardwareControllerTest.cpp.o
+
+tests/controllers/HardwareControllerTest.i: tests/controllers/HardwareControllerTest.cpp.i
+.PHONY : tests/controllers/HardwareControllerTest.i
+
+# target to preprocess a source file
+tests/controllers/HardwareControllerTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerTest.cpp.i
+.PHONY : tests/controllers/HardwareControllerTest.cpp.i
+
+tests/controllers/HardwareControllerTest.s: tests/controllers/HardwareControllerTest.cpp.s
+.PHONY : tests/controllers/HardwareControllerTest.s
+
+# target to generate assembly for a file
+tests/controllers/HardwareControllerTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerTest.cpp.s
+.PHONY : tests/controllers/HardwareControllerTest.cpp.s
+
+tests/controllers/LibraryControllerExtraTest.o: tests/controllers/LibraryControllerExtraTest.cpp.o
+.PHONY : tests/controllers/LibraryControllerExtraTest.o
+
+# target to build an object file
+tests/controllers/LibraryControllerExtraTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerExtraTest.cpp.o
+.PHONY : tests/controllers/LibraryControllerExtraTest.cpp.o
+
+tests/controllers/LibraryControllerExtraTest.i: tests/controllers/LibraryControllerExtraTest.cpp.i
+.PHONY : tests/controllers/LibraryControllerExtraTest.i
+
+# target to preprocess a source file
+tests/controllers/LibraryControllerExtraTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerExtraTest.cpp.i
+.PHONY : tests/controllers/LibraryControllerExtraTest.cpp.i
+
+tests/controllers/LibraryControllerExtraTest.s: tests/controllers/LibraryControllerExtraTest.cpp.s
+.PHONY : tests/controllers/LibraryControllerExtraTest.s
+
+# target to generate assembly for a file
+tests/controllers/LibraryControllerExtraTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerExtraTest.cpp.s
+.PHONY : tests/controllers/LibraryControllerExtraTest.cpp.s
+
+tests/controllers/LibraryControllerTest.o: tests/controllers/LibraryControllerTest.cpp.o
+.PHONY : tests/controllers/LibraryControllerTest.o
+
+# target to build an object file
+tests/controllers/LibraryControllerTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerTest.cpp.o
+.PHONY : tests/controllers/LibraryControllerTest.cpp.o
+
+tests/controllers/LibraryControllerTest.i: tests/controllers/LibraryControllerTest.cpp.i
+.PHONY : tests/controllers/LibraryControllerTest.i
+
+# target to preprocess a source file
+tests/controllers/LibraryControllerTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerTest.cpp.i
+.PHONY : tests/controllers/LibraryControllerTest.cpp.i
+
+tests/controllers/LibraryControllerTest.s: tests/controllers/LibraryControllerTest.cpp.s
+.PHONY : tests/controllers/LibraryControllerTest.s
+
+# target to generate assembly for a file
+tests/controllers/LibraryControllerTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerTest.cpp.s
+.PHONY : tests/controllers/LibraryControllerTest.cpp.s
+
+tests/controllers/MainControllerTest.o: tests/controllers/MainControllerTest.cpp.o
+.PHONY : tests/controllers/MainControllerTest.o
+
+# target to build an object file
+tests/controllers/MainControllerTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/MainControllerTest.cpp.o
+.PHONY : tests/controllers/MainControllerTest.cpp.o
+
+tests/controllers/MainControllerTest.i: tests/controllers/MainControllerTest.cpp.i
+.PHONY : tests/controllers/MainControllerTest.i
+
+# target to preprocess a source file
+tests/controllers/MainControllerTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/MainControllerTest.cpp.i
+.PHONY : tests/controllers/MainControllerTest.cpp.i
+
+tests/controllers/MainControllerTest.s: tests/controllers/MainControllerTest.cpp.s
+.PHONY : tests/controllers/MainControllerTest.s
+
+# target to generate assembly for a file
+tests/controllers/MainControllerTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/MainControllerTest.cpp.s
+.PHONY : tests/controllers/MainControllerTest.cpp.s
+
+tests/controllers/PlaybackControllerAdvancedTest.o: tests/controllers/PlaybackControllerAdvancedTest.cpp.o
+.PHONY : tests/controllers/PlaybackControllerAdvancedTest.o
+
+# target to build an object file
+tests/controllers/PlaybackControllerAdvancedTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerAdvancedTest.cpp.o
+.PHONY : tests/controllers/PlaybackControllerAdvancedTest.cpp.o
+
+tests/controllers/PlaybackControllerAdvancedTest.i: tests/controllers/PlaybackControllerAdvancedTest.cpp.i
+.PHONY : tests/controllers/PlaybackControllerAdvancedTest.i
+
+# target to preprocess a source file
+tests/controllers/PlaybackControllerAdvancedTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerAdvancedTest.cpp.i
+.PHONY : tests/controllers/PlaybackControllerAdvancedTest.cpp.i
+
+tests/controllers/PlaybackControllerAdvancedTest.s: tests/controllers/PlaybackControllerAdvancedTest.cpp.s
+.PHONY : tests/controllers/PlaybackControllerAdvancedTest.s
+
+# target to generate assembly for a file
+tests/controllers/PlaybackControllerAdvancedTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerAdvancedTest.cpp.s
+.PHONY : tests/controllers/PlaybackControllerAdvancedTest.cpp.s
+
+tests/controllers/PlaybackControllerEngineTest.o: tests/controllers/PlaybackControllerEngineTest.cpp.o
+.PHONY : tests/controllers/PlaybackControllerEngineTest.o
+
+# target to build an object file
+tests/controllers/PlaybackControllerEngineTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerEngineTest.cpp.o
+.PHONY : tests/controllers/PlaybackControllerEngineTest.cpp.o
+
+tests/controllers/PlaybackControllerEngineTest.i: tests/controllers/PlaybackControllerEngineTest.cpp.i
+.PHONY : tests/controllers/PlaybackControllerEngineTest.i
+
+# target to preprocess a source file
+tests/controllers/PlaybackControllerEngineTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerEngineTest.cpp.i
+.PHONY : tests/controllers/PlaybackControllerEngineTest.cpp.i
+
+tests/controllers/PlaybackControllerEngineTest.s: tests/controllers/PlaybackControllerEngineTest.cpp.s
+.PHONY : tests/controllers/PlaybackControllerEngineTest.s
+
+# target to generate assembly for a file
+tests/controllers/PlaybackControllerEngineTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerEngineTest.cpp.s
+.PHONY : tests/controllers/PlaybackControllerEngineTest.cpp.s
+
+tests/controllers/PlaybackControllerNavigationTest.o: tests/controllers/PlaybackControllerNavigationTest.cpp.o
+.PHONY : tests/controllers/PlaybackControllerNavigationTest.o
+
+# target to build an object file
+tests/controllers/PlaybackControllerNavigationTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerNavigationTest.cpp.o
+.PHONY : tests/controllers/PlaybackControllerNavigationTest.cpp.o
+
+tests/controllers/PlaybackControllerNavigationTest.i: tests/controllers/PlaybackControllerNavigationTest.cpp.i
+.PHONY : tests/controllers/PlaybackControllerNavigationTest.i
+
+# target to preprocess a source file
+tests/controllers/PlaybackControllerNavigationTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerNavigationTest.cpp.i
+.PHONY : tests/controllers/PlaybackControllerNavigationTest.cpp.i
+
+tests/controllers/PlaybackControllerNavigationTest.s: tests/controllers/PlaybackControllerNavigationTest.cpp.s
+.PHONY : tests/controllers/PlaybackControllerNavigationTest.s
+
+# target to generate assembly for a file
+tests/controllers/PlaybackControllerNavigationTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerNavigationTest.cpp.s
+.PHONY : tests/controllers/PlaybackControllerNavigationTest.cpp.s
+
+tests/controllers/PlaybackControllerTest.o: tests/controllers/PlaybackControllerTest.cpp.o
+.PHONY : tests/controllers/PlaybackControllerTest.o
+
+# target to build an object file
+tests/controllers/PlaybackControllerTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerTest.cpp.o
+.PHONY : tests/controllers/PlaybackControllerTest.cpp.o
+
+tests/controllers/PlaybackControllerTest.i: tests/controllers/PlaybackControllerTest.cpp.i
+.PHONY : tests/controllers/PlaybackControllerTest.i
+
+# target to preprocess a source file
+tests/controllers/PlaybackControllerTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerTest.cpp.i
+.PHONY : tests/controllers/PlaybackControllerTest.cpp.i
+
+tests/controllers/PlaybackControllerTest.s: tests/controllers/PlaybackControllerTest.cpp.s
+.PHONY : tests/controllers/PlaybackControllerTest.s
+
+# target to generate assembly for a file
+tests/controllers/PlaybackControllerTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerTest.cpp.s
+.PHONY : tests/controllers/PlaybackControllerTest.cpp.s
+
+tests/controllers/PlaylistControllerTest.o: tests/controllers/PlaylistControllerTest.cpp.o
+.PHONY : tests/controllers/PlaylistControllerTest.o
+
+# target to build an object file
+tests/controllers/PlaylistControllerTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/PlaylistControllerTest.cpp.o
+.PHONY : tests/controllers/PlaylistControllerTest.cpp.o
+
+tests/controllers/PlaylistControllerTest.i: tests/controllers/PlaylistControllerTest.cpp.i
+.PHONY : tests/controllers/PlaylistControllerTest.i
+
+# target to preprocess a source file
+tests/controllers/PlaylistControllerTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/PlaylistControllerTest.cpp.i
+.PHONY : tests/controllers/PlaylistControllerTest.cpp.i
+
+tests/controllers/PlaylistControllerTest.s: tests/controllers/PlaylistControllerTest.cpp.s
+.PHONY : tests/controllers/PlaylistControllerTest.s
+
+# target to generate assembly for a file
+tests/controllers/PlaylistControllerTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/PlaylistControllerTest.cpp.s
+.PHONY : tests/controllers/PlaylistControllerTest.cpp.s
+
+tests/controllers/QueueControllerTest.o: tests/controllers/QueueControllerTest.cpp.o
+.PHONY : tests/controllers/QueueControllerTest.o
+
+# target to build an object file
+tests/controllers/QueueControllerTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/QueueControllerTest.cpp.o
+.PHONY : tests/controllers/QueueControllerTest.cpp.o
+
+tests/controllers/QueueControllerTest.i: tests/controllers/QueueControllerTest.cpp.i
+.PHONY : tests/controllers/QueueControllerTest.i
+
+# target to preprocess a source file
+tests/controllers/QueueControllerTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/QueueControllerTest.cpp.i
+.PHONY : tests/controllers/QueueControllerTest.cpp.i
+
+tests/controllers/QueueControllerTest.s: tests/controllers/QueueControllerTest.cpp.s
+.PHONY : tests/controllers/QueueControllerTest.s
+
+# target to generate assembly for a file
+tests/controllers/QueueControllerTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/QueueControllerTest.cpp.s
+.PHONY : tests/controllers/QueueControllerTest.cpp.s
+
+tests/controllers/SourceControllerExtraTest.o: tests/controllers/SourceControllerExtraTest.cpp.o
+.PHONY : tests/controllers/SourceControllerExtraTest.o
+
+# target to build an object file
+tests/controllers/SourceControllerExtraTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/SourceControllerExtraTest.cpp.o
+.PHONY : tests/controllers/SourceControllerExtraTest.cpp.o
+
+tests/controllers/SourceControllerExtraTest.i: tests/controllers/SourceControllerExtraTest.cpp.i
+.PHONY : tests/controllers/SourceControllerExtraTest.i
+
+# target to preprocess a source file
+tests/controllers/SourceControllerExtraTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/SourceControllerExtraTest.cpp.i
+.PHONY : tests/controllers/SourceControllerExtraTest.cpp.i
+
+tests/controllers/SourceControllerExtraTest.s: tests/controllers/SourceControllerExtraTest.cpp.s
+.PHONY : tests/controllers/SourceControllerExtraTest.s
+
+# target to generate assembly for a file
+tests/controllers/SourceControllerExtraTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/SourceControllerExtraTest.cpp.s
+.PHONY : tests/controllers/SourceControllerExtraTest.cpp.s
+
+tests/controllers/SourceControllerTest.o: tests/controllers/SourceControllerTest.cpp.o
+.PHONY : tests/controllers/SourceControllerTest.o
+
+# target to build an object file
+tests/controllers/SourceControllerTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/SourceControllerTest.cpp.o
+.PHONY : tests/controllers/SourceControllerTest.cpp.o
+
+tests/controllers/SourceControllerTest.i: tests/controllers/SourceControllerTest.cpp.i
+.PHONY : tests/controllers/SourceControllerTest.i
+
+# target to preprocess a source file
+tests/controllers/SourceControllerTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/SourceControllerTest.cpp.i
+.PHONY : tests/controllers/SourceControllerTest.cpp.i
+
+tests/controllers/SourceControllerTest.s: tests/controllers/SourceControllerTest.cpp.s
+.PHONY : tests/controllers/SourceControllerTest.s
+
+# target to generate assembly for a file
+tests/controllers/SourceControllerTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/SourceControllerTest.cpp.s
+.PHONY : tests/controllers/SourceControllerTest.cpp.s
+
+tests/models/MediaFileModelTest.o: tests/models/MediaFileModelTest.cpp.o
+.PHONY : tests/models/MediaFileModelTest.o
+
+# target to build an object file
+tests/models/MediaFileModelTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/models/MediaFileModelTest.cpp.o
+.PHONY : tests/models/MediaFileModelTest.cpp.o
+
+tests/models/MediaFileModelTest.i: tests/models/MediaFileModelTest.cpp.i
+.PHONY : tests/models/MediaFileModelTest.i
+
+# target to preprocess a source file
+tests/models/MediaFileModelTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/models/MediaFileModelTest.cpp.i
+.PHONY : tests/models/MediaFileModelTest.cpp.i
+
+tests/models/MediaFileModelTest.s: tests/models/MediaFileModelTest.cpp.s
+.PHONY : tests/models/MediaFileModelTest.s
+
+# target to generate assembly for a file
+tests/models/MediaFileModelTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/models/MediaFileModelTest.cpp.s
+.PHONY : tests/models/MediaFileModelTest.cpp.s
+
+tests/models/PlaybackStateModelTest.o: tests/models/PlaybackStateModelTest.cpp.o
+.PHONY : tests/models/PlaybackStateModelTest.o
+
+# target to build an object file
+tests/models/PlaybackStateModelTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.o
+.PHONY : tests/models/PlaybackStateModelTest.cpp.o
+
+tests/models/PlaybackStateModelTest.i: tests/models/PlaybackStateModelTest.cpp.i
+.PHONY : tests/models/PlaybackStateModelTest.i
+
+# target to preprocess a source file
+tests/models/PlaybackStateModelTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.i
+.PHONY : tests/models/PlaybackStateModelTest.cpp.i
+
+tests/models/PlaybackStateModelTest.s: tests/models/PlaybackStateModelTest.cpp.s
+.PHONY : tests/models/PlaybackStateModelTest.s
+
+# target to generate assembly for a file
+tests/models/PlaybackStateModelTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.s
+.PHONY : tests/models/PlaybackStateModelTest.cpp.s
+
+tests/services/FileScannerTest.o: tests/services/FileScannerTest.cpp.o
+.PHONY : tests/services/FileScannerTest.o
+
+# target to build an object file
+tests/services/FileScannerTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/services/FileScannerTest.cpp.o
+.PHONY : tests/services/FileScannerTest.cpp.o
+
+tests/services/FileScannerTest.i: tests/services/FileScannerTest.cpp.i
+.PHONY : tests/services/FileScannerTest.i
+
+# target to preprocess a source file
+tests/services/FileScannerTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/services/FileScannerTest.cpp.i
+.PHONY : tests/services/FileScannerTest.cpp.i
+
+tests/services/FileScannerTest.s: tests/services/FileScannerTest.cpp.s
+.PHONY : tests/services/FileScannerTest.s
+
+# target to generate assembly for a file
+tests/services/FileScannerTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/services/FileScannerTest.cpp.s
+.PHONY : tests/services/FileScannerTest.cpp.s
+
+tests/test_main.o: tests/test_main.cpp.o
+.PHONY : tests/test_main.o
+
+# target to build an object file
+tests/test_main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/test_main.cpp.o
+.PHONY : tests/test_main.cpp.o
+
+tests/test_main.i: tests/test_main.cpp.i
+.PHONY : tests/test_main.i
+
+# target to preprocess a source file
+tests/test_main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/test_main.cpp.i
+.PHONY : tests/test_main.cpp.i
+
+tests/test_main.s: tests/test_main.cpp.s
+.PHONY : tests/test_main.s
+
+# target to generate assembly for a file
+tests/test_main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/test_main.cpp.s
+.PHONY : tests/test_main.cpp.s
 
 # Help Target
 help:
@@ -1026,7 +1621,14 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
+	@echo "... test"
+	@echo "... coverage"
 	@echo "... MediaPlayerApp"
+	@echo "... RunTests"
+	@echo "... gmock"
+	@echo "... gmock_main"
+	@echo "... gtest"
+	@echo "... gtest_main"
 	@echo "... src/config/AppConfig.o"
 	@echo "... src/config/AppConfig.i"
 	@echo "... src/config/AppConfig.s"
@@ -1111,9 +1713,6 @@ help:
 	@echo "... src/utils/AVSyncClock.o"
 	@echo "... src/utils/AVSyncClock.i"
 	@echo "... src/utils/AVSyncClock.s"
-	@echo "... src/utils/Logger.o"
-	@echo "... src/utils/Logger.i"
-	@echo "... src/utils/Logger.s"
 	@echo "... src/views/LibraryScreen.o"
 	@echo "... src/views/LibraryScreen.i"
 	@echo "... src/views/LibraryScreen.s"
@@ -1132,6 +1731,60 @@ help:
 	@echo "... src/views/ScanScreen.o"
 	@echo "... src/views/ScanScreen.i"
 	@echo "... src/views/ScanScreen.s"
+	@echo "... tests/controllers/HardwareControllerInvalidTest.o"
+	@echo "... tests/controllers/HardwareControllerInvalidTest.i"
+	@echo "... tests/controllers/HardwareControllerInvalidTest.s"
+	@echo "... tests/controllers/HardwareControllerParseTest.o"
+	@echo "... tests/controllers/HardwareControllerParseTest.i"
+	@echo "... tests/controllers/HardwareControllerParseTest.s"
+	@echo "... tests/controllers/HardwareControllerTest.o"
+	@echo "... tests/controllers/HardwareControllerTest.i"
+	@echo "... tests/controllers/HardwareControllerTest.s"
+	@echo "... tests/controllers/LibraryControllerExtraTest.o"
+	@echo "... tests/controllers/LibraryControllerExtraTest.i"
+	@echo "... tests/controllers/LibraryControllerExtraTest.s"
+	@echo "... tests/controllers/LibraryControllerTest.o"
+	@echo "... tests/controllers/LibraryControllerTest.i"
+	@echo "... tests/controllers/LibraryControllerTest.s"
+	@echo "... tests/controllers/MainControllerTest.o"
+	@echo "... tests/controllers/MainControllerTest.i"
+	@echo "... tests/controllers/MainControllerTest.s"
+	@echo "... tests/controllers/PlaybackControllerAdvancedTest.o"
+	@echo "... tests/controllers/PlaybackControllerAdvancedTest.i"
+	@echo "... tests/controllers/PlaybackControllerAdvancedTest.s"
+	@echo "... tests/controllers/PlaybackControllerEngineTest.o"
+	@echo "... tests/controllers/PlaybackControllerEngineTest.i"
+	@echo "... tests/controllers/PlaybackControllerEngineTest.s"
+	@echo "... tests/controllers/PlaybackControllerNavigationTest.o"
+	@echo "... tests/controllers/PlaybackControllerNavigationTest.i"
+	@echo "... tests/controllers/PlaybackControllerNavigationTest.s"
+	@echo "... tests/controllers/PlaybackControllerTest.o"
+	@echo "... tests/controllers/PlaybackControllerTest.i"
+	@echo "... tests/controllers/PlaybackControllerTest.s"
+	@echo "... tests/controllers/PlaylistControllerTest.o"
+	@echo "... tests/controllers/PlaylistControllerTest.i"
+	@echo "... tests/controllers/PlaylistControllerTest.s"
+	@echo "... tests/controllers/QueueControllerTest.o"
+	@echo "... tests/controllers/QueueControllerTest.i"
+	@echo "... tests/controllers/QueueControllerTest.s"
+	@echo "... tests/controllers/SourceControllerExtraTest.o"
+	@echo "... tests/controllers/SourceControllerExtraTest.i"
+	@echo "... tests/controllers/SourceControllerExtraTest.s"
+	@echo "... tests/controllers/SourceControllerTest.o"
+	@echo "... tests/controllers/SourceControllerTest.i"
+	@echo "... tests/controllers/SourceControllerTest.s"
+	@echo "... tests/models/MediaFileModelTest.o"
+	@echo "... tests/models/MediaFileModelTest.i"
+	@echo "... tests/models/MediaFileModelTest.s"
+	@echo "... tests/models/PlaybackStateModelTest.o"
+	@echo "... tests/models/PlaybackStateModelTest.i"
+	@echo "... tests/models/PlaybackStateModelTest.s"
+	@echo "... tests/services/FileScannerTest.o"
+	@echo "... tests/services/FileScannerTest.i"
+	@echo "... tests/services/FileScannerTest.s"
+	@echo "... tests/test_main.o"
+	@echo "... tests/test_main.i"
+	@echo "... tests/test_main.s"
 .PHONY : help
 
 

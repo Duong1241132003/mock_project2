@@ -1,6 +1,5 @@
 // Project includes
 #include "repositories/HistoryRepository.h"
-#include "utils/Logger.h"
 
 // System includes
 #include <fstream>
@@ -20,13 +19,11 @@ HistoryRepository::HistoryRepository(const std::string& storagePath, size_t maxE
     , m_maxEntries(maxEntries)
 {
     // History is in-memory only; no load from disk
-    LOG_INFO("HistoryRepository initialized (max entries: " + std::to_string(maxEntries) + ", in-memory only)");
 }
 
 HistoryRepository::~HistoryRepository() 
 {
     // No save to disk; history is session-only
-    LOG_INFO("HistoryRepository destroyed");
 }
 
 void HistoryRepository::addEntry(const models::MediaFileModel& media) 
@@ -42,7 +39,7 @@ void HistoryRepository::addEntry(const models::MediaFileModel& media)
         m_history.pop_back();
     }
     
-    LOG_DEBUG("Added to playback history: " + media.getFileName());
+    
 }
 
 void HistoryRepository::removeMostRecentEntryByFilePath(const std::string& filePath)
@@ -53,7 +50,6 @@ void HistoryRepository::removeMostRecentEntryByFilePath(const std::string& fileP
     if (it != m_history.end())
     {
         m_history.erase(it);
-        LOG_DEBUG("Removed from playback history (play previous): " + filePath);
     }
 }
 
@@ -65,7 +61,6 @@ void HistoryRepository::removeAllEntriesByFilePath(const std::string& filePath)
     if (it != m_history.end())
     {
         m_history.erase(it, m_history.end());
-        LOG_DEBUG("Removed all history entries for: " + filePath);
     }
 }
 
@@ -98,7 +93,6 @@ void HistoryRepository::clear()
     std::lock_guard<std::mutex> lock(m_mutex);
     
     m_history.clear();
-    LOG_INFO("Playback history cleared");
 }
 
 size_t HistoryRepository::count() const 
@@ -175,7 +169,6 @@ bool HistoryRepository::serializeHistory()
         
         if (!file.is_open()) 
         {
-            LOG_ERROR("Failed to open history file for writing: " + filePath);
             return false;
         }
         
@@ -195,13 +188,11 @@ bool HistoryRepository::serializeHistory()
         }
         
         file.close();
-        LOG_INFO("History serialized successfully");
         
         return true;
     }
     catch (const std::exception& e) 
     {
-        LOG_ERROR("Exception serializing history: " + std::string(e.what()));
         return false;
     }
 }
@@ -214,7 +205,6 @@ bool HistoryRepository::deserializeHistory()
         
         if (!fs::exists(filePath)) 
         {
-            LOG_INFO("History file does not exist, starting with empty history");
             return true;
         }
         
@@ -222,7 +212,6 @@ bool HistoryRepository::deserializeHistory()
         
         if (!file.is_open()) 
         {
-            LOG_ERROR("Failed to open history file for reading: " + filePath);
             return false;
         }
         
@@ -284,13 +273,11 @@ bool HistoryRepository::deserializeHistory()
         }
         
         file.close();
-        LOG_INFO("Loaded " + std::to_string(loadedCount) + " history entries");
         
         return true;
     }
     catch (const std::exception& e) 
     {
-        LOG_ERROR("Exception deserializing history: " + std::string(e.what()));
         return false;
     }
 }
@@ -302,12 +289,11 @@ void HistoryRepository::ensureStorageDirectoryExists()
         if (!fs::exists(m_storagePath)) 
         {
             fs::create_directories(m_storagePath);
-            LOG_INFO("Created storage directory: " + m_storagePath);
         }
     }
     catch (const fs::filesystem_error& e) 
     {
-        LOG_ERROR("Failed to create storage directory: " + std::string(e.what()));
+        
     }
 }
 

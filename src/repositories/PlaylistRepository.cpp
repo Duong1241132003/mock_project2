@@ -1,6 +1,5 @@
 // Project includes
 #include "repositories/PlaylistRepository.h"
-#include "utils/Logger.h"
 
 // System includes
 #include <fstream>
@@ -20,14 +19,11 @@ PlaylistRepository::PlaylistRepository(const std::string& storagePath)
 {
     ensureStorageDirectoryExists();
     loadFromDisk();
-    
-    LOG_INFO("PlaylistRepository initialized with storage path: " + storagePath);
 }
 
 PlaylistRepository::~PlaylistRepository() 
 {
     saveToDisk();
-    LOG_INFO("PlaylistRepository destroyed");
 }
 
 bool PlaylistRepository::save(const models::PlaylistModel& playlist) 
@@ -40,7 +36,6 @@ bool PlaylistRepository::save(const models::PlaylistModel& playlist)
         
         if (id.empty()) 
         {
-            LOG_ERROR("Cannot save playlist with empty ID");
             return false;
         }
         
@@ -52,16 +47,13 @@ bool PlaylistRepository::save(const models::PlaylistModel& playlist)
         
         if (!serializePlaylist(playlist, filePath)) 
         {
-            LOG_ERROR("Failed to serialize playlist to disk: " + id);
             return false;
         }
         
-        LOG_INFO("Playlist saved: " + playlist.getName() + " (ID: " + id + ")");
         return true;
     }
     catch (const std::exception& e) 
     {
-        LOG_ERROR("Exception in save: " + std::string(e.what()));
         return false;
     }
 }
@@ -77,7 +69,6 @@ std::optional<models::PlaylistModel> PlaylistRepository::findById(const std::str
         return it->second;
     }
     
-    LOG_DEBUG("Playlist not found: " + id);
     return std::nullopt;
 }
 
@@ -105,7 +96,6 @@ bool PlaylistRepository::update(const models::PlaylistModel& playlist)
     // Check cache directly (don't call exists() which would deadlock)
     if (m_cache.find(id) == m_cache.end()) 
     {
-        LOG_WARNING("Cannot update non-existent playlist: " + id);
         return false;
     }
     
@@ -117,11 +107,9 @@ bool PlaylistRepository::update(const models::PlaylistModel& playlist)
     
     if (!serializePlaylist(playlist, filePath)) 
     {
-        LOG_ERROR("Failed to update playlist on disk: " + id);
         return false;
     }
     
-    LOG_INFO("Playlist updated: " + playlist.getName());
     return true;
 }
 
@@ -133,7 +121,6 @@ bool PlaylistRepository::remove(const std::string& id)
     
     if (it == m_cache.end()) 
     {
-        LOG_WARNING("Cannot remove non-existent playlist: " + id);
         return false;
     }
     
@@ -152,12 +139,10 @@ bool PlaylistRepository::remove(const std::string& id)
             fs::remove(filePath);
         }
         
-        LOG_INFO("Playlist removed: " + name + " (ID: " + id + ")");
         return true;
     }
     catch (const fs::filesystem_error& e) 
     {
-        LOG_ERROR("Failed to remove playlist file: " + std::string(e.what()));
         return false;
     }
 }
@@ -202,11 +187,9 @@ void PlaylistRepository::clear()
     }
     catch (const fs::filesystem_error& e) 
     {
-        LOG_ERROR("Error clearing playlists: " + std::string(e.what()));
     }
     
     m_cache.clear();
-    LOG_INFO("All playlists cleared");
 }
 
 size_t PlaylistRepository::count() const 
@@ -260,7 +243,6 @@ bool PlaylistRepository::loadFromDisk()
     {
         if (!fs::exists(m_storagePath)) 
         {
-            LOG_INFO("Storage path does not exist, creating: " + m_storagePath);
             ensureStorageDirectoryExists();
             return true;
         }
@@ -281,12 +263,10 @@ bool PlaylistRepository::loadFromDisk()
             }
         }
         
-        LOG_INFO("Loaded " + std::to_string(loadedCount) + " playlists from disk");
         return true;
     }
     catch (const fs::filesystem_error& e) 
     {
-        LOG_ERROR("Error loading playlists from disk: " + std::string(e.what()));
         return false;
     }
 }
@@ -305,12 +285,10 @@ bool PlaylistRepository::saveToDisk()
             serializePlaylist(pair.second, filePath);
         }
         
-        LOG_INFO("Saved " + std::to_string(m_cache.size()) + " playlists to disk");
         return true;
     }
     catch (const std::exception& e) 
     {
-        LOG_ERROR("Error saving playlists to disk: " + std::string(e.what()));
         return false;
     }
 }
@@ -329,7 +307,6 @@ bool PlaylistRepository::serializePlaylist(const models::PlaylistModel& playlist
         
         if (!file.is_open()) 
         {
-            LOG_ERROR("Failed to open file for writing: " + filePath);
             return false;
         }
         
@@ -354,7 +331,6 @@ bool PlaylistRepository::serializePlaylist(const models::PlaylistModel& playlist
     }
     catch (const std::exception& e) 
     {
-        LOG_ERROR("Exception serializing playlist: " + std::string(e.what()));
         return false;
     }
 }
@@ -367,7 +343,6 @@ std::optional<models::PlaylistModel> PlaylistRepository::deserializePlaylist(con
         
         if (!file.is_open()) 
         {
-            LOG_ERROR("Failed to open file for reading: " + filePath);
             return std::nullopt;
         }
         
@@ -434,7 +409,6 @@ std::optional<models::PlaylistModel> PlaylistRepository::deserializePlaylist(con
         
         if (id.empty() || name.empty()) 
         {
-            LOG_ERROR("Invalid playlist file format: " + filePath);
             return std::nullopt;
         }
         
@@ -459,7 +433,6 @@ std::optional<models::PlaylistModel> PlaylistRepository::deserializePlaylist(con
     }
     catch (const std::exception& e) 
     {
-        LOG_ERROR("Exception deserializing playlist: " + std::string(e.what()));
         return std::nullopt;
     }
 }
@@ -471,12 +444,11 @@ void PlaylistRepository::ensureStorageDirectoryExists()
         if (!fs::exists(m_storagePath)) 
         {
             fs::create_directories(m_storagePath);
-            LOG_INFO("Created storage directory: " + m_storagePath);
         }
     }
     catch (const fs::filesystem_error& e) 
     {
-        LOG_ERROR("Failed to create storage directory: " + std::string(e.what()));
+        
     }
 }
 

@@ -1,0 +1,66 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/src/views/MainScreen.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.gcda
+        -:    0:Runs:6
+        -:    1:// Project includes
+        -:    2:#include "views/MainScreen.h"
+        -:    3:#include "utils/Logger.h"
+        -:    4:
+        -:    5:namespace media_player 
+        -:    6:{
+        -:    7:namespace views 
+        -:    8:{
+        -:    9:
+    #####:   10:MainScreen::MainScreen()
+    #####:   11:    : m_isVisible(false)
+        -:   12:{
+    #####:   13:    LOG_INFO("MainScreen created");
+    #####:   14:}
+        -:   15:
+    #####:   16:MainScreen::~MainScreen() 
+        -:   17:{
+    #####:   18:    LOG_INFO("MainScreen destroyed");
+    #####:   19:}
+------------------
+_ZN12media_player5views10MainScreenD0Ev:
+    #####:   16:MainScreen::~MainScreen() 
+        -:   17:{
+        -:   18:    LOG_INFO("MainScreen destroyed");
+    #####:   19:}
+------------------
+_ZN12media_player5views10MainScreenD2Ev:
+    #####:   16:MainScreen::~MainScreen() 
+        -:   17:{
+    #####:   18:    LOG_INFO("MainScreen destroyed");
+    #####:   19:}
+------------------
+        -:   20:
+    #####:   21:void MainScreen::show() 
+        -:   22:{
+    #####:   23:    m_isVisible = true;
+    #####:   24:    LOG_INFO("MainScreen shown");
+    #####:   25:}
+        -:   26:
+    #####:   27:void MainScreen::hide() 
+        -:   28:{
+    #####:   29:    m_isVisible = false;
+    #####:   30:    LOG_INFO("MainScreen hidden");
+    #####:   31:}
+        -:   32:
+    #####:   33:void MainScreen::update() 
+        -:   34:{
+    #####:   35:    if (!m_isVisible) 
+        -:   36:    {
+    #####:   37:        return;
+        -:   38:    }
+        -:   39:    
+        -:   40:    // Main screen update logic
+        -:   41:}
+        -:   42:
+    #####:   43:bool MainScreen::isVisible() const 
+        -:   44:{
+    #####:   45:    return m_isVisible;
+        -:   46:}
+        -:   47:
+        -:   48:} // namespace views
+        -:   49:} // namespace media_player

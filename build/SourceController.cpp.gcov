@@ -1,0 +1,360 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/src/controllers/SourceController.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.gcda
+        -:    0:Runs:6
+        -:    1:// Project includes
+        -:    2:#include "controllers/SourceController.h"
+        -:    3:#include "utils/Logger.h"
+        -:    4:
+        -:    5:// System includes
+        -:    6:#include <algorithm>
+        -:    7:#include <filesystem>
+        -:    8:
+        -:    9:namespace media_player 
+        -:   10:{
+        -:   11:namespace controllers 
+        -:   12:{
+        -:   13:
+    #####:   14:SourceController::SourceController(
+        -:   15:    std::shared_ptr<services::IFileScanner> fileScanner,
+        -:   16:    std::shared_ptr<repositories::LibraryRepository> libraryRepo,
+        -:   17:    std::shared_ptr<models::LibraryModel> libraryModel
+    #####:   18:)
+    #####:   19:    : m_fileScanner(fileScanner)
+    #####:   20:    , m_libraryRepo(libraryRepo)
+    #####:   21:    , m_libraryModel(libraryModel)
+    #####:   22:    , m_monitorRunning(false)
+        -:   23:{
+    #####:   24:    m_fileScanner->setProgressCallback(
+    #####:   25:        [this](int count, const std::string& path) 
+        -:   26:        {
+    #####:   27:            onScanProgress(count, path);
+    #####:   28:        }
+        -:   29:    );
+        -:   30:    
+    #####:   31:    m_fileScanner->setCompleteCallback(
+    #####:   32:        [this](std::vector<models::MediaFileModel> results) 
+        -:   33:        {
+    #####:   34:            onScanComplete(results);
+    #####:   35:        }
+        -:   36:    );
+        -:   37:    
+        -:   38:    // Start USB monitoring -> Moved to startMonitoring()
+    #####:   39:    m_monitorRunning = false; // logic moved
+        -:   40:    // m_usbMonitorThread = std::thread(&SourceController::monitorUsbLoop, this);
+        -:   41:    
+    #####:   42:    LOG_INFO("SourceController initialized");
+    #####:   43:}
+        -:   44:
+    #####:   45:void SourceController::startMonitoring()
+        -:   46:{
+    #####:   47:    if (m_monitorRunning) return;
+        -:   48:    
+    #####:   49:    m_monitorRunning = true;
+    #####:   50:    m_usbMonitorThread = std::thread(&SourceController::monitorUsbLoop, this);
+    #####:   51:    LOG_INFO("USB Monitoring started");
+        -:   52:}
+        -:   53:
+    #####:   54:SourceController::~SourceController() 
+        -:   55:{
+    #####:   56:    m_monitorRunning = false;
+    #####:   57:    if (m_usbMonitorThread.joinable())
+        -:   58:    {
+    #####:   59:        m_usbMonitorThread.join();
+        -:   60:    }
+    #####:   61:    stopScan();
+    #####:   62:    LOG_INFO("SourceController destroyed");
+    #####:   63:}
+        -:   64:
+    #####:   65:void SourceController::selectDirectory(const std::string& path) 
+        -:   66:{
+    #####:   67:    m_currentSourcePath = path;
+    #####:   68:    LOG_INFO("Source directory selected: " + path);
+    #####:   69:}
+        -:   70:
+    #####:   71:void SourceController::scanCurrentDirectory() 
+        -:   72:{
+    #####:   73:    if (m_currentSourcePath.empty()) 
+        -:   74:    {
+    #####:   75:        LOG_ERROR("No source directory selected");
+    #####:   76:        return;
+        -:   77:    }
+        -:   78:    
+    #####:   79:    LOG_INFO("Starting scan of: " + m_currentSourcePath);
+    #####:   80:    m_fileScanner->scanDirectory(m_currentSourcePath);
+        -:   81:}
+        -:   82:
+    #####:   83:void SourceController::stopScan() 
+        -:   84:{
+    #####:   85:    m_fileScanner->stopScanning();
+    #####:   86:}
+        -:   87:
+    #####:   88:void SourceController::handleUSBInserted(const std::string& mountPoint) 
+        -:   89:{
+    #####:   90:    LOG_INFO("USB inserted at: " + mountPoint);
+        -:   91:    
+        -:   92:    // Check if this is a storage device (not S32K144)
+    #####:   93:    if (isStorageDevice(mountPoint)) 
+        -:   94:    {
+    #####:   95:        LOG_INFO("Storage device detected, showing popup: " + mountPoint);
+        -:   96:        // Notify UI for storage devices
+    #####:   97:        if (m_usbInsertedCallback) 
+        -:   98:        {
+    #####:   99:            m_usbInsertedCallback(mountPoint);
+        -:  100:        }
+        -:  101:        else 
+        -:  102:        {
+        -:  103:            // Fallback if no callback registered (legacy behavior)
+    #####:  104:            m_currentSourcePath = mountPoint;
+    #####:  105:            scanCurrentDirectory();
+        -:  106:        }
+        -:  107:    }
+        -:  108:    else 
+        -:  109:    {
+    #####:  110:        LOG_INFO("S32K144 device detected, not showing popup: " + mountPoint);
+        -:  111:        // For S32K144, we might want to handle differently in the future
+        -:  112:        // For now, just log and don't show popup
+        -:  113:    }
+    #####:  114:}
+        -:  115:
+    #####:  116:bool SourceController::isStorageDevice(const std::string& mountPoint)
+        -:  117:{
+        -:  118:    // Check if mount point contains S32K144 identifier
+    #####:  119:    std::string mountLower = mountPoint;
+    #####:  120:    std::transform(mountLower.begin(), mountLower.end(), mountLower.begin(), ::tolower);
+        -:  121:    
+        -:  122:    // S32K144 devices typically have "EVB-S32K144" in the path
+    #####:  123:    if (mountLower.find("evb-s32k144") != std::string::npos) 
+        -:  124:    {
+    #####:  125:        return false; // This is S32K144, not storage
+        -:  126:    }
+        -:  127:    
+        -:  128:    // Additional checks for storage devices:
+        -:  129:    // 1. Check if it contains typical media directories
+        -:  130:    // 2. Check if it's a typical USB mount pattern
+        -:  131:    
+    #####:  132:    if (std::filesystem::exists(mountPoint)) 
+        -:  133:    {
+        -:  134:        try 
+        -:  135:        {
+        -:  136:            // Check for typical storage device indicators
+    #####:  137:            for (const auto& entry : std::filesystem::directory_iterator(mountPoint)) 
+        -:  138:            {
+    #####:  139:                if (entry.is_directory()) 
+        -:  140:                {
+    #####:  141:                    std::string dirName = entry.path().filename().string();
+    #####:  142:                    std::transform(dirName.begin(), dirName.end(), dirName.begin(), ::tolower);
+        -:  143:                    
+        -:  144:                    // Common directories in storage devices
+    #####:  145:                    if (dirName == "music" || dirName == "videos" || dirName == "photos" || 
+    #####:  146:                        dirName == "dcim" || dirName == "documents" || dirName == "audio") 
+        -:  147:                    {
+    #####:  148:                        return true; // Likely a storage device
+        -:  149:                    }
+    #####:  150:                }
+    #####:  151:            }
+        -:  152:            
+        -:  153:            // Check if there are media files directly in root
+    #####:  154:            for (const auto& entry : std::filesystem::directory_iterator(mountPoint)) 
+        -:  155:            {
+    #####:  156:                if (entry.is_regular_file()) 
+        -:  157:                {
+    #####:  158:                    std::string ext = entry.path().extension().string();
+    #####:  159:                    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+        -:  160:                    
+        -:  161:                    // Common media file extensions
+    #####:  162:                    if (ext == ".mp3" || ext == ".wav" || ext == ".flac" || ext == ".m4a" ||
+    #####:  163:                        ext == ".mp4" || ext == ".avi" || ext == ".mkv" || ext == ".mov") 
+        -:  164:                    {
+    #####:  165:                        return true; // Has media files, likely storage
+        -:  166:                    }
+    #####:  167:                }
+    #####:  168:            }
+        -:  169:        }
+    =====:  170:        catch (const std::filesystem::filesystem_error& e) 
+        -:  171:        {
+    =====:  172:            LOG_WARNING("Error checking USB device: " + std::string(e.what()));
+    =====:  173:        }
+        -:  174:    }
+        -:  175:    
+        -:  176:    // Default to true for non-S32K144 devices (assume storage)
+    #####:  177:    return true;
+    #####:  178:}
+        -:  179:
+    #####:  180:bool SourceController::isS32K144Device(const std::string& mountPoint)
+        -:  181:{
+    #####:  182:    std::string mountLower = mountPoint;
+    #####:  183:    std::transform(mountLower.begin(), mountLower.end(), mountLower.begin(), ::tolower);
+        -:  184:    
+    #####:  185:    return mountLower.find("evb-s32k144") != std::string::npos;
+    #####:  186:}
+        -:  187:
+    #####:  188:void SourceController::handleUSBRemoved() 
+        -:  189:{
+    #####:  190:    LOG_INFO("USB removed");
+        -:  191:    
+    #####:  192:    stopScan();
+    #####:  193:    m_currentSourcePath.clear();
+    #####:  194:}
+        -:  195:
+    #####:  196:bool SourceController::isScanning() const 
+        -:  197:{
+    #####:  198:    return m_fileScanner->isScanning();
+        -:  199:}
+        -:  200:
+    #####:  201:std::string SourceController::getCurrentSourcePath() const 
+        -:  202:{
+    #####:  203:    return m_currentSourcePath;
+        -:  204:}
+        -:  205:
+    #####:  206:void SourceController::setProgressCallback(ScanProgressCallback callback) 
+        -:  207:{
+    #####:  208:    m_progressCallback = callback;
+    #####:  209:}
+        -:  210:
+    #####:  211:void SourceController::setCompleteCallback(ScanCompleteCallback callback) 
+        -:  212:{
+    #####:  213:    m_completeCallback = callback;
+    #####:  214:}
+        -:  215:
+    #####:  216:void SourceController::setUsbInsertedCallback(UsbInsertedCallback callback) 
+        -:  217:{
+    #####:  218:    m_usbInsertedCallback = callback;
+    #####:  219:}
+        -:  220:
+    #####:  221:void SourceController::onScanProgress(int count, const std::string& path) 
+        -:  222:{
+    #####:  223:    if (m_progressCallback) 
+        -:  224:    {
+    #####:  225:        m_progressCallback(count, path);
+        -:  226:    }
+    #####:  227:}
+        -:  228:
+    #####:  229:void SourceController::onScanComplete(std::vector<models::MediaFileModel> results) 
+        -:  230:{
+    #####:  231:    LOG_INFO("Scan complete. Found " + std::to_string(results.size()) + " files");
+        -:  232:    
+        -:  233:    // Clear old library
+    #####:  234:    m_libraryModel->clear();
+    #####:  235:    m_libraryRepo->clear();
+        -:  236:    
+        -:  237:    // Add to library
+    #####:  238:    m_libraryModel->addMediaBatch(results);
+    #####:  239:    m_libraryRepo->saveAll(results);
+        -:  240:    
+    #####:  241:    if (m_completeCallback) 
+        -:  242:    {
+    #####:  243:        m_completeCallback(results.size());
+        -:  244:    }
+    #####:  245:}
+        -:  246:
+        -:  247:    // Add system includes for filesystem if needed
+        -:  248:    // #include <filesystem>  <-- Ensure this is available in the file or project
+        -:  249:
+    #####:  250:void SourceController::monitorUsbLoop() 
+        -:  251:{
+        -:  252:    // Simple polling for new directories in /media/duong/ or /media/
+        -:  253:    // Adjust based on typical linux mount points. 
+        -:  254:    // Usually USBs mount at /media/USER/LABEL
+        -:  255:    
+    #####:  256:    std::string mediaRoot = "/media/duong"; // Adjust user name dynamically if needed, or check /media
+    #####:  257:    if (!std::filesystem::exists(mediaRoot)) 
+        -:  258:    {
+    #####:  259:         mediaRoot = "/media";
+        -:  260:    }
+        -:  261:    
+    #####:  262:    std::vector<std::string> knownMounts;
+        -:  263:    
+        -:  264:    // Initial populate removed to trigger detection on startup
+        -:  265:    /*
+        -:  266:    if (std::filesystem::exists(mediaRoot)) 
+        -:  267:    {
+        -:  268:        for (const auto& entry : std::filesystem::directory_iterator(mediaRoot)) 
+        -:  269:        {
+        -:  270:            if (entry.is_directory()) 
+        -:  271:            {
+        -:  272:                knownMounts.push_back(entry.path().string());
+        -:  273:            }
+        -:  274:        }
+        -:  275:    }
+        -:  276:    */
+        -:  277:    
+        -:  278:    // Initial delay to ensure App and UI are fully ready before sending events
+    #####:  279:    std::this_thread::sleep_for(std::chrono::seconds(2));
+        -:  280:    
+    #####:  281:    while (m_monitorRunning) 
+        -:  282:    {
+        -:  283:        // Check for new mounts
+    #####:  284:        if (!std::filesystem::exists(mediaRoot)) 
+        -:  285:        {
+    #####:  286:            std::this_thread::sleep_for(std::chrono::seconds(2));
+    #####:  287:            continue;
+        -:  288:        }
+        -:  289:        
+    #####:  290:        std::vector<std::string> currentMounts;
+    #####:  291:        for (const auto& entry : std::filesystem::directory_iterator(mediaRoot)) 
+        -:  292:        {
+    #####:  293:            if (entry.is_directory()) 
+        -:  294:            {
+    #####:  295:                std::string pathObj = entry.path().string();
+        -:  296:                // Filter out VBox guest additions
+    #####:  297:                if (pathObj.find("VBox_GAs_") != std::string::npos) {
+    #####:  298:                    continue;
+        -:  299:                }
+    #####:  300:                currentMounts.push_back(pathObj);
+    #####:  301:            }
+    #####:  302:        }
+        -:  303:        
+        -:  304:        // Check for new mounts
+    #####:  305:        for (const auto& mount : currentMounts) 
+        -:  306:        {
+    #####:  307:            bool known = false;
+    #####:  308:            for (const auto& k : knownMounts) 
+        -:  309:            {
+    #####:  310:                if (k == mount) 
+        -:  311:                {
+    #####:  312:                    known = true;
+    #####:  313:                    break;
+        -:  314:                }
+        -:  315:            }
+        -:  316:            
+    #####:  317:            if (!known) 
+        -:  318:            {
+        -:  319:                // New USB detected!
+    #####:  320:                knownMounts.push_back(mount);
+        -:  321:                // Run on main thread? No, callback is fine, but UI must be thread safe
+        -:  322:                // ImGuiManager::showUsbPopup sets a flag, which is checked in render. 
+        -:  323:                // Flag setting is likely not atomic but bool write usually safe enough 
+        -:  324:                // or we trust the callback handling.
+    #####:  325:                handleUSBInserted(mount); 
+        -:  326:            }
+        -:  327:        }
+        -:  328:        
+        -:  329:        // Check for removals (optional, to update knownMounts)
+    #####:  330:        for (auto it = knownMounts.begin(); it != knownMounts.end(); ) 
+        -:  331:        {
+    #####:  332:            bool exists = false;
+    #####:  333:            for (const auto& c : currentMounts) 
+        -:  334:            {
+    #####:  335:                if (c == *it) 
+        -:  336:                {
+    #####:  337:                    exists = true;
+    #####:  338:                    break;
+        -:  339:                }
+        -:  340:            }
+        -:  341:            
+    #####:  342:            if (!exists) 
+        -:  343:            {
+    #####:  344:                it = knownMounts.erase(it);
+        -:  345:                // handleUSBRemoved(); // Optional
+        -:  346:            }
+        -:  347:            else 
+        -:  348:            {
+    #####:  349:                ++it;
+        -:  350:            }
+        -:  351:        }
+    #####:  352:    }
+    #####:  353:}
+        -:  354:
+        -:  355:} // namespace controllers
+        -:  356:} // namespace media_player

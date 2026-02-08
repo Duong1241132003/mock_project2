@@ -26,7 +26,7 @@ class SourceController
 {
 public:
     SourceController(
-        std::shared_ptr<services::FileScanner> fileScanner,
+        std::shared_ptr<services::IFileScanner> fileScanner,
         std::shared_ptr<repositories::LibraryRepository> libraryRepo,
         std::shared_ptr<models::LibraryModel> libraryModel
     );
@@ -45,6 +45,9 @@ public:
     // Lifecycle
     void startMonitoring();
     
+    // Configuration
+    void setMediaRoot(const std::string& path);
+
     // Status
     bool isScanning() const;
     std::string getCurrentSourcePath() const;
@@ -65,11 +68,12 @@ private:
     bool isStorageDevice(const std::string& mountPoint);
     bool isS32K144Device(const std::string& mountPoint);
     
-    std::shared_ptr<services::FileScanner> m_fileScanner;
+    std::shared_ptr<services::IFileScanner> m_fileScanner;
     std::shared_ptr<repositories::LibraryRepository> m_libraryRepo;
     std::shared_ptr<models::LibraryModel> m_libraryModel;
     
     std::string m_currentSourcePath;
+    std::string m_mediaRoot = "/media/duong"; // Default path
     
     ScanProgressCallback m_progressCallback;
     ScanCompleteCallback m_completeCallback;

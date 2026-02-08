@@ -1,0 +1,82 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/inc/services/IPlaybackEngine.h
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/services/AudioPlaybackEngine.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/services/AudioPlaybackEngine.cpp.gcda
+        -:    0:Runs:6
+        -:    1:#ifndef I_PLAYBACK_ENGINE_H
+        -:    2:#define I_PLAYBACK_ENGINE_H
+        -:    3:
+        -:    4:// System includes
+        -:    5:#include <string>
+        -:    6:#include <functional>
+        -:    7:
+        -:    8:// Project includes
+        -:    9:#include "models/MediaFileModel.h"
+        -:   10:
+        -:   11:namespace media_player 
+        -:   12:{
+        -:   13:namespace services 
+        -:   14:{
+        -:   15:
+        -:   16:enum class PlaybackState 
+        -:   17:{
+        -:   18:    STOPPED,
+        -:   19:    PLAYING,
+        -:   20:    PAUSED
+        -:   21:};
+        -:   22:
+        -:   23:// Callbacks
+        -:   24:using PlaybackStateChangeCallback = std::function<void(PlaybackState newState)>;
+        -:   25:using PlaybackPositionCallback = std::function<void(int currentSeconds, int totalSeconds)>;
+        -:   26:using PlaybackErrorCallback = std::function<void(const std::string& error)>;
+        -:   27:using PlaybackFinishedCallback = std::function<void()>;
+        -:   28:
+        -:   29:class IPlaybackEngine 
+        -:   30:{
+        -:   31:public:
+      18*:   32:    virtual ~IPlaybackEngine() = default;
+------------------
+_ZN12media_player8services15IPlaybackEngineD0Ev:
+    #####:   32:    virtual ~IPlaybackEngine() = default;
+------------------
+_ZN12media_player8services15IPlaybackEngineD2Ev:
+       18:   32:    virtual ~IPlaybackEngine() = default;
+------------------
+        -:   33:    
+        -:   34:    // Playback control
+        -:   35:    virtual bool loadFile(const std::string& filePath) = 0;
+        -:   36:    virtual bool play() = 0;
+        -:   37:    virtual bool pause() = 0;
+        -:   38:    virtual bool stop() = 0;
+        -:   39:    virtual bool seek(int positionSeconds) = 0;
+        -:   40:    
+        -:   41:    // Resource management
+    #####:   42:    virtual void releaseResources() {}
+        -:   43:    
+        -:   44:    // State queries
+        -:   45:    virtual PlaybackState getState() const = 0;
+        -:   46:    virtual int getCurrentPosition() const = 0;
+        -:   47:    virtual int getTotalDuration() const = 0;
+        -:   48:    
+        -:   49:    bool isPlaying() const 
+        -:   50:    { 
+        -:   51:        return getState() == PlaybackState::PLAYING; 
+        -:   52:    }
+        -:   53:    
+        -:   54:    // Volume control (0-100)
+        -:   55:    virtual void setVolume(int volume) = 0;
+        -:   56:    virtual int getVolume() const = 0;
+        -:   57:    
+        -:   58:    // Media type support
+        -:   59:    virtual bool supportsMediaType(models::MediaType type) const = 0;
+        -:   60:    
+        -:   61:    // Callbacks
+        -:   62:    virtual void setStateChangeCallback(PlaybackStateChangeCallback callback) = 0;
+        -:   63:    virtual void setPositionCallback(PlaybackPositionCallback callback) = 0;
+        -:   64:    virtual void setErrorCallback(PlaybackErrorCallback callback) = 0;
+        -:   65:    virtual void setFinishedCallback(PlaybackFinishedCallback callback) = 0;
+        -:   66:};
+        -:   67:
+        -:   68:} // namespace services
+        -:   69:} // namespace media_player
+        -:   70:
+        -:   71:#endif // I_PLAYBACK_ENGINE_H

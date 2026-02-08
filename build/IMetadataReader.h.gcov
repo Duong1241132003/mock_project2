@@ -1,0 +1,47 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/inc/services/IMetadataReader.h
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.gcda
+        -:    0:Runs:6
+        -:    1:#ifndef I_METADATA_READER_H
+        -:    2:#define I_METADATA_READER_H
+        -:    3:
+        -:    4:// System includes
+        -:    5:#include <string>
+        -:    6:#include <memory>
+        -:    7:
+        -:    8:// Project includes
+        -:    9:#include "models/MetadataModel.h"
+        -:   10:
+        -:   11:namespace media_player 
+        -:   12:{
+        -:   13:namespace services 
+        -:   14:{
+        -:   15:
+        -:   16:class IMetadataReader 
+        -:   17:{
+        -:   18:public:
+    #####:   19:    virtual ~IMetadataReader() = default;
+------------------
+_ZN12media_player8services15IMetadataReaderD0Ev:
+    #####:   19:    virtual ~IMetadataReader() = default;
+------------------
+_ZN12media_player8services15IMetadataReaderD2Ev:
+    #####:   19:    virtual ~IMetadataReader() = default;
+------------------
+        -:   20:    
+        -:   21:    // Read operations
+        -:   22:    virtual std::unique_ptr<models::MetadataModel> readMetadata(const std::string& filePath) = 0;
+        -:   23:    virtual bool canReadFile(const std::string& filePath) const = 0;
+        -:   24:    
+        -:   25:    // Write operations
+        -:   26:    virtual bool writeMetadata(const std::string& filePath, const models::MetadataModel& metadata) = 0;
+        -:   27:    
+        -:   28:    // Cover art
+        -:   29:    virtual bool extractCoverArt(const std::string& filePath, const std::string& outputPath) = 0;
+        -:   30:    virtual bool embedCoverArt(const std::string& filePath, const std::string& imagePath) = 0;
+        -:   31:};
+        -:   32:
+        -:   33:} // namespace services
+        -:   34:} // namespace media_player
+        -:   35:
+        -:   36:#endif // I_METADATA_READER_H

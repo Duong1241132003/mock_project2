@@ -1,0 +1,84 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/src/models/MetadataModel.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/models/MetadataModel.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/models/MetadataModel.cpp.gcda
+        -:    0:Runs:6
+        -:    1:// Project includes
+        -:    2:#include "models/MetadataModel.h"
+        -:    3:
+        -:    4:// System includes
+        -:    5:#include <sstream>
+        -:    6:#include <iomanip>
+        -:    7:
+        -:    8:namespace media_player 
+        -:    9:{
+        -:   10:namespace models 
+        -:   11:{
+        -:   12:
+    #####:   13:MetadataModel::MetadataModel(const std::string& filePath) 
+        -:   14:{
+        -:   15:    (void)filePath; // Will be used when reading metadata
+    #####:   16:}
+        -:   17:
+    #####:   18:void MetadataModel::setCustomTag(const std::string& key, const std::string& value) 
+        -:   19:{
+    #####:   20:    m_customTags[key] = value;
+    #####:   21:}
+        -:   22:
+    #####:   23:std::optional<std::string> MetadataModel::getCustomTag(const std::string& key) const 
+        -:   24:{
+    #####:   25:    auto it = m_customTags.find(key);
+    #####:   26:    if (it != m_customTags.end()) 
+        -:   27:    {
+    #####:   28:        return it->second;
+        -:   29:    }
+    #####:   30:    return std::nullopt;
+        -:   31:}
+        -:   32:
+    #####:   33:bool MetadataModel::isComplete() const 
+        -:   34:{
+    #####:   35:    return !m_title.empty() && !m_artist.empty();
+        -:   36:}
+        -:   37:
+    #####:   38:std::string MetadataModel::getDisplayTitle() const 
+        -:   39:{
+    #####:   40:    if (!m_title.empty()) 
+        -:   41:    {
+    #####:   42:        return m_title;
+        -:   43:    }
+    #####:   44:    return "Unknown Title";
+        -:   45:}
+        -:   46:
+    #####:   47:std::string MetadataModel::getDisplayArtist() const 
+        -:   48:{
+    #####:   49:    if (!m_artist.empty()) 
+        -:   50:    {
+    #####:   51:        return m_artist;
+        -:   52:    }
+    #####:   53:    return "Unknown Artist";
+        -:   54:}
+        -:   55:
+    #####:   56:std::string MetadataModel::getFormattedDuration() const 
+        -:   57:{
+    #####:   58:    int hours = m_durationSeconds / 3600;
+    #####:   59:    int minutes = (m_durationSeconds % 3600) / 60;
+    #####:   60:    int seconds = m_durationSeconds % 60;
+        -:   61:    
+    #####:   62:    std::stringstream ss;
+        -:   63:    
+    #####:   64:    if (hours > 0) 
+        -:   65:    {
+    #####:   66:        ss << hours << ":";
+    #####:   67:        ss << std::setfill('0') << std::setw(2) << minutes << ":";
+        -:   68:    }
+        -:   69:    else 
+        -:   70:    {
+    #####:   71:        ss << minutes << ":";
+        -:   72:    }
+        -:   73:    
+    #####:   74:    ss << std::setfill('0') << std::setw(2) << seconds;
+        -:   75:    
+    #####:   76:    return ss.str();
+    #####:   77:}
+        -:   78:
+        -:   79:} // namespace models
+        -:   80:} // namespace media_player

@@ -1,0 +1,342 @@
+        -:    0:Source:/usr/include/taglib/tlist.tcc
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.gcda
+        -:    0:Runs:6
+        -:    1:/***************************************************************************
+        -:    2:    copyright            : (C) 2002 - 2008 by Scott Wheeler
+        -:    3:    email                : wheeler@kde.org
+        -:    4: ***************************************************************************/
+        -:    5:
+        -:    6:/***************************************************************************
+        -:    7: *   This library is free software; you can redistribute it and/or modify  *
+        -:    8: *   it under the terms of the GNU Lesser General Public License version   *
+        -:    9: *   2.1 as published by the Free Software Foundation.                     *
+        -:   10: *                                                                         *
+        -:   11: *   This library is distributed in the hope that it will be useful, but   *
+        -:   12: *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+        -:   13: *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+        -:   14: *   Lesser General Public License for more details.                       *
+        -:   15: *                                                                         *
+        -:   16: *   You should have received a copy of the GNU Lesser General Public      *
+        -:   17: *   License along with this library; if not, write to the Free Software   *
+        -:   18: *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA         *
+        -:   19: *   02110-1301  USA                                                       *
+        -:   20: *                                                                         *
+        -:   21: *   Alternatively, this file is available under the Mozilla Public        *
+        -:   22: *   License Version 1.1.  You may obtain a copy of the License at         *
+        -:   23: *   http://www.mozilla.org/MPL/                                           *
+        -:   24: ***************************************************************************/
+        -:   25:
+        -:   26:#include <algorithm>
+        -:   27:#include "trefcounter.h"
+        -:   28:
+        -:   29:namespace TagLib {
+        -:   30:
+        -:   31:////////////////////////////////////////////////////////////////////////////////
+        -:   32:// public members
+        -:   33:////////////////////////////////////////////////////////////////////////////////
+        -:   34:
+        -:   35:// The functionality of List<T>::setAutoDelete() is implemented here partial
+        -:   36:// template specialization.  This is implemented in such a way that calling
+        -:   37:// setAutoDelete() on non-pointer types will simply have no effect.
+        -:   38:
+        -:   39:// A base for the generic and specialized private class types.  New
+        -:   40:// non-templatized members should be added here.
+        -:   41:
+        -:   42:// BIC change to RefCounter
+        -:   43:class ListPrivateBase : public RefCounterOld
+        -:   44:{
+        -:   45:public:
+    #####:   46:  ListPrivateBase() : autoDelete(false) {}
+        -:   47:  bool autoDelete;
+        -:   48:};
+        -:   49:
+        -:   50:// A generic implementation
+        -:   51:
+        -:   52:template <class T>
+        -:   53:template <class TP> class List<T>::ListPrivate  : public ListPrivateBase
+        -:   54:{
+        -:   55:public:
+        -:   56:  ListPrivate() : ListPrivateBase() {}
+        -:   57:  ListPrivate(const std::list<TP> &l) : ListPrivateBase(), list(l) {}
+        -:   58:  void clear() {
+        -:   59:    list.clear();
+        -:   60:  }
+        -:   61:  std::list<TP> list;
+        -:   62:};
+        -:   63:
+        -:   64:// A partial specialization for all pointer types that implements the
+        -:   65:// setAutoDelete() functionality.
+        -:   66:
+        -:   67:template <class T>
+        -:   68:template <class TP> class List<T>::ListPrivate<TP *>  : public ListPrivateBase
+        -:   69:{
+        -:   70:public:
+        -:   71:  ListPrivate() : ListPrivateBase() {}
+    #####:   72:  ListPrivate(const std::list<TP *> &l) : ListPrivateBase(), list(l) {}
+    #####:   73:  ~ListPrivate() {
+    #####:   74:    clear();
+    #####:   75:  }
+    #####:   76:  void clear() {
+    #####:   77:    if(autoDelete) {
+    #####:   78:      typename std::list<TP *>::const_iterator it = list.begin();
+    #####:   79:      for(; it != list.end(); ++it)
+    #####:   80:        delete *it;
+        -:   81:    }
+    #####:   82:    list.clear();
+    #####:   83:  }
+        -:   84:  std::list<TP *> list;
+        -:   85:};
+        -:   86:
+        -:   87:////////////////////////////////////////////////////////////////////////////////
+        -:   88:// public members
+        -:   89:////////////////////////////////////////////////////////////////////////////////
+        -:   90:
+        -:   91:template <class T>
+        -:   92:List<T>::List() :
+        -:   93:  d(new ListPrivate<T>())
+        -:   94:{
+        -:   95:}
+        -:   96:
+        -:   97:template <class T>
+    #####:   98:List<T>::List(const List<T> &l) : d(l.d)
+        -:   99:{
+    #####:  100:  d->ref();
+    #####:  101:}
+        -:  102:
+        -:  103:template <class T>
+    #####:  104:List<T>::~List()
+        -:  105:{
+    #####:  106:  if(d->deref())
+    #####:  107:    delete d;
+    #####:  108:}
+------------------
+_ZN6TagLib4ListIPNS_5ID3v25FrameEED0Ev:
+    #####:  104:List<T>::~List()
+        -:  105:{
+        -:  106:  if(d->deref())
+        -:  107:    delete d;
+    #####:  108:}
+------------------
+_ZN6TagLib4ListIPNS_5ID3v25FrameEED2Ev:
+    #####:  104:List<T>::~List()
+        -:  105:{
+    #####:  106:  if(d->deref())
+    #####:  107:    delete d;
+    #####:  108:}
+------------------
+        -:  109:
+        -:  110:template <class T>
+        -:  111:typename List<T>::Iterator List<T>::begin()
+        -:  112:{
+        -:  113:  detach();
+        -:  114:  return d->list.begin();
+        -:  115:}
+        -:  116:
+        -:  117:template <class T>
+        -:  118:typename List<T>::ConstIterator List<T>::begin() const
+        -:  119:{
+        -:  120:  return d->list.begin();
+        -:  121:}
+        -:  122:
+        -:  123:template <class T>
+        -:  124:typename List<T>::Iterator List<T>::end()
+        -:  125:{
+        -:  126:  detach();
+        -:  127:  return d->list.end();
+        -:  128:}
+        -:  129:
+        -:  130:template <class T>
+        -:  131:typename List<T>::ConstIterator List<T>::end() const
+        -:  132:{
+        -:  133:  return d->list.end();
+        -:  134:}
+        -:  135:
+        -:  136:template <class T>
+        -:  137:typename List<T>::Iterator List<T>::insert(Iterator it, const T &item)
+        -:  138:{
+        -:  139:  detach();
+        -:  140:  return d->list.insert(it, item);
+        -:  141:}
+        -:  142:
+        -:  143:template <class T>
+        -:  144:List<T> &List<T>::sortedInsert(const T &value, bool unique)
+        -:  145:{
+        -:  146:  detach();
+        -:  147:  Iterator it = begin();
+        -:  148:  while(it != end() && *it < value)
+        -:  149:    ++it;
+        -:  150:  if(unique && it != end() && *it == value)
+        -:  151:    return *this;
+        -:  152:  insert(it, value);
+        -:  153:  return *this;
+        -:  154:}
+        -:  155:
+        -:  156:template <class T>
+        -:  157:List<T> &List<T>::append(const T &item)
+        -:  158:{
+        -:  159:  detach();
+        -:  160:  d->list.push_back(item);
+        -:  161:  return *this;
+        -:  162:}
+        -:  163:
+        -:  164:template <class T>
+        -:  165:List<T> &List<T>::append(const List<T> &l)
+        -:  166:{
+        -:  167:  detach();
+        -:  168:  d->list.insert(d->list.end(), l.begin(), l.end());
+        -:  169:  return *this;
+        -:  170:}
+        -:  171:
+        -:  172:template <class T>
+        -:  173:List<T> &List<T>::prepend(const T &item)
+        -:  174:{
+        -:  175:  detach();
+        -:  176:  d->list.push_front(item);
+        -:  177:  return *this;
+        -:  178:}
+        -:  179:
+        -:  180:template <class T>
+        -:  181:List<T> &List<T>::prepend(const List<T> &l)
+        -:  182:{
+        -:  183:  detach();
+        -:  184:  d->list.insert(d->list.begin(), l.begin(), l.end());
+        -:  185:  return *this;
+        -:  186:}
+        -:  187:
+        -:  188:template <class T>
+        -:  189:List<T> &List<T>::clear()
+        -:  190:{
+        -:  191:  detach();
+        -:  192:  d->clear();
+        -:  193:  return *this;
+        -:  194:}
+        -:  195:
+        -:  196:template <class T>
+        -:  197:unsigned int List<T>::size() const
+        -:  198:{
+        -:  199:  return static_cast<unsigned int>(d->list.size());
+        -:  200:}
+        -:  201:
+        -:  202:template <class T>
+    #####:  203:bool List<T>::isEmpty() const
+        -:  204:{
+    #####:  205:  return d->list.empty();
+        -:  206:}
+        -:  207:
+        -:  208:template <class T>
+        -:  209:typename List<T>::Iterator List<T>::find(const T &value)
+        -:  210:{
+        -:  211:  detach();
+        -:  212:  return std::find(d->list.begin(), d->list.end(), value);
+        -:  213:}
+        -:  214:
+        -:  215:template <class T>
+        -:  216:typename List<T>::ConstIterator List<T>::find(const T &value) const
+        -:  217:{
+        -:  218:  return std::find(d->list.begin(), d->list.end(), value);
+        -:  219:}
+        -:  220:
+        -:  221:template <class T>
+        -:  222:bool List<T>::contains(const T &value) const
+        -:  223:{
+        -:  224:  return std::find(d->list.begin(), d->list.end(), value) != d->list.end();
+        -:  225:}
+        -:  226:
+        -:  227:template <class T>
+        -:  228:typename List<T>::Iterator List<T>::erase(Iterator it)
+        -:  229:{
+        -:  230:  return d->list.erase(it);
+        -:  231:}
+        -:  232:
+        -:  233:template <class T>
+        -:  234:const T &List<T>::front() const
+        -:  235:{
+        -:  236:  return d->list.front();
+        -:  237:}
+        -:  238:
+        -:  239:template <class T>
+    #####:  240:T &List<T>::front()
+        -:  241:{
+    #####:  242:  detach();
+    #####:  243:  return d->list.front();
+        -:  244:}
+        -:  245:
+        -:  246:template <class T>
+        -:  247:const T &List<T>::back() const
+        -:  248:{
+        -:  249:  return d->list.back();
+        -:  250:}
+        -:  251:
+        -:  252:template <class T>
+        -:  253:void List<T>::setAutoDelete(bool autoDelete)
+        -:  254:{
+        -:  255:  d->autoDelete = autoDelete;
+        -:  256:}
+        -:  257:
+        -:  258:template <class T>
+        -:  259:T &List<T>::back()
+        -:  260:{
+        -:  261:  detach();
+        -:  262:  return d->list.back();
+        -:  263:}
+        -:  264:
+        -:  265:template <class T>
+        -:  266:T &List<T>::operator[](unsigned int i)
+        -:  267:{
+        -:  268:  Iterator it = d->list.begin();
+        -:  269:  std::advance(it, i);
+        -:  270:
+        -:  271:  return *it;
+        -:  272:}
+        -:  273:
+        -:  274:template <class T>
+        -:  275:const T &List<T>::operator[](unsigned int i) const
+        -:  276:{
+        -:  277:  ConstIterator it = d->list.begin();
+        -:  278:  std::advance(it, i);
+        -:  279:
+        -:  280:  return *it;
+        -:  281:}
+        -:  282:
+        -:  283:template <class T>
+        -:  284:List<T> &List<T>::operator=(const List<T> &l)
+        -:  285:{
+        -:  286:  List<T>(l).swap(*this);
+        -:  287:  return *this;
+        -:  288:}
+        -:  289:
+        -:  290:template <class T>
+        -:  291:void List<T>::swap(List<T> &l)
+        -:  292:{
+        -:  293:  using std::swap;
+        -:  294:
+        -:  295:  swap(d, l.d);
+        -:  296:}
+        -:  297:
+        -:  298:template <class T>
+        -:  299:bool List<T>::operator==(const List<T> &l) const
+        -:  300:{
+        -:  301:  return d->list == l.d->list;
+        -:  302:}
+        -:  303:
+        -:  304:template <class T>
+        -:  305:bool List<T>::operator!=(const List<T> &l) const
+        -:  306:{
+        -:  307:  return d->list != l.d->list;
+        -:  308:}
+        -:  309:
+        -:  310:////////////////////////////////////////////////////////////////////////////////
+        -:  311:// protected members
+        -:  312:////////////////////////////////////////////////////////////////////////////////
+        -:  313:
+        -:  314:template <class T>
+    #####:  315:void List<T>::detach()
+        -:  316:{
+    #####:  317:  if(d->count() > 1) {
+    #####:  318:    d->deref();
+    #####:  319:    d = new ListPrivate<T>(d->list);
+        -:  320:  }
+    #####:  321:}
+        -:  322:
+        -:  323:} // namespace TagLib

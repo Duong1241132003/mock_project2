@@ -1,0 +1,345 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/src/models/QueueModel.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/models/QueueModel.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/models/QueueModel.cpp.gcda
+        -:    0:Runs:6
+        -:    1:// Project includes
+        -:    2:#include "models/QueueModel.h"
+        -:    3:#include "utils/Logger.h"
+        -:    4:
+        -:    5:// System includes
+        -:    6:#include <algorithm>
+        -:    7:#include <random>
+        -:    8:#include <fstream>
+        -:    9:#include <chrono>
+        -:   10:
+        -:   11:namespace media_player 
+        -:   12:{
+        -:   13:namespace models 
+        -:   14:{
+        -:   15:
+       18:   16:void QueueModel::addToEnd(const MediaFileModel& media) 
+        -:   17:{
+       18:   18:    m_items.push_back(media);
+       18:   19:    if (m_shuffleEnabled) 
+        -:   20:    {
+    #####:   21:        updateShuffleOrder();
+        -:   22:    }
+       18:   23:    LOG_DEBUG("Added item to end of queue: " + media.getFileName());
+       18:   24:}
+        -:   25:
+    #####:   26:void QueueModel::addNext(const MediaFileModel& media) 
+        -:   27:{
+    #####:   28:    if (m_items.empty()) 
+        -:   29:    {
+    #####:   30:        m_items.push_back(media);
+        -:   31:    }
+        -:   32:    else 
+        -:   33:    {
+    #####:   34:        m_items.insert(m_items.begin() + m_currentIndex + 1, media);
+        -:   35:    }
+    #####:   36:    if (m_shuffleEnabled) 
+        -:   37:    {
+    #####:   38:        updateShuffleOrder();
+        -:   39:    }
+    #####:   40:    LOG_DEBUG("Added item next in queue: " + media.getFileName());
+    #####:   41:}
+        -:   42:
+    #####:   43:void QueueModel::addAt(const MediaFileModel& media, size_t position) 
+        -:   44:{
+    #####:   45:    if (position >= m_items.size()) 
+        -:   46:    {
+    #####:   47:        m_items.push_back(media);
+        -:   48:    }
+        -:   49:    else 
+        -:   50:    {
+    #####:   51:        m_items.insert(m_items.begin() + position, media);
+        -:   52:    }
+    #####:   53:    if (m_shuffleEnabled) 
+        -:   54:    {
+    #####:   55:        updateShuffleOrder();
+        -:   56:    }
+    #####:   57:}
+        -:   58:
+       12:   59:bool QueueModel::removeAt(size_t index) 
+        -:   60:{
+       12:   61:    if (index >= m_items.size()) 
+        -:   62:    {
+    #####:   63:        return false;
+        -:   64:    }
+        -:   65:    
+       12:   66:    m_items.erase(m_items.begin() + index);
+        -:   67:    
+       12:   68:    if (m_currentIndex >= m_items.size() && !m_items.empty()) 
+        -:   69:    {
+        6:   70:        m_currentIndex = m_items.size() - 1;
+        -:   71:    }
+        -:   72:    
+       12:   73:    if (m_shuffleEnabled) 
+        -:   74:    {
+    #####:   75:        updateShuffleOrder();
+        -:   76:    }
+        -:   77:    
+       12:   78:    return true;
+        -:   79:}
+        -:   80:
+       12:   81:bool QueueModel::removeByPath(const std::string& filePath) 
+        -:   82:{
+       12:   83:    auto it = std::find_if(m_items.begin(), m_items.end(),
+       18:   84:        [&filePath](const MediaFileModel& item) {
+       18:   85:            return item.getFilePath() == filePath;
+        -:   86:        });
+        -:   87:    
+       12:   88:    if (it != m_items.end()) 
+        -:   89:    {
+       12:   90:        size_t index = std::distance(m_items.begin(), it);
+       12:   91:        return removeAt(index);
+        -:   92:    }
+        -:   93:    
+    #####:   94:    return false;
+        -:   95:}
+        -:   96:
+    #####:   97:void QueueModel::clear() 
+        -:   98:{
+    #####:   99:    m_items.clear();
+    #####:  100:    m_shuffleOrder.clear();
+    #####:  101:    m_currentIndex = 0;
+    #####:  102:    LOG_DEBUG("Queue cleared");
+    #####:  103:}
+        -:  104:
+       24:  105:std::optional<MediaFileModel> QueueModel::getCurrentItem() const 
+        -:  106:{
+       24:  107:    if (m_items.empty() || m_currentIndex >= m_items.size()) 
+        -:  108:    {
+       12:  109:        return std::nullopt;
+        -:  110:    }
+        -:  111:    
+       12:  112:    size_t actualIndex = getActualIndex(m_currentIndex);
+       12:  113:    return m_items[actualIndex];
+        -:  114:}
+        -:  115:
+    #####:  116:std::optional<MediaFileModel> QueueModel::getNextItem() const 
+        -:  117:{
+    #####:  118:    if (m_items.empty()) 
+        -:  119:    {
+    #####:  120:        return std::nullopt;
+        -:  121:    }
+        -:  122:    
+    #####:  123:    size_t nextIndex = m_currentIndex + 1;
+        -:  124:    
+    #####:  125:    if (nextIndex >= m_items.size()) 
+        -:  126:    {
+    #####:  127:        if (m_repeatMode == RepeatMode::LoopAll) 
+        -:  128:        {
+    #####:  129:            nextIndex = 0;
+        -:  130:        }
+        -:  131:        else 
+        -:  132:        {
+    #####:  133:            return std::nullopt;
+        -:  134:        }
+        -:  135:    }
+        -:  136:    
+    #####:  137:    size_t actualIndex = getActualIndex(nextIndex);
+    #####:  138:    return m_items[actualIndex];
+        -:  139:}
+        -:  140:
+    #####:  141:std::optional<MediaFileModel> QueueModel::getPreviousItem() const 
+        -:  142:{
+    #####:  143:    if (m_items.empty()) 
+        -:  144:    {
+    #####:  145:        return std::nullopt;
+        -:  146:    }
+        -:  147:    
+    #####:  148:    if (m_currentIndex == 0) 
+        -:  149:    {
+    #####:  150:        if (m_repeatMode == RepeatMode::LoopAll) 
+        -:  151:        {
+    #####:  152:            size_t actualIndex = getActualIndex(m_items.size() - 1);
+    #####:  153:            return m_items[actualIndex];
+        -:  154:        }
+    #####:  155:        return std::nullopt;
+        -:  156:    }
+        -:  157:    
+    #####:  158:    size_t actualIndex = getActualIndex(m_currentIndex - 1);
+    #####:  159:    return m_items[actualIndex];
+        -:  160:}
+        -:  161:
+    #####:  162:std::optional<MediaFileModel> QueueModel::getItemAt(size_t index) const 
+        -:  163:{
+    #####:  164:    if (index >= m_items.size()) 
+        -:  165:    {
+    #####:  166:        return std::nullopt;
+        -:  167:    }
+    #####:  168:    return m_items[index];
+        -:  169:}
+        -:  170:
+    #####:  171:std::vector<MediaFileModel> QueueModel::getItemsInPlaybackOrder() const
+        -:  172:{
+    #####:  173:    if (m_items.empty()) return {};
+    #####:  174:    if (!m_shuffleEnabled) return m_items;
+    #####:  175:    std::vector<MediaFileModel> out;
+    #####:  176:    out.reserve(m_items.size());
+    #####:  177:    for (size_t i = 0; i < m_items.size(); ++i)
+    #####:  178:        out.push_back(m_items[getActualIndex(i)]);
+    #####:  179:    return out;
+    #####:  180:}
+        -:  181:
+        6:  182:bool QueueModel::moveToNext() 
+        -:  183:{
+        6:  184:    if (m_items.empty()) 
+        -:  185:    {
+    #####:  186:        return false;
+        -:  187:    }
+        -:  188:    
+        6:  189:    m_currentIndex++;
+        -:  190:    
+        6:  191:    if (m_currentIndex >= m_items.size()) 
+        -:  192:    {
+    #####:  193:        if (m_repeatMode == RepeatMode::LoopAll)
+        -:  194:        {
+    #####:  195:            m_currentIndex = 0;
+    #####:  196:            return true;
+        -:  197:        }
+    #####:  198:        m_currentIndex = m_items.size() - 1;
+    #####:  199:        return false;
+        -:  200:    }
+        -:  201:    
+        6:  202:    return true;
+        -:  203:}
+        -:  204:
+    #####:  205:bool QueueModel::moveToPrevious() 
+        -:  206:{
+    #####:  207:    if (m_items.empty() || m_currentIndex == 0) 
+        -:  208:    {
+    #####:  209:        if (m_repeatMode == RepeatMode::LoopAll && !m_items.empty()) 
+        -:  210:        {
+    #####:  211:            m_currentIndex = m_items.size() - 1;
+    #####:  212:            return true;
+        -:  213:        }
+    #####:  214:        return false;
+        -:  215:    }
+        -:  216:    
+    #####:  217:    m_currentIndex--;
+    #####:  218:    return true;
+        -:  219:}
+        -:  220:
+    #####:  221:bool QueueModel::jumpTo(size_t index) 
+        -:  222:{
+    #####:  223:    if (index >= m_items.size()) 
+        -:  224:    {
+    #####:  225:        return false;
+        -:  226:    }
+        -:  227:    
+    #####:  228:    m_currentIndex = index;
+    #####:  229:    return true;
+        -:  230:}
+        -:  231:
+    #####:  232:bool QueueModel::hasNext() const 
+        -:  233:{
+    #####:  234:    if (m_items.empty()) 
+        -:  235:    {
+    #####:  236:        return false;
+        -:  237:    }
+        -:  238:    
+    #####:  239:    if (m_repeatMode == RepeatMode::LoopAll) 
+        -:  240:    {
+    #####:  241:        return true;
+        -:  242:    }
+        -:  243:    
+    #####:  244:    return m_currentIndex < m_items.size() - 1;
+        -:  245:}
+        -:  246:
+    #####:  247:bool QueueModel::hasPrevious() const 
+        -:  248:{
+    #####:  249:    if (m_items.empty()) 
+        -:  250:    {
+    #####:  251:        return false;
+        -:  252:    }
+        -:  253:    
+    #####:  254:    if (m_repeatMode == RepeatMode::LoopAll) 
+        -:  255:    {
+    #####:  256:        return true;
+        -:  257:    }
+        -:  258:    
+    #####:  259:    return m_currentIndex > 0;
+        -:  260:}
+        -:  261:
+    #####:  262:bool QueueModel::moveItem(size_t fromIndex, size_t toIndex) 
+        -:  263:{
+    #####:  264:    if (fromIndex >= m_items.size() || toIndex >= m_items.size()) 
+        -:  265:    {
+    #####:  266:        return false;
+        -:  267:    }
+        -:  268:    
+    #####:  269:    MediaFileModel item = m_items[fromIndex];
+    #####:  270:    m_items.erase(m_items.begin() + fromIndex);
+    #####:  271:    m_items.insert(m_items.begin() + toIndex, item);
+        -:  272:    
+        -:  273:    // Adjust current index if needed
+    #####:  274:    if (m_currentIndex == fromIndex) 
+        -:  275:    {
+    #####:  276:        m_currentIndex = toIndex;
+        -:  277:    }
+    #####:  278:    else if (fromIndex < m_currentIndex && toIndex >= m_currentIndex) 
+        -:  279:    {
+    #####:  280:        m_currentIndex--;
+        -:  281:    }
+    #####:  282:    else if (fromIndex > m_currentIndex && toIndex <= m_currentIndex) 
+        -:  283:    {
+    #####:  284:        m_currentIndex++;
+        -:  285:    }
+        -:  286:    
+    #####:  287:    return true;
+    #####:  288:}
+        -:  289:
+    #####:  290:void QueueModel::setShuffleMode(bool enabled) 
+        -:  291:{
+    #####:  292:    m_shuffleEnabled = enabled;
+    #####:  293:    if (enabled) 
+        -:  294:    {
+    #####:  295:        updateShuffleOrder();
+        -:  296:    }
+    #####:  297:    LOG_DEBUG("Shuffle mode: " + std::string(enabled ? "enabled" : "disabled"));
+    #####:  298:}
+        -:  299:
+    #####:  300:void QueueModel::setRepeatMode(RepeatMode mode) 
+        -:  301:{
+    #####:  302:    m_repeatMode = mode;
+    #####:  303:    const char* name = (mode == RepeatMode::None) ? "None" : 
+        -:  304:                       (mode == RepeatMode::LoopOne) ? "LoopOne" : "LoopAll";
+    #####:  305:    LOG_DEBUG("Repeat mode: " + std::string(name));
+    #####:  306:}
+        -:  307:
+    #####:  308:void QueueModel::updateShuffleOrder() 
+        -:  309:{
+    #####:  310:    m_shuffleOrder.clear();
+    #####:  311:    if (m_items.empty()) return;
+    #####:  312:    m_shuffleOrder.reserve(m_items.size());
+        -:  313:    
+    #####:  314:    for (size_t i = 0; i < m_items.size(); i++) 
+        -:  315:    {
+    #####:  316:        m_shuffleOrder.push_back(i);
+        -:  317:    }
+        -:  318:    
+        -:  319:    // Fisher-Yates shuffle
+    #####:  320:    std::random_device rd;
+    #####:  321:    std::mt19937 gen(rd());
+        -:  322:    
+    #####:  323:    for (size_t i = m_shuffleOrder.size() - 1; i > 0; i--) 
+        -:  324:    {
+    #####:  325:        std::uniform_int_distribution<size_t> dist(0, i);
+    #####:  326:        size_t j = dist(gen);
+    #####:  327:        std::swap(m_shuffleOrder[i], m_shuffleOrder[j]);
+        -:  328:    }
+    #####:  329:}
+        -:  330:
+       12:  331:size_t QueueModel::getActualIndex(size_t logicalIndex) const 
+        -:  332:{
+      12*:  333:    if (m_shuffleEnabled && logicalIndex < m_shuffleOrder.size()) 
+        -:  334:    {
+    #####:  335:        return m_shuffleOrder[logicalIndex];
+        -:  336:    }
+       12:  337:    return logicalIndex;
+        -:  338:}
+        -:  339:
+        -:  340:} // namespace models
+        -:  341:} // namespace media_player

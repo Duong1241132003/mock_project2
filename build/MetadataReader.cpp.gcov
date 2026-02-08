@@ -1,0 +1,393 @@
+        -:    0:Source:/home/duong/MediaPlayerApp/src/services/MetadataReader.cpp
+        -:    0:Graph:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.gcno
+        -:    0:Data:/home/duong/MediaPlayerApp/build/CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.gcda
+        -:    0:Runs:6
+        -:    1:// Project includes
+        -:    2:#include "services/MetadataReader.h"
+        -:    3:#include "utils/Logger.h"
+        -:    4:
+        -:    5:// TagLib includes
+        -:    6:#include <taglib/fileref.h>
+        -:    7:#include <taglib/tag.h>
+        -:    8:#include <taglib/audioproperties.h>
+        -:    9:#include <taglib/mpegfile.h>
+        -:   10:#include <taglib/id3v2tag.h>
+        -:   11:#include <taglib/id3v2frame.h>
+        -:   12:#include <taglib/attachedpictureframe.h>
+        -:   13:
+        -:   14:// System includes
+        -:   15:#include <fstream>
+        -:   16:#include <algorithm>
+        -:   17:
+        -:   18:namespace media_player 
+        -:   19:{
+        -:   20:namespace services 
+        -:   21:{
+        -:   22:
+    #####:   23:MetadataReader::MetadataReader() 
+        -:   24:{
+    #####:   25:    LOG_INFO("MetadataReader initialized");
+    #####:   26:}
+        -:   27:
+    #####:   28:MetadataReader::~MetadataReader() 
+        -:   29:{
+    #####:   30:    LOG_INFO("MetadataReader destroyed");
+    #####:   31:}
+------------------
+_ZN12media_player8services14MetadataReaderD0Ev:
+    #####:   28:MetadataReader::~MetadataReader() 
+        -:   29:{
+        -:   30:    LOG_INFO("MetadataReader destroyed");
+    #####:   31:}
+------------------
+_ZN12media_player8services14MetadataReaderD2Ev:
+    #####:   28:MetadataReader::~MetadataReader() 
+        -:   29:{
+    #####:   30:    LOG_INFO("MetadataReader destroyed");
+    #####:   31:}
+------------------
+        -:   32:
+    #####:   33:std::unique_ptr<models::MetadataModel> MetadataReader::readMetadata(const std::string& filePath) 
+        -:   34:{
+    #####:   35:    if (!canReadFile(filePath)) 
+        -:   36:    {
+    #####:   37:        LOG_ERROR("Cannot read file: " + filePath);
+    #####:   38:        return nullptr;
+        -:   39:    }
+        -:   40:    
+    #####:   41:    auto metadata = std::make_unique<models::MetadataModel>();
+        -:   42:    
+        -:   43:    try 
+        -:   44:    {
+    #####:   45:        TagLib::FileRef file(filePath.c_str());
+        -:   46:        
+    #####:   47:        if (file.isNull()) 
+        -:   48:        {
+    #####:   49:            LOG_ERROR("TagLib could not open file: " + filePath);
+    #####:   50:            return nullptr;
+        -:   51:        }
+        -:   52:        
+    #####:   53:        TagLib::Tag* tag = file.tag();
+        -:   54:        
+    #####:   55:        if (tag) 
+        -:   56:        {
+    #####:   57:            metadata->setTitle(tag->title().toCString(true));
+    #####:   58:            metadata->setArtist(tag->artist().toCString(true));
+    #####:   59:            metadata->setAlbum(tag->album().toCString(true));
+    #####:   60:            metadata->setGenre(tag->genre().toCString(true));
+    #####:   61:            metadata->setYear(std::to_string(tag->year()));
+        -:   62:        }
+        -:   63:        
+    #####:   64:        TagLib::AudioProperties* properties = file.audioProperties();
+        -:   65:        
+    #####:   66:        if (properties) 
+        -:   67:        {
+        -:   68:            // Duration in seconds
+    #####:   69:            int duration = properties->lengthInSeconds();
+    #####:   70:            metadata->setCustomTag("duration", std::to_string(duration));
+        -:   71:            
+        -:   72:            // Bitrate in kbps
+    #####:   73:            int bitrate = properties->bitrate();
+    #####:   74:            metadata->setCustomTag("bitrate", std::to_string(bitrate));
+        -:   75:        }
+        -:   76:        
+        -:   77:        // Extract cover art for MP3 files
+    #####:   78:        std::string extension = getFileExtension(filePath);
+        -:   79:        
+    #####:   80:        if (extension == ".mp3") 
+        -:   81:        {
+    #####:   82:            TagLib::MPEG::File mp3File(filePath.c_str());
+        -:   83:            
+    #####:   84:            if (mp3File.isValid() && mp3File.ID3v2Tag()) 
+        -:   85:            {
+    #####:   86:                TagLib::ID3v2::Tag* id3v2 = mp3File.ID3v2Tag();
+    #####:   87:                TagLib::ID3v2::FrameList frameList = id3v2->frameList("APIC");
+        -:   88:                
+    #####:   89:                if (!frameList.isEmpty()) 
+        -:   90:                {
+        -:   91:                    TagLib::ID3v2::AttachedPictureFrame* frame = 
+    #####:   92:                        static_cast<TagLib::ID3v2::AttachedPictureFrame*>(frameList.front());
+        -:   93:                    
+    #####:   94:                    if (frame) 
+        -:   95:                    {
+    #####:   96:                        TagLib::ByteVector pictureData = frame->picture();
+    #####:   97:                        std::vector<unsigned char> coverData(pictureData.begin(), pictureData.end());
+        -:   98:                        
+    #####:   99:                        metadata->setCustomTag("cover_art_available", "true");
+    #####:  100:                        metadata->setCustomTag("cover_art_size", std::to_string(coverData.size()));
+    #####:  101:                    }
+        -:  102:                }
+    #####:  103:            }
+    #####:  104:        }
+        -:  105:        
+    #####:  106:        LOG_INFO("Successfully read metadata from: " + filePath);
+    #####:  107:        return metadata;
+    #####:  108:    }
+    =====:  109:    catch (const std::exception& e) 
+        -:  110:    {
+    =====:  111:        LOG_ERROR("Exception reading metadata: " + std::string(e.what()));
+    =====:  112:        return nullptr;
+    =====:  113:    }
+    #####:  114:}
+        -:  115:
+    #####:  116:bool MetadataReader::canReadFile(const std::string& filePath) const 
+        -:  117:{
+    #####:  118:    return isSupportedFormat(filePath);
+        -:  119:}
+        -:  120:
+    #####:  121:bool MetadataReader::writeMetadata(const std::string& filePath, const models::MetadataModel& metadata) 
+        -:  122:{
+    #####:  123:    if (!canReadFile(filePath)) 
+        -:  124:    {
+    #####:  125:        LOG_ERROR("Cannot write to file: " + filePath);
+    #####:  126:        return false;
+        -:  127:    }
+        -:  128:    
+        -:  129:    try 
+        -:  130:    {
+    #####:  131:        TagLib::FileRef file(filePath.c_str());
+        -:  132:        
+    #####:  133:        if (file.isNull()) 
+        -:  134:        {
+    #####:  135:            LOG_ERROR("TagLib could not open file for writing: " + filePath);
+    #####:  136:            return false;
+        -:  137:        }
+        -:  138:        
+    #####:  139:        TagLib::Tag* tag = file.tag();
+        -:  140:        
+    #####:  141:        if (!tag) 
+        -:  142:        {
+    #####:  143:            LOG_ERROR("No tag available in file: " + filePath);
+    #####:  144:            return false;
+        -:  145:        }
+        -:  146:        
+        -:  147:        // Update basic metadata
+    #####:  148:        tag->setTitle(metadata.getTitle());
+    #####:  149:        tag->setArtist(metadata.getArtist());
+    #####:  150:        tag->setAlbum(metadata.getAlbum());
+    #####:  151:        tag->setGenre(metadata.getGenre());
+        -:  152:        
+        -:  153:        // Parse year string to unsigned int
+        -:  154:        try 
+        -:  155:        {
+    #####:  156:            if (!metadata.getYear().empty()) 
+        -:  157:            {
+    #####:  158:                unsigned int year = std::stoul(metadata.getYear());
+    #####:  159:                tag->setYear(year);
+        -:  160:            }
+        -:  161:        }
+    =====:  162:        catch (const std::exception& e) 
+        -:  163:        {
+    =====:  164:            LOG_WARNING("Invalid year format: " + metadata.getYear());
+    =====:  165:        }
+        -:  166:        
+    #####:  167:        bool success = file.save();
+        -:  168:        
+    #####:  169:        if (success) 
+        -:  170:        {
+    #####:  171:            LOG_INFO("Successfully wrote metadata to: " + filePath);
+        -:  172:        }
+        -:  173:        else 
+        -:  174:        {
+    #####:  175:            LOG_ERROR("Failed to save metadata to: " + filePath);
+        -:  176:        }
+        -:  177:        
+    #####:  178:        return success;
+    #####:  179:    }
+    =====:  180:    catch (const std::exception& e) 
+        -:  181:    {
+    =====:  182:        LOG_ERROR("Exception writing metadata: " + std::string(e.what()));
+    =====:  183:        return false;
+    =====:  184:    }
+        -:  185:}
+        -:  186:
+    #####:  187:bool MetadataReader::extractCoverArt(const std::string& filePath, const std::string& outputPath) 
+        -:  188:{
+    #####:  189:    std::string extension = getFileExtension(filePath);
+        -:  190:    
+    #####:  191:    if (extension != ".mp3") 
+        -:  192:    {
+    #####:  193:        LOG_WARNING("Cover art extraction only supported for MP3 files");
+    #####:  194:        return false;
+        -:  195:    }
+        -:  196:    
+        -:  197:    try 
+        -:  198:    {
+    #####:  199:        TagLib::MPEG::File mp3File(filePath.c_str());
+        -:  200:        
+    #####:  201:        if (!mp3File.isValid() || !mp3File.ID3v2Tag()) 
+        -:  202:        {
+    #####:  203:            LOG_ERROR("Invalid MP3 file or no ID3v2 tag: " + filePath);
+    #####:  204:            return false;
+        -:  205:        }
+        -:  206:        
+    #####:  207:        TagLib::ID3v2::Tag* id3v2 = mp3File.ID3v2Tag();
+    #####:  208:        TagLib::ID3v2::FrameList frameList = id3v2->frameList("APIC");
+        -:  209:        
+    #####:  210:        if (frameList.isEmpty()) 
+        -:  211:        {
+    #####:  212:            LOG_WARNING("No cover art found in: " + filePath);
+    #####:  213:            return false;
+        -:  214:        }
+        -:  215:        
+        -:  216:        TagLib::ID3v2::AttachedPictureFrame* frame = 
+    #####:  217:            static_cast<TagLib::ID3v2::AttachedPictureFrame*>(frameList.front());
+        -:  218:        
+    #####:  219:        if (!frame) 
+        -:  220:        {
+    #####:  221:            return false;
+        -:  222:        }
+        -:  223:        
+    #####:  224:        TagLib::ByteVector pictureData = frame->picture();
+    #####:  225:        std::vector<unsigned char> coverData(pictureData.begin(), pictureData.end());
+        -:  226:        
+    #####:  227:        bool success = writeImageFile(outputPath, coverData);
+        -:  228:        
+    #####:  229:        if (success) 
+        -:  230:        {
+    #####:  231:            LOG_INFO("Cover art extracted to: " + outputPath);
+        -:  232:        }
+        -:  233:        
+    #####:  234:        return success;
+    #####:  235:    }
+    =====:  236:    catch (const std::exception& e) 
+        -:  237:    {
+    =====:  238:        LOG_ERROR("Exception extracting cover art: " + std::string(e.what()));
+    =====:  239:        return false;
+    =====:  240:    }
+    #####:  241:}
+        -:  242:
+    #####:  243:bool MetadataReader::embedCoverArt(const std::string& filePath, const std::string& imagePath) 
+        -:  244:{
+    #####:  245:    std::string extension = getFileExtension(filePath);
+        -:  246:    
+    #####:  247:    if (extension != ".mp3") 
+        -:  248:    {
+    #####:  249:        LOG_WARNING("Cover art embedding only supported for MP3 files");
+    #####:  250:        return false;
+        -:  251:    }
+        -:  252:    
+        -:  253:    try 
+        -:  254:    {
+    #####:  255:        std::vector<unsigned char> imageData = readImageFile(imagePath);
+        -:  256:        
+    #####:  257:        if (imageData.empty()) 
+        -:  258:        {
+    #####:  259:            LOG_ERROR("Failed to read image file: " + imagePath);
+    #####:  260:            return false;
+        -:  261:        }
+        -:  262:        
+    #####:  263:        TagLib::MPEG::File mp3File(filePath.c_str());
+        -:  264:        
+    #####:  265:        if (!mp3File.isValid()) 
+        -:  266:        {
+    #####:  267:            LOG_ERROR("Invalid MP3 file: " + filePath);
+    #####:  268:            return false;
+        -:  269:        }
+        -:  270:        
+    #####:  271:        TagLib::ID3v2::Tag* id3v2 = mp3File.ID3v2Tag(true);
+        -:  272:        
+    #####:  273:        if (!id3v2) 
+        -:  274:        {
+    #####:  275:            LOG_ERROR("Could not create/access ID3v2 tag");
+    #####:  276:            return false;
+        -:  277:        }
+        -:  278:        
+        -:  279:        // Remove existing cover art
+    #####:  280:        id3v2->removeFrames("APIC");
+        -:  281:        
+        -:  282:        // Create new cover art frame
+    #####:  283:        TagLib::ID3v2::AttachedPictureFrame* frame = new TagLib::ID3v2::AttachedPictureFrame();
+    #####:  284:        frame->setMimeType("image/jpeg");
+    #####:  285:        frame->setPicture(TagLib::ByteVector(reinterpret_cast<const char*>(imageData.data()), 
+    #####:  286:                                              imageData.size()));
+    #####:  287:        frame->setType(TagLib::ID3v2::AttachedPictureFrame::FrontCover);
+        -:  288:        
+    #####:  289:        id3v2->addFrame(frame);
+        -:  290:        
+    #####:  291:        bool success = mp3File.save();
+        -:  292:        
+    #####:  293:        if (success) 
+        -:  294:        {
+    #####:  295:            LOG_INFO("Cover art embedded successfully in: " + filePath);
+        -:  296:        }
+        -:  297:        else 
+        -:  298:        {
+    #####:  299:            LOG_ERROR("Failed to save file with cover art: " + filePath);
+        -:  300:        }
+        -:  301:        
+    #####:  302:        return success;
+    #####:  303:    }
+    =====:  304:    catch (const std::exception& e) 
+        -:  305:    {
+    =====:  306:        LOG_ERROR("Exception embedding cover art: " + std::string(e.what()));
+    =====:  307:        return false;
+    =====:  308:    }
+    #####:  309:}
+        -:  310:
+    #####:  311:bool MetadataReader::isSupportedFormat(const std::string& filePath) const 
+        -:  312:{
+    #####:  313:    std::string extension = getFileExtension(filePath);
+        -:  314:    
+        -:  315:    // Chỉ hỗ trợ các định dạng ổn định: audio (.mp3, .wav) và video (.avi, .mp4)
+    #####:  316:    std::vector<std::string> supportedFormats = {".mp3", ".wav", ".avi", ".mp4"};
+        -:  317:    
+    #####:  318:    return std::find(supportedFormats.begin(), 
+        -:  319:                     supportedFormats.end(), 
+    #####:  320:                     extension) != supportedFormats.end();
+    #####:  321:}
+        -:  322:
+    #####:  323:std::string MetadataReader::getFileExtension(const std::string& filePath) const 
+        -:  324:{
+    #####:  325:    size_t dotPos = filePath.find_last_of('.');
+        -:  326:    
+    #####:  327:    if (dotPos == std::string::npos) 
+        -:  328:    {
+    #####:  329:        return "";
+        -:  330:    }
+        -:  331:    
+    #####:  332:    std::string extension = filePath.substr(dotPos);
+    #####:  333:    std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+        -:  334:    
+    #####:  335:    return extension;
+    #####:  336:}
+        -:  337:
+    #####:  338:std::vector<unsigned char> MetadataReader::readImageFile(const std::string& imagePath) const 
+        -:  339:{
+    #####:  340:    std::ifstream file(imagePath, std::ios::binary | std::ios::ate);
+        -:  341:    
+    #####:  342:    if (!file.is_open()) 
+        -:  343:    {
+    #####:  344:        return {};
+        -:  345:    }
+        -:  346:    
+    #####:  347:    std::streamsize size = file.tellg();
+    #####:  348:    file.seekg(0, std::ios::beg);
+        -:  349:    
+    #####:  350:    std::vector<unsigned char> buffer(size);
+        -:  351:    
+    #####:  352:    if (!file.read(reinterpret_cast<char*>(buffer.data()), size)) 
+        -:  353:    {
+    #####:  354:        return {};
+        -:  355:    }
+        -:  356:    
+    #####:  357:    return buffer;
+    #####:  358:}
+        -:  359:
+    #####:  360:bool MetadataReader::writeImageFile(const std::string& outputPath, 
+        -:  361:                                    const std::vector<unsigned char>& data) const 
+        -:  362:{
+    #####:  363:    std::ofstream file(outputPath, std::ios::binary);
+        -:  364:    
+    #####:  365:    if (!file.is_open()) 
+        -:  366:    {
+    #####:  367:        return false;
+        -:  368:    }
+        -:  369:    
+    #####:  370:    file.write(reinterpret_cast<const char*>(data.data()), data.size());
+        -:  371:    
+    #####:  372:    return file.good();
+    #####:  373:}
+        -:  374:
+        -:  375:} // namespace services
+        -:  376:} // namespace media_player
