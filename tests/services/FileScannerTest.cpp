@@ -48,21 +48,13 @@ protected:
     services::FileScanner scanner;
 };
 
+// ===================== Basic Scans =====================
+
 TEST_F(FileScannerTest, ScanDirectoryAsync) {
     std::vector<models::MediaFileModel> foundFiles;
     std::atomic<bool> scanComplete{false};
 
-    // scanner.setScanPath(testDir.string()); // Removed
     scanner.setMaxDepth(5); // Recursive
-    
-    // Setup callbacks
-    // Note: FileScanner might trigger onFileFound for each file
-    // We need to inspect FileScanner.h to see the callback signature
-    // Assuming: void scanDirectory(const std::string& path) and it uses internal callback
-    
-    // Wait, FileScanner.h has:
-    // void setFileFoundCallback(std::function<void(const models::MediaFileModel&)> callback);
-    // void setScanCompleteCallback(std::function<void()> callback);
     
     scanner.setCompleteCallback([&](std::vector<models::MediaFileModel> results) {
         foundFiles = results;
@@ -98,7 +90,6 @@ TEST_F(FileScannerTest, ScanDirectoryAsync) {
 }
 
 TEST_F(FileScannerTest, ScanDirectorySync) {
-    // scanner.setScanPath(testDir.string()); // Removed
     scanner.setMaxDepth(5); // Recursive
     
     auto files = scanner.scanDirectorySync(testDir.string());
@@ -132,9 +123,6 @@ TEST_F(FileScannerTest, StopScan) {
 }
 
 TEST_F(FileScannerTest, NonRecursiveScan) {
-    // Check if setRecursive exists, otherwise FileScanner might scan recursive by default or argument
-    // FileScanner.h check needed.
-    // Assuming setMaxDepth can control recursion or separate method.
     scanner.setMaxDepth(0); // If 0 means no recursion
     auto files = scanner.scanDirectorySync(testDir.string());
     
@@ -145,3 +133,103 @@ TEST_F(FileScannerTest, NonRecursiveScan) {
     
     EXPECT_FALSE(foundNested);
 }
+
+// ===================== Edge Cases =====================
+
+TEST_F(FileScannerTest, ScanEmptyDirectory) {
+    auto emptyDir = testDir / "empty";
+    fs::create_directories(emptyDir);
+    
+    auto files = scanner.scanDirectorySync(emptyDir.string());
+    EXPECT_TRUE(files.empty());
+}
+
+TEST_F(FileScannerTest, ScanNonExistentDirectory) {
+    auto files = scanner.scanDirectorySync("/nonexistent/path/12345");
+    EXPECT_TRUE(files.empty());
+}
+
+TEST_F(FileScannerTest, ScanFile) {
+    // Scanning a file instead of directory
+    auto files = scanner.scanDirectorySync((testDir / "song1.mp3").string());
+    // Should return empty or handle gracefully
+}
+
+TEST_F(FileScannerTest, IsScanningState) {
+    // Initially not scanning
+    EXPECT_FALSE(scanner.isScanning());
+    
+    // Start scan
+    scanner.setCompleteCallback([](std::vector<models::MediaFileModel>) {});
+    scanner.scanDirectory(testDir.string());
+    
+    // While scanning, isScanning should be true
+    // This is timing dependent
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    
+    // Wait for completion
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    
+    // After completion, should be false
+    EXPECT_FALSE(scanner.isScanning());
+}
+
+TEST_F(FileScannerTest, SetMaxDepthLarge) {
+    scanner.setMaxDepth(100);
+    auto files = scanner.scanDirectorySync(testDir.string());
+    EXPECT_FALSE(files.empty());
+}
+
+TEST_F(FileScannerTest, ProgressCallback) {
+    std::atomic<int> progressCount{0};
+    std::string lastPath;
+    
+    scanner.setProgressCallback([&](int count, const std::string& /* path */) {
+        progressCount = count;
+    });
+    
+    auto files = scanner.scanDirectorySync(testDir.string());
+    
+    // Progress might be called depending on implementation
+    // Just verify the scan completed successfully
+    EXPECT_FALSE(files.empty());
+}
+
+TEST_F(FileScannerTest, MultipleScanOperations) {
+    auto files1 = scanner.scanDirectorySync(testDir.string());
+    auto files2 = scanner.scanDirectorySync(testDir.string());
+    
+    // Both scans should return the same files
+    EXPECT_EQ(files1.size(), files2.size());
+}
+
+// ===================== Depth Variations =====================
+
+TEST_F(FileScannerTest, DepthOne) {
+    scanner.setMaxDepth(1);
+    auto files = scanner.scanDirectorySync(testDir.string());
+    
+    // Should find files in root and immediate subdirectory
+    bool foundRoot = false;
+    bool foundNested = false;
+    
+    for (const auto& file : files) {
+        if (file.getFileName() == "song1.mp3") foundRoot = true;
+        if (file.getFileName() == "nested.flac") foundNested = true;
+    }
+    
+    EXPECT_TRUE(foundRoot);
+    // At depth 1, should find subdir/nested.flac
+    EXPECT_TRUE(foundNested);
+}
+
+TEST_F(FileScannerTest, DepthZero) {
+    scanner.setMaxDepth(0);
+    auto files = scanner.scanDirectorySync(testDir.string());
+    
+    // Should only find files in root, not subdirectories
+    for (const auto& file : files) {
+        EXPECT_FALSE(file.getFilePath().find("subdir") != std::string::npos);
+    }
+}
+

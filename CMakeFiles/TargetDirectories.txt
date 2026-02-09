@@ -1,4 +1,7 @@
 /home/duong/MediaPlayerApp/CMakeFiles/MediaPlayerApp.dir
+/home/duong/MediaPlayerApp/CMakeFiles/RunTests.dir
+/home/duong/MediaPlayerApp/CMakeFiles/coverage.dir
+/home/duong/MediaPlayerApp/CMakeFiles/test.dir
 /home/duong/MediaPlayerApp/CMakeFiles/edit_cache.dir
 /home/duong/MediaPlayerApp/CMakeFiles/rebuild_cache.dir
 /home/duong/MediaPlayerApp/CMakeFiles/list_install_components.dir

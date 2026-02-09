@@ -380,45 +380,8 @@ void ImGuiManager::renderMainLayout() {
     // Draw content background
     drawRect(contentX, contentY, contentW, contentH, m_theme.background);
     
-    // Nếu đang phát video, render video panel thay vì content thông thường
-    if (m_state.isPlayingVideo && m_state.videoTexture)
-    {
-        // Tính toán kích thước video giữ tỷ lệ khung hình
-        int videoW = m_state.videoWidth;
-        int videoH = m_state.videoHeight;
-        
-        if (videoW > 0 && videoH > 0)
-        {
-            float aspectRatio = static_cast<float>(videoW) / static_cast<float>(videoH);
-            float contentAspect = static_cast<float>(contentW) / static_cast<float>(contentH);
-            
-            int renderW, renderH;
-            if (aspectRatio > contentAspect)
-            {
-                // Video rộng hơn - fit theo chiều ngang
-                renderW = contentW;
-                renderH = static_cast<int>(contentW / aspectRatio);
-            }
-            else
-            {
-                // Video cao hơn - fit theo chiều dọc
-                renderH = contentH;
-                renderW = static_cast<int>(contentH * aspectRatio);
-            }
-            
-            // Center video trong content area
-            int renderX = contentX + (contentW - renderW) / 2;
-            int renderY = contentY + (contentH - renderH) / 2;
-            
-            // Render video texture
-            SDL_Rect destRect = {renderX, renderY, renderW, renderH};
-            SDL_RenderCopy(m_renderer, m_state.videoTexture, nullptr, &destRect);
-        }
-        
-        // Vẫn render overlays (context menu, dialogs, etc.)
-        renderOverlays();
-        return;
-    }
+    // Video rendering block removed as requested
+
     
     // Render registered view if available
     auto it = m_views.find(m_state.currentTab);

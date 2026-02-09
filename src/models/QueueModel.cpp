@@ -62,6 +62,11 @@ bool QueueModel::removeAt(size_t index)
     
     m_items.erase(m_items.begin() + index);
     
+    if (m_currentIndex > index) 
+    {
+        m_currentIndex--;
+    }
+    
     if (m_currentIndex >= m_items.size() && !m_items.empty()) 
     {
         m_currentIndex = m_items.size() - 1;

@@ -94,10 +94,8 @@ struct UIState {
     int historyScrollOffset = 0;
     float volume = 0.8f;
     bool isPlaying = false;
-    bool isPlayingVideo = false;  // true khi đang phát video, dùng để hiển thị video panel
-    SDL_Texture* videoTexture = nullptr;  // Texture video hiện tại để render
-    int videoWidth = 0;
-    int videoHeight = 0;
+    // Video state removed
+
     std::string searchQuery;
     SearchFilter searchFilter = SearchFilter::All;  // Filter for search results
     std::string currentTrackTitle;

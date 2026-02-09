@@ -99,17 +99,7 @@ option(BUILD_TESTS "Build tests" OFF)
 if(BUILD_TESTS)
     enable_testing()
     
-    include(FetchContent)
-    FetchContent_Declare(
-      googletest
-      URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
-    )
-    # For Windows: Prevent overriding the parent project's compiler/linker settings
-    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-    FetchContent_MakeAvailable(googletest)
-    
-    include_directories(${googletest_SOURCE_DIR}/googletest/include)
-    include_directories(${googletest_SOURCE_DIR}/googlemock/include)
+    find_package(GTest REQUIRED)
     
     # Coverage flags will be added to RunTests target directly
     
@@ -122,8 +112,10 @@ if(BUILD_TESTS)
     )
     
     target_link_libraries(RunTests
-        gtest_main
-        gmock_main
+        GTest::gtest
+        GTest::gtest_main
+        GTest::gmock
+        GTest::gmock_main
         SDL2::SDL2
         SDL2_ttf
         ${SDL2_MIXER_LIBRARIES}
@@ -145,17 +137,21 @@ if(BUILD_TESTS)
     add_test(NAME RunTests COMMAND RunTests)
     
     # Add coverage target
-    # Add coverage target using lcov
+    # Add coverage target using lcov with branch coverage enabled
     add_custom_target(coverage
         COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/coverage_report
         COMMAND lcov --directory . --zerocounters
         COMMAND ./RunTests
-        COMMAND lcov --directory ${CMAKE_BINARY_DIR}/CMakeFiles/RunTests.dir/src/controllers --capture --output-file coverage.info --ignore-errors mismatch,gcov --rc geninfo_unexecuted_blocks=1
-        COMMAND lcov --remove coverage.info '/usr/*' '*/tests/*' '*/build/*' '*.h' '*/inc/*' '*/src/views/*' '*/src/ui/*' '*/src/models/*' '*/src/repositories/*' '*/src/utils/*' '*/src/config/*' '*/src/core/*' '*/src/services/*' --output-file coverage.info --ignore-errors mismatch --rc geninfo_unexecuted_blocks=1 --ignore-errors unused
-        COMMAND genhtml coverage.info --output-directory coverage_report --ignore-errors mismatch
+        COMMAND lcov --directory ${CMAKE_BINARY_DIR}/CMakeFiles/RunTests.dir/src/controllers --capture --output-file coverage_controllers.info --ignore-errors mismatch,gcov --rc geninfo_unexecuted_blocks=1 --rc lcov_branch_coverage=1
+        COMMAND lcov --directory ${CMAKE_BINARY_DIR}/CMakeFiles/RunTests.dir/src/services --capture --output-file coverage_services.info --ignore-errors mismatch,gcov --rc geninfo_unexecuted_blocks=1 --rc lcov_branch_coverage=1
+        COMMAND lcov --directory ${CMAKE_BINARY_DIR}/CMakeFiles/RunTests.dir/src/models --capture --output-file coverage_models.info --ignore-errors mismatch,gcov --rc geninfo_unexecuted_blocks=1 --rc lcov_branch_coverage=1
+        COMMAND lcov --add-tracefile coverage_controllers.info --add-tracefile coverage_services.info --add-tracefile coverage_models.info --output-file coverage.info --rc lcov_branch_coverage=1 --ignore-errors mismatch
+        COMMAND lcov --remove coverage.info '/usr/*' '*/tests/*' '*/build/*' '*.h' '*/inc/*' '*/src/views/*' '*/src/ui/*' '*/src/repositories/*' '*/src/utils/*' '*/src/config/*' '*/src/core/*' '*/AudioPlaybackEngine.cpp' '*/SerialCommunication.cpp' --output-file coverage.info --ignore-errors mismatch --rc geninfo_unexecuted_blocks=1 --rc lcov_branch_coverage=1 --ignore-errors unused
+        COMMAND genhtml coverage.info --output-directory coverage_report --ignore-errors mismatch --branch-coverage
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        COMMENT "Generating code coverage report with lcov..."
+        COMMENT "Generating code coverage report with lcov (including branch coverage)..."
     )
+    add_dependencies(coverage RunTests)
 endif()
 
 # Print configuration

@@ -144,3 +144,39 @@ TEST_F(QueueControllerTest, ApiSurfaceCoverageAndNegativeBranches) {
     EXPECT_TRUE(current.has_value());
     EXPECT_EQ(controller->getCurrentIndex(), 0u);
 }
+
+TEST_F(QueueControllerTest, AddToQueueDuplicate) {
+    models::MediaFileModel a("/tmp/a.mp3");
+    controller->addToQueue(a); // First add
+    EXPECT_EQ(queueModel->size(), 1u);
+    
+    controller->addToQueue(a); // Duplicate add
+    EXPECT_EQ(queueModel->size(), 1u); // Should remain 1
+}
+
+TEST_F(QueueControllerTest, AddToQueueNextDuplicate) {
+    models::MediaFileModel a("/tmp/a.mp3");
+    models::MediaFileModel b("/tmp/b.mp3");
+    controller->addToQueue(a);
+    
+    controller->addToQueueNext(a); // Duplicate add as next
+    EXPECT_EQ(queueModel->size(), 1u); // Should not add
+    
+    controller->addToQueueNext(b); // New item
+    EXPECT_EQ(queueModel->size(), 2u);
+}
+
+TEST_F(QueueControllerTest, AddMultipleToQueueDuplicate) {
+    models::MediaFileModel a("/tmp/a.mp3");
+    models::MediaFileModel b("/tmp/b.mp3");
+    controller->addToQueue(a);
+    
+    // Add list containing duplicate (a) and new (b)
+    std::vector<models::MediaFileModel> list = { a, b };
+    controller->addMultipleToQueue(list);
+    
+    EXPECT_EQ(queueModel->size(), 2u); // Should only add b
+    auto items = controller->getAllItems();
+    EXPECT_EQ(items[0].getFilePath(), "/tmp/a.mp3");
+    EXPECT_EQ(items[1].getFilePath(), "/tmp/b.mp3");
+}
