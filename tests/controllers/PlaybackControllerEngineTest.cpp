@@ -3,6 +3,7 @@
 #include "controllers/PlaybackController.h"
 #include "models/QueueModel.h"
 #include "models/PlaybackStateModel.h"
+#include "models/HistoryModel.h"
 #include "repositories/HistoryRepository.h"
 #include "services/IPlaybackEngine.h"
 
@@ -44,13 +45,14 @@ TEST(PlaybackControllerEngineTest, PlayAndTogglePauseWithFakeEngine) {
     queueModel->addToEnd(models::MediaFileModel(path));
     auto playbackState = std::make_shared<models::PlaybackStateModel>();
     auto historyRepo = std::make_shared<repositories::HistoryRepository>("/tmp/hist");
-    controllers::PlaybackController controller(queueModel, playbackState, historyRepo);
+    auto historyModel = std::make_shared<models::HistoryModel>(historyRepo);
+    auto controller = std::make_shared<controllers::PlaybackController>(queueModel, playbackState, historyModel);
     auto fake = std::make_unique<FakeEngine>();
-    controller.setAudioEngine(std::move(fake));
-    EXPECT_TRUE(controller.play());
-    EXPECT_TRUE(controller.isPlaying());
-    EXPECT_TRUE(controller.togglePlayPause());
-    EXPECT_TRUE(controller.isPaused());
+    controller->setAudioEngine(std::move(fake));
+    EXPECT_TRUE(controller->play());
+    EXPECT_TRUE(controller->isPlaying());
+    EXPECT_TRUE(controller->togglePlayPause());
+    EXPECT_TRUE(controller->isPaused());
 }
 
 TEST(PlaybackControllerEngineTest, PlayNextAtEndStopsPlayback) {
@@ -60,13 +62,14 @@ TEST(PlaybackControllerEngineTest, PlayNextAtEndStopsPlayback) {
     queueModel->addToEnd(models::MediaFileModel(path));
     auto playbackState = std::make_shared<models::PlaybackStateModel>();
     auto historyRepo = std::make_shared<repositories::HistoryRepository>("/tmp/hist2");
-    controllers::PlaybackController controller(queueModel, playbackState, historyRepo);
+    auto historyModel = std::make_shared<models::HistoryModel>(historyRepo);
+    auto controller = std::make_shared<controllers::PlaybackController>(queueModel, playbackState, historyModel);
     auto fake = std::make_unique<FakeEngine>();
-    controller.setAudioEngine(std::move(fake));
-    EXPECT_TRUE(controller.play());
-    EXPECT_TRUE(controller.isPlaying());
-    EXPECT_FALSE(controller.playNext());
-    EXPECT_TRUE(controller.isStopped());
+    controller->setAudioEngine(std::move(fake));
+    EXPECT_TRUE(controller->play());
+    EXPECT_TRUE(controller->isPlaying());
+    EXPECT_FALSE(controller->playNext());
+    EXPECT_TRUE(controller->isStopped());
 }
 
 TEST(PlaybackControllerEngineTest, PlayPreviousRewindsWhenPlayingBeyondThreshold) {
@@ -76,10 +79,11 @@ TEST(PlaybackControllerEngineTest, PlayPreviousRewindsWhenPlayingBeyondThreshold
     queueModel->addToEnd(models::MediaFileModel(path));
     auto playbackState = std::make_shared<models::PlaybackStateModel>();
     auto historyRepo = std::make_shared<repositories::HistoryRepository>("/tmp/hist3");
-    controllers::PlaybackController controller(queueModel, playbackState, historyRepo);
+    auto historyModel = std::make_shared<models::HistoryModel>(historyRepo);
+    auto controller = std::make_shared<controllers::PlaybackController>(queueModel, playbackState, historyModel);
     auto fake = std::make_unique<FakeEngine>();
-    controller.setAudioEngine(std::move(fake));
-    EXPECT_TRUE(controller.play());
+    controller->setAudioEngine(std::move(fake));
+    EXPECT_TRUE(controller->play());
     playbackState->setCurrentPosition(5);
-    EXPECT_TRUE(controller.playPrevious());
+    EXPECT_TRUE(controller->playPrevious());
 }

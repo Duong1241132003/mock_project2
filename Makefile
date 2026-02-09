@@ -264,6 +264,33 @@ src/controllers/HardwareController.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.s
 .PHONY : src/controllers/HardwareController.cpp.s
 
+src/controllers/HistoryController.o: src/controllers/HistoryController.cpp.o
+.PHONY : src/controllers/HistoryController.o
+
+# target to build an object file
+src/controllers/HistoryController.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/HistoryController.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/HistoryController.cpp.o
+.PHONY : src/controllers/HistoryController.cpp.o
+
+src/controllers/HistoryController.i: src/controllers/HistoryController.cpp.i
+.PHONY : src/controllers/HistoryController.i
+
+# target to preprocess a source file
+src/controllers/HistoryController.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/HistoryController.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/HistoryController.cpp.i
+.PHONY : src/controllers/HistoryController.cpp.i
+
+src/controllers/HistoryController.s: src/controllers/HistoryController.cpp.s
+.PHONY : src/controllers/HistoryController.s
+
+# target to generate assembly for a file
+src/controllers/HistoryController.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/HistoryController.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/HistoryController.cpp.s
+.PHONY : src/controllers/HistoryController.cpp.s
+
 src/controllers/LibraryController.o: src/controllers/LibraryController.cpp.o
 .PHONY : src/controllers/LibraryController.o
 
@@ -476,6 +503,33 @@ src/main.s: src/main.cpp.s
 src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
+
+src/models/HistoryModel.o: src/models/HistoryModel.cpp.o
+.PHONY : src/models/HistoryModel.o
+
+# target to build an object file
+src/models/HistoryModel.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/HistoryModel.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/HistoryModel.cpp.o
+.PHONY : src/models/HistoryModel.cpp.o
+
+src/models/HistoryModel.i: src/models/HistoryModel.cpp.i
+.PHONY : src/models/HistoryModel.i
+
+# target to preprocess a source file
+src/models/HistoryModel.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/HistoryModel.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/HistoryModel.cpp.i
+.PHONY : src/models/HistoryModel.cpp.i
+
+src/models/HistoryModel.s: src/models/HistoryModel.cpp.s
+.PHONY : src/models/HistoryModel.s
+
+# target to generate assembly for a file
+src/models/HistoryModel.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/HistoryModel.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/HistoryModel.cpp.s
+.PHONY : src/models/HistoryModel.cpp.s
 
 src/models/LibraryModel.o: src/models/LibraryModel.cpp.o
 .PHONY : src/models/LibraryModel.o
@@ -1191,6 +1245,30 @@ tests/controllers/HardwareControllerTest.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerTest.cpp.s
 .PHONY : tests/controllers/HardwareControllerTest.cpp.s
 
+tests/controllers/HistoryControllerTest.o: tests/controllers/HistoryControllerTest.cpp.o
+.PHONY : tests/controllers/HistoryControllerTest.o
+
+# target to build an object file
+tests/controllers/HistoryControllerTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HistoryControllerTest.cpp.o
+.PHONY : tests/controllers/HistoryControllerTest.cpp.o
+
+tests/controllers/HistoryControllerTest.i: tests/controllers/HistoryControllerTest.cpp.i
+.PHONY : tests/controllers/HistoryControllerTest.i
+
+# target to preprocess a source file
+tests/controllers/HistoryControllerTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HistoryControllerTest.cpp.i
+.PHONY : tests/controllers/HistoryControllerTest.cpp.i
+
+tests/controllers/HistoryControllerTest.s: tests/controllers/HistoryControllerTest.cpp.s
+.PHONY : tests/controllers/HistoryControllerTest.s
+
+# target to generate assembly for a file
+tests/controllers/HistoryControllerTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HistoryControllerTest.cpp.s
+.PHONY : tests/controllers/HistoryControllerTest.cpp.s
+
 tests/controllers/LibraryControllerExtraTest.o: tests/controllers/LibraryControllerExtraTest.cpp.o
 .PHONY : tests/controllers/LibraryControllerExtraTest.o
 
@@ -1454,6 +1532,30 @@ tests/controllers/SourceControllerTest.s: tests/controllers/SourceControllerTest
 tests/controllers/SourceControllerTest.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/SourceControllerTest.cpp.s
 .PHONY : tests/controllers/SourceControllerTest.cpp.s
+
+tests/models/HistoryModelTest.o: tests/models/HistoryModelTest.cpp.o
+.PHONY : tests/models/HistoryModelTest.o
+
+# target to build an object file
+tests/models/HistoryModelTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/models/HistoryModelTest.cpp.o
+.PHONY : tests/models/HistoryModelTest.cpp.o
+
+tests/models/HistoryModelTest.i: tests/models/HistoryModelTest.cpp.i
+.PHONY : tests/models/HistoryModelTest.i
+
+# target to preprocess a source file
+tests/models/HistoryModelTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/models/HistoryModelTest.cpp.i
+.PHONY : tests/models/HistoryModelTest.cpp.i
+
+tests/models/HistoryModelTest.s: tests/models/HistoryModelTest.cpp.s
+.PHONY : tests/models/HistoryModelTest.s
+
+# target to generate assembly for a file
+tests/models/HistoryModelTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/models/HistoryModelTest.cpp.s
+.PHONY : tests/models/HistoryModelTest.cpp.s
 
 tests/models/LibraryModelTest.o: tests/models/LibraryModelTest.cpp.o
 .PHONY : tests/models/LibraryModelTest.o
@@ -1741,6 +1843,9 @@ help:
 	@echo "... src/controllers/HardwareController.o"
 	@echo "... src/controllers/HardwareController.i"
 	@echo "... src/controllers/HardwareController.s"
+	@echo "... src/controllers/HistoryController.o"
+	@echo "... src/controllers/HistoryController.i"
+	@echo "... src/controllers/HistoryController.s"
 	@echo "... src/controllers/LibraryController.o"
 	@echo "... src/controllers/LibraryController.i"
 	@echo "... src/controllers/LibraryController.s"
@@ -1765,6 +1870,9 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/models/HistoryModel.o"
+	@echo "... src/models/HistoryModel.i"
+	@echo "... src/models/HistoryModel.s"
 	@echo "... src/models/LibraryModel.o"
 	@echo "... src/models/LibraryModel.i"
 	@echo "... src/models/LibraryModel.s"
@@ -1846,6 +1954,9 @@ help:
 	@echo "... tests/controllers/HardwareControllerTest.o"
 	@echo "... tests/controllers/HardwareControllerTest.i"
 	@echo "... tests/controllers/HardwareControllerTest.s"
+	@echo "... tests/controllers/HistoryControllerTest.o"
+	@echo "... tests/controllers/HistoryControllerTest.i"
+	@echo "... tests/controllers/HistoryControllerTest.s"
 	@echo "... tests/controllers/LibraryControllerExtraTest.o"
 	@echo "... tests/controllers/LibraryControllerExtraTest.i"
 	@echo "... tests/controllers/LibraryControllerExtraTest.s"
@@ -1879,6 +1990,9 @@ help:
 	@echo "... tests/controllers/SourceControllerTest.o"
 	@echo "... tests/controllers/SourceControllerTest.i"
 	@echo "... tests/controllers/SourceControllerTest.s"
+	@echo "... tests/models/HistoryModelTest.o"
+	@echo "... tests/models/HistoryModelTest.i"
+	@echo "... tests/models/HistoryModelTest.s"
 	@echo "... tests/models/LibraryModelTest.o"
 	@echo "... tests/models/LibraryModelTest.i"
 	@echo "... tests/models/LibraryModelTest.s"

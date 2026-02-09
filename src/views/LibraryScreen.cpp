@@ -347,18 +347,32 @@ void LibraryScreen::render(ui::ImGuiManager& painter)
                  if (!media.isUnsupported()) {
                     m_selectedIndex = static_cast<int>(index);
                     if (m_playbackController && m_queueController) {
-                        // "Play Now" behavior as requested:
-                        // 1. Add to queue as next item
-                        // 2. Play that item immediately
+                        // "Play Now" behavior:
+                        // 1. Check if song already in queue
+                        // 2. If yes, jump to that position and play
+                        // 3. If no, add as next and play
                         
-                        if (m_queueController->isEmpty()) {
+                        // Check if already in queue
+                        int existingIndex = -1;
+                        auto queueItems = m_queueController->getAllItems();
+                        for (size_t qi = 0; qi < queueItems.size(); ++qi) {
+                            if (queueItems[qi].getFilePath() == media.getFilePath()) {
+                                existingIndex = static_cast<int>(qi);
+                                break;
+                            }
+                        }
+                        
+                        if (existingIndex >= 0) {
+                            // Song already in queue - jump to it and play
+                            m_queueController->jumpToIndex(static_cast<size_t>(existingIndex));
+                            m_playbackController->play();
+                        } else if (m_queueController->isEmpty()) {
                             m_queueController->addToQueue(media);
                             m_playbackController->play();
                         } else {
-                            // Get current position before adding
+                            // Add as next item and play
                             size_t nextIdx = m_queueController->getCurrentIndex() + 1;
                             m_queueController->addToQueueNext(media);
-                            // Jump directly to the new item and play (don't use playNext which calls moveToNext)
                             m_queueController->jumpToIndex(nextIdx);
                             m_playbackController->play();
                         }

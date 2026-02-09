@@ -123,9 +123,15 @@ bool AudioPlaybackEngine::loadFile(const std::string& filePath)
     
     try
     {
+        // If currently playing/paused, stop inline (we already hold lock)
         if (m_state != PlaybackState::STOPPED) 
         {
-            stop();
+            // Stop logic inline - cannot call stop() as it tries to reacquire m_mutex
+            m_manualStop = true;
+            Mix_HaltMusic();
+            m_musicFinished = false;
+            m_state = PlaybackState::STOPPED;
+            m_currentPositionSeconds = 0;
         }
         
         unloadAudioFile();

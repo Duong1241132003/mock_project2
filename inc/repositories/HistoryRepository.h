@@ -43,6 +43,7 @@ public:
     void removeAllEntriesByFilePath(const std::string& filePath);
     std::vector<PlaybackHistoryEntry> getRecentHistory(size_t count) const;
     std::vector<PlaybackHistoryEntry> getAllHistory() const;
+    void setHistory(const std::vector<PlaybackHistoryEntry>& history); // Added for sync
     
     void clear();
     size_t count() const;

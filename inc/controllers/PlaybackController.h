@@ -13,7 +13,7 @@
 #include "models/QueueModel.h"
 #include "models/PlaybackStateModel.h"
 #include "models/MediaFileModel.h"
-#include "repositories/HistoryRepository.h"
+#include "models/HistoryModel.h"
 #include "utils/Observer.h"
 
 namespace media_player 
@@ -27,7 +27,7 @@ public:
     PlaybackController(
         std::shared_ptr<models::QueueModel> queueModel,
         std::shared_ptr<models::PlaybackStateModel> playbackStateModel,
-        std::shared_ptr<repositories::HistoryRepository> historyRepo
+        std::shared_ptr<models::HistoryModel> historyModel
     );
     
     ~PlaybackController();
@@ -72,7 +72,7 @@ private:
     // Models
     std::shared_ptr<models::QueueModel> m_queueModel;
     std::shared_ptr<models::PlaybackStateModel> m_playbackStateModel;
-    std::shared_ptr<repositories::HistoryRepository> m_historyRepo;
+    std::shared_ptr<models::HistoryModel> m_historyModel;
     
     // Engines
     std::unique_ptr<services::IPlaybackEngine> m_audioEngine;

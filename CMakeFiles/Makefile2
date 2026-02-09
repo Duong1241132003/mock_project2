@@ -84,12 +84,12 @@ clean: CMakeFiles/coverage.dir/clean
 CMakeFiles/MediaPlayerApp.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33 "Built target MediaPlayerApp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35 "Built target MediaPlayerApp"
 .PHONY : CMakeFiles/MediaPlayerApp.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/MediaPlayerApp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/duong/MediaPlayerApp/CMakeFiles 33
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/duong/MediaPlayerApp/CMakeFiles 35
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/MediaPlayerApp.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/duong/MediaPlayerApp/CMakeFiles 0
 .PHONY : CMakeFiles/MediaPlayerApp.dir/rule
@@ -110,12 +110,12 @@ CMakeFiles/MediaPlayerApp.dir/clean:
 CMakeFiles/RunTests.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92 "Built target RunTests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98 "Built target RunTests"
 .PHONY : CMakeFiles/RunTests.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/RunTests.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/duong/MediaPlayerApp/CMakeFiles 59
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/duong/MediaPlayerApp/CMakeFiles 63
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/RunTests.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/duong/MediaPlayerApp/CMakeFiles 0
 .PHONY : CMakeFiles/RunTests.dir/rule
@@ -136,12 +136,12 @@ CMakeFiles/RunTests.dir/clean:
 CMakeFiles/coverage.dir/all: CMakeFiles/RunTests.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/coverage.dir/build.make CMakeFiles/coverage.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/coverage.dir/build.make CMakeFiles/coverage.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=93 "Built target coverage"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=99 "Built target coverage"
 .PHONY : CMakeFiles/coverage.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/coverage.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/duong/MediaPlayerApp/CMakeFiles 60
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/duong/MediaPlayerApp/CMakeFiles 64
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/coverage.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/duong/MediaPlayerApp/CMakeFiles 0
 .PHONY : CMakeFiles/coverage.dir/rule

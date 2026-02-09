@@ -10,11 +10,11 @@ namespace controllers
 PlaybackController::PlaybackController(
     std::shared_ptr<models::QueueModel> queueModel,
     std::shared_ptr<models::PlaybackStateModel> playbackStateModel,
-    std::shared_ptr<repositories::HistoryRepository> historyRepo
+    std::shared_ptr<models::HistoryModel> historyModel
 )
     : m_queueModel(queueModel)
     , m_playbackStateModel(playbackStateModel)
-    , m_historyRepo(historyRepo)
+    , m_historyModel(historyModel)
     , m_currentEngine(nullptr)
     , m_currentMediaType(models::MediaType::UNKNOWN)
 {
@@ -117,10 +117,10 @@ bool PlaybackController::play()
         {
             m_skipHistoryOnNextPlay = false;
         }
-        else if (m_historyRepo)
+        else if (m_historyModel)
         {
-            m_historyRepo->removeAllEntriesByFilePath(currentItem->getFilePath());
-            m_historyRepo->addEntry(*currentItem);
+            m_historyModel->removeAllEntries(currentItem->getFilePath());
+            m_historyModel->addEntry(*currentItem);
         }
         
     }
@@ -236,31 +236,39 @@ bool PlaybackController::playPrevious()
     if (canReplay)
     {
         // Replay current and remove it from history (it was just added)
-        if (m_historyRepo && currentItem)
-            m_historyRepo->removeMostRecentEntryByFilePath(currentItem->getFilePath());
+        if (m_historyModel && currentItem)
+            m_historyModel->removeMostRecentEntry(currentItem->getFilePath());
         return m_currentEngine ? m_currentEngine->seek(0) : false;
     }
     
     // Second press onwards: play the track that was played before current in history
     std::string currentPath = m_playbackStateModel->getCurrentFilePath();
-    if (m_historyRepo)
+    if (m_historyModel)
     {
-        std::optional<repositories::PlaybackHistoryEntry> prevPlayed = m_historyRepo->getPlayedBefore(currentPath);
-        if (!prevPlayed && !currentPath.empty())
-            prevPlayed = m_historyRepo->getLastPlayed(); // current was removed from history or not passed, so last in history is the previous
-        if (prevPlayed && std::filesystem::exists(prevPlayed->media.getFilePath()))
+        // If stopped (no current file), play the most recent from history (index 0)
+        // If playing/paused (has current file), play the previous (index 1)
+        std::optional<models::HistoryEntry> prevEntry;
+        if (currentPath.empty() || isStopped())
+        {
+            prevEntry = m_historyModel->getLastPlayed();  // index 0 - most recent
+        }
+        else
+        {
+            prevEntry = m_historyModel->getPreviousPlayed();  // index 1 - before current
+        }
+        if (prevEntry && std::filesystem::exists(prevEntry->media.getFilePath()))
         {
             // Remove from history - we are going "back" to it
-            m_historyRepo->removeMostRecentEntryByFilePath(prevPlayed->media.getFilePath());
+            m_historyModel->removeMostRecentEntry(prevEntry->media.getFilePath());
             
             // Play directly without touching queue - when done, onFinished will resume queue
             cleanupCurrentEngine();
-            if (!selectAndLoadEngine(prevPlayed->media))
+            if (!selectAndLoadEngine(prevEntry->media))
                 return false;
-            m_playbackStateModel->setCurrentFilePath(prevPlayed->media.getFilePath());
-            m_playbackStateModel->setCurrentTitle(prevPlayed->media.getTitle().empty() ? prevPlayed->media.getFileName() : prevPlayed->media.getTitle());
-            m_playbackStateModel->setCurrentArtist(prevPlayed->media.getArtist().empty() ? "Unknown Artist" : prevPlayed->media.getArtist());
-            m_playbackStateModel->setCurrentMediaType(prevPlayed->media.getType());
+            m_playbackStateModel->setCurrentFilePath(prevEntry->media.getFilePath());
+            m_playbackStateModel->setCurrentTitle(prevEntry->media.getTitle().empty() ? prevEntry->media.getFileName() : prevEntry->media.getTitle());
+            m_playbackStateModel->setCurrentArtist(prevEntry->media.getArtist().empty() ? "Unknown Artist" : prevEntry->media.getArtist());
+            m_playbackStateModel->setCurrentMediaType(prevEntry->media.getType());
             m_playingFromHistory = true;
             return m_currentEngine ? m_currentEngine->play() : false;
         }
@@ -275,9 +283,9 @@ bool PlaybackController::playPrevious()
     m_queueModel->moveToPrevious();
     cleanupCurrentEngine();
     auto prevItem = m_queueModel->getCurrentItem();
-    if (m_historyRepo && prevItem)
+    if (m_historyModel && prevItem)
     {
-        m_historyRepo->removeMostRecentEntryByFilePath(prevItem->getFilePath());
+        m_historyModel->removeMostRecentEntry(prevItem->getFilePath());
         m_skipHistoryOnNextPlay = true;
     }
     return play();
@@ -316,10 +324,10 @@ bool PlaybackController::playMediaWithoutQueue(const models::MediaFileModel& med
     m_playingOneOffWithoutQueue = true;
     
     bool success = m_currentEngine ? m_currentEngine->play() : false;
-    if (success && m_historyRepo)
+    if (success && m_historyModel)
     {
-        m_historyRepo->removeAllEntriesByFilePath(media.getFilePath());
-        m_historyRepo->addEntry(media);
+        m_historyModel->removeAllEntries(media.getFilePath());
+        m_historyModel->addEntry(media);
     }
     return success;
 }

@@ -19,6 +19,8 @@
 #include "views/NowPlayingBar.h"
 #include "models/LibraryModel.h"
 #include "models/PlaybackStateModel.h"
+#include "models/HistoryModel.h"
+#include "controllers/HistoryController.h"
 #include "services/FileScanner.h"
 #include "ui/ImGuiManager.h"
 #include "repositories/HistoryRepository.h"
@@ -76,13 +78,16 @@ private:
     std::shared_ptr<controllers::LibraryController> m_libraryController;
     std::shared_ptr<controllers::PlaylistController> m_playlistController;
     std::shared_ptr<controllers::QueueController> m_queueController;
+    std::shared_ptr<controllers::HistoryController> m_historyController;
     
     // Models for UI access
     std::shared_ptr<models::LibraryModel> m_libraryModel;
     std::shared_ptr<models::PlaybackStateModel> m_playbackStateModel;
+    std::shared_ptr<models::HistoryModel> m_historyModel;
 
     std::shared_ptr<services::FileScanner> m_fileScanner;
     std::shared_ptr<repositories::HistoryRepository> m_historyRepo;
+    std::shared_ptr<repositories::LibraryRepository> m_libraryRepo; // Added for persistence access in startScan
     
     // Hardware controller for S32K144 communication
     std::shared_ptr<controllers::HardwareController> m_hardwareController;

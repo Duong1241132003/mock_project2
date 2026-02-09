@@ -24,12 +24,7 @@ pkg_check_modules(SDL2_MIXER REQUIRED SDL2_mixer)
 # TagLib
 pkg_check_modules(TAGLIB REQUIRED taglib)
 
-# FFmpeg
-pkg_check_modules(LIBAVFORMAT REQUIRED libavformat)
-pkg_check_modules(LIBAVCODEC REQUIRED libavcodec)
-pkg_check_modules(LIBAVUTIL REQUIRED libavutil)
-pkg_check_modules(LIBSWSCALE REQUIRED libswscale)
-pkg_check_modules(LIBSWRESAMPLE REQUIRED libswresample)
+
 
 
 # Source files (excluding video-related files)
@@ -61,11 +56,7 @@ target_link_libraries(${PROJECT_NAME}
     SDL2_ttf
     ${SDL2_MIXER_LIBRARIES}
     ${TAGLIB_LIBRARIES}
-    ${LIBAVFORMAT_LIBRARIES}
-    ${LIBAVCODEC_LIBRARIES}
-    ${LIBAVUTIL_LIBRARIES}
-    ${LIBSWSCALE_LIBRARIES}
-    ${LIBSWRESAMPLE_LIBRARIES}
+
 
     pthread
     stdc++fs
@@ -75,11 +66,7 @@ target_link_libraries(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${SDL2_INCLUDE_DIRS}
     ${TAGLIB_INCLUDE_DIRS}
-    ${LIBAVFORMAT_INCLUDE_DIRS}
-    ${LIBAVCODEC_INCLUDE_DIRS}
-    ${LIBAVUTIL_INCLUDE_DIRS}
-    ${LIBSWSCALE_INCLUDE_DIRS}
-    ${LIBSWRESAMPLE_INCLUDE_DIRS}
+
 
 )
 
@@ -120,11 +107,7 @@ if(BUILD_TESTS)
         SDL2_ttf
         ${SDL2_MIXER_LIBRARIES}
         ${TAGLIB_LIBRARIES}
-        ${LIBAVFORMAT_LIBRARIES}
-        ${LIBAVCODEC_LIBRARIES}
-        ${LIBAVUTIL_LIBRARIES}
-        ${LIBSWSCALE_LIBRARIES}
-        ${LIBSWRESAMPLE_LIBRARIES}
+
         pthread
         stdc++fs
     )

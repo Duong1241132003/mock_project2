@@ -8,6 +8,7 @@
 #include "models/PlaybackStateModel.h"
 #include "models/LibraryModel.h"
 #include "models/SystemStateModel.h"
+#include "models/HistoryModel.h"
 
 // All services
 #include "services/FileScanner.h"
@@ -320,12 +321,17 @@ bool Application::createAllComponents()
     auto libraryRepo = std::make_shared<repositories::LibraryRepository>(
         config::AppConfig::LIBRARY_STORAGE_PATH
     );
+    m_libraryRepo = libraryRepo; // Store for Application usage
+    
     auto playlistRepo = std::make_shared<repositories::PlaylistRepository>(
         config::AppConfig::PLAYLIST_STORAGE_PATH
     );
     m_historyRepo = std::make_shared<repositories::HistoryRepository>(
         config::AppConfig::HISTORY_STORAGE_PATH
     );
+    
+    // Create HistoryModel with repository for persistence
+    m_historyModel = std::make_shared<models::HistoryModel>(m_historyRepo);
     
     // Create services
     auto fileScanner = std::make_shared<services::FileScanner>();
@@ -338,7 +344,7 @@ bool Application::createAllComponents()
     m_playbackController = std::make_shared<controllers::PlaybackController>(
         queueModel,
         playbackStateModel,
-        m_historyRepo
+        m_historyModel
     );
     
     m_sourceController = std::make_shared<controllers::SourceController>(
@@ -372,6 +378,13 @@ bool Application::createAllComponents()
         systemStateModel
     );
     
+    // Create HistoryController with required dependencies
+    m_historyController = std::make_shared<controllers::HistoryController>(
+        m_historyModel,
+        m_queueController,
+        m_playbackController
+    );
+    
     // Store models for UI access
     m_libraryModel = libraryModel;
     m_playbackStateModel = playbackStateModel;
@@ -403,10 +416,19 @@ bool Application::createAllComponents()
     );
     
     m_historyScreen = std::make_unique<views::HistoryScreen>(
-        m_historyRepo,
-        m_queueController,
-        m_playbackController
+        m_historyController
     );
+    
+    // Load cached library immediately for fast startup
+    if (m_libraryModel && libraryRepo)
+    {
+        libraryRepo->loadFromDisk();
+        auto cachedMedia = libraryRepo->findAll();
+        if (!cachedMedia.empty())
+        {
+            m_libraryModel->addMediaBatch(cachedMedia);
+        }
+    }
     
     // Register views with UI Manager
     if (g_uiManager) {
@@ -458,11 +480,19 @@ void Application::startScan(const std::string& path)
 
             if (!g_scanCancelled)
             {
-                // Chỉ cập nhật thư viện khi scan hoàn tất thành công
+                // Update LibraryModel and Repository with new scan results
                 if (m_libraryModel)
                 {
                     m_libraryModel->clear();
                     m_libraryModel->addMediaBatch(g_scannedMedia);
+                }
+                
+                // Update repository for next startup
+                if (m_libraryRepo)
+                {
+                    m_libraryRepo->clear();
+                    m_libraryRepo->saveAll(g_scannedMedia);
+                    m_libraryRepo->saveToDisk();
                 }
             }
         }
@@ -475,7 +505,7 @@ void Application::resetAndRescan(const std::string& path)
 {
     if (m_playbackController) m_playbackController->stop();
     if (m_queueController) m_queueController->clearQueue();
-    if (m_historyRepo) m_historyRepo->clear();
+    if (m_historyModel) m_historyModel->clear();
     saveLastScanPath(path);
     
     // Reset UI state to prevent "ghost" pages or invalid selection
@@ -535,6 +565,12 @@ int Application::run()
 
 void Application::quit() 
 {
+    // Explicitly save history before quit
+    if (m_historyModel)
+    {
+        m_historyModel->saveToRepository();
+    }
+    
     m_running = false;
 }
 

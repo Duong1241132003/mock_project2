@@ -7,6 +7,7 @@
 #include "models/PlaybackStateModel.h"
 #include "models/SystemStateModel.h"
 #include "repositories/HistoryRepository.h"
+#include "models/HistoryModel.h"
 #include "services/ISerialCommunication.h"
 
 using namespace media_player;
@@ -26,7 +27,8 @@ TEST(MainControllerTest, NavigationInitializeShutdown) {
     auto queueModel = std::make_shared<models::QueueModel>();
     auto playbackState = std::make_shared<models::PlaybackStateModel>();
     auto historyRepo = std::make_shared<repositories::HistoryRepository>("/tmp/hist_main");
-    auto playbackController = std::make_shared<controllers::PlaybackController>(queueModel, playbackState, historyRepo);
+    auto historyModel = std::make_shared<models::HistoryModel>(historyRepo);
+    auto playbackController = std::make_shared<controllers::PlaybackController>(queueModel, playbackState, historyModel);
     auto serial = std::make_shared<DummySerial>();
     auto hwPlaybackState = std::make_shared<models::PlaybackStateModel>();
     auto hardwareController = std::make_shared<controllers::HardwareController>(serial, hwPlaybackState);

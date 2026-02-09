@@ -5,4 +5,4 @@
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.
 add_test(RunTests "/home/duong/MediaPlayerApp/RunTests")
-set_tests_properties(RunTests PROPERTIES  _BACKTRACE_TRIPLES "/home/duong/MediaPlayerApp/CMakeLists.txt;137;add_test;/home/duong/MediaPlayerApp/CMakeLists.txt;0;")
+set_tests_properties(RunTests PROPERTIES  _BACKTRACE_TRIPLES "/home/duong/MediaPlayerApp/CMakeLists.txt;120;add_test;/home/duong/MediaPlayerApp/CMakeLists.txt;0;")

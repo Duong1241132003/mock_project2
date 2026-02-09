@@ -3,6 +3,7 @@
 #include "controllers/PlaybackController.h"
 #include "models/QueueModel.h"
 #include "models/PlaybackStateModel.h"
+#include "models/HistoryModel.h"
 #include "repositories/HistoryRepository.h"
 #include "services/IPlaybackEngine.h"
 
@@ -47,7 +48,8 @@ TEST(PlaybackControllerNavigationTest, NextPreviousStopSeek) {
     queueModel->addToEnd(models::MediaFileModel(p2));
     auto playbackState = std::make_shared<models::PlaybackStateModel>();
     auto historyRepo = std::make_shared<repositories::HistoryRepository>("/tmp/hist_nav");
-    controllers::PlaybackController controller(queueModel, playbackState, historyRepo);
+    auto historyModel = std::make_shared<models::HistoryModel>(historyRepo);
+    controllers::PlaybackController controller(queueModel, playbackState, historyModel);
     auto fake = std::make_unique<NavFakeEngine>();
     controller.setAudioEngine(std::move(fake));
     EXPECT_TRUE(controller.play());
@@ -63,7 +65,8 @@ TEST(PlaybackControllerNavigationTest, PlayWithoutQueueAndFinish) {
     auto queueModel = std::make_shared<models::QueueModel>();
     auto playbackState = std::make_shared<models::PlaybackStateModel>();
     auto historyRepo = std::make_shared<repositories::HistoryRepository>("/tmp/hist_oneoff");
-    controllers::PlaybackController controller(queueModel, playbackState, historyRepo);
+    auto historyModel = std::make_shared<models::HistoryModel>(historyRepo);
+    controllers::PlaybackController controller(queueModel, playbackState, historyModel);
     auto fake = std::make_unique<NavFakeEngine>();
     NavFakeEngine* raw = fake.get();
     controller.setAudioEngine(std::move(fake));

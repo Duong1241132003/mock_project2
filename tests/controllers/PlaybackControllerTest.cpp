@@ -3,6 +3,7 @@
 #include "controllers/PlaybackController.h"
 #include "models/QueueModel.h"
 #include "models/PlaybackStateModel.h"
+#include "models/HistoryModel.h"
 #include "repositories/HistoryRepository.h"
 #include "../mocks/MockPlaybackEngine.h"
 #include <filesystem>
@@ -24,11 +25,12 @@ protected:
         std::string tempHistoryPath = "./test_data/history_" + std::to_string(std::rand());
         fs::create_directories(tempHistoryPath);
         historyRepo = std::make_shared<repositories::HistoryRepository>(tempHistoryPath);
+        historyModel = std::make_shared<models::HistoryModel>(historyRepo);
         
         controller = std::make_shared<controllers::PlaybackController>(
             queueModel,
             playbackState,
-            historyRepo
+            historyModel
         );
         
         // Setup mock engine
@@ -55,6 +57,7 @@ protected:
     std::shared_ptr<models::QueueModel> queueModel;
     std::shared_ptr<models::PlaybackStateModel> playbackState;
     std::shared_ptr<repositories::HistoryRepository> historyRepo;
+    std::shared_ptr<models::HistoryModel> historyModel;
     std::shared_ptr<controllers::PlaybackController> controller;
     test::MockPlaybackEngine* mockEnginePtr;
     

@@ -3,6 +3,7 @@
 #include "controllers/PlaybackController.h"
 #include "models/QueueModel.h"
 #include "models/PlaybackStateModel.h"
+#include "models/HistoryModel.h"
 #include "repositories/HistoryRepository.h"
 #include "services/IPlaybackEngine.h"
 
@@ -42,13 +43,14 @@ public:
 static std::shared_ptr<controllers::PlaybackController> makeController(
     std::shared_ptr<models::QueueModel>& qm,
     std::shared_ptr<models::PlaybackStateModel>& psm,
-    std::shared_ptr<repositories::HistoryRepository>& hr,
+    std::shared_ptr<models::HistoryModel>& hm,
     std::unique_ptr<CfgEngine> eng)
 {
     qm = std::make_shared<models::QueueModel>();
     psm = std::make_shared<models::PlaybackStateModel>();
-    hr = std::make_shared<repositories::HistoryRepository>("/tmp/hist_adv");
-    auto ctl = std::make_shared<controllers::PlaybackController>(qm, psm, hr);
+    auto hr = std::make_shared<repositories::HistoryRepository>("/tmp/hist_adv");
+    hm = std::make_shared<models::HistoryModel>(hr);
+    auto ctl = std::make_shared<controllers::PlaybackController>(qm, psm, hm);
     ctl->setAudioEngine(std::move(eng));
     return ctl;
 }
@@ -59,8 +61,8 @@ TEST(PlaybackControllerAdvancedTest, PlaySkipsMissingAndPlaysExisting) {
     { std::ofstream f(p2); f << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
-    auto ctl = makeController(qm, psm, hr, std::make_unique<CfgEngine>());
+    std::shared_ptr<models::HistoryModel> hm;
+    auto ctl = makeController(qm, psm, hm, std::make_unique<CfgEngine>());
     qm->addToEnd(models::MediaFileModel(p1));
     qm->addToEnd(models::MediaFileModel(p2));
     EXPECT_TRUE(ctl->play());
@@ -75,8 +77,8 @@ TEST(PlaybackControllerAdvancedTest, PlayRemovesUnsupportedThenPlaysAudio) {
     { std::ofstream f2(p2); f2 << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
-    auto ctl = makeController(qm, psm, hr, std::make_unique<CfgEngine>());
+    std::shared_ptr<models::HistoryModel> hm;
+    auto ctl = makeController(qm, psm, hm, std::make_unique<CfgEngine>());
     qm->addToEnd(models::MediaFileModel(p1));
     qm->addToEnd(models::MediaFileModel(p2));
     EXPECT_TRUE(ctl->play());
@@ -88,9 +90,9 @@ TEST(PlaybackControllerAdvancedTest, TogglePauseResumes) {
     { std::ofstream f(p); f << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
+    std::shared_ptr<models::HistoryModel> hm;
     auto eng = std::make_unique<CfgEngine>();
-    auto ctl = makeController(qm, psm, hr, std::move(eng));
+    auto ctl = makeController(qm, psm, hm, std::move(eng));
     qm->addToEnd(models::MediaFileModel(p));
     EXPECT_TRUE(ctl->play());
     EXPECT_TRUE(ctl->pause());
@@ -103,10 +105,10 @@ TEST(PlaybackControllerAdvancedTest, PlayPreviousSeekWhenBeyondThreshold) {
     { std::ofstream f(p); f << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
+    std::shared_ptr<models::HistoryModel> hm;
     auto eng = std::make_unique<CfgEngine>();
     CfgEngine* raw = eng.get();
-    auto ctl = makeController(qm, psm, hr, std::move(eng));
+    auto ctl = makeController(qm, psm, hm, std::move(eng));
     qm->addToEnd(models::MediaFileModel(p));
     EXPECT_TRUE(ctl->play());
     psm->setCurrentPosition(10);
@@ -121,12 +123,12 @@ TEST(PlaybackControllerAdvancedTest, PlayPreviousFromHistoryWhenAtStart) {
     { std::ofstream f1(p1); f1 << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
-    auto ctl = makeController(qm, psm, hr, std::make_unique<CfgEngine>());
+    std::shared_ptr<models::HistoryModel> hm;
+    auto ctl = makeController(qm, psm, hm, std::make_unique<CfgEngine>());
     qm->addToEnd(models::MediaFileModel(p1));
     EXPECT_TRUE(ctl->play());
-    hr->addEntry(models::MediaFileModel(p0));
-    hr->addEntry(models::MediaFileModel(p1));
+    hm->addEntry(models::MediaFileModel(p0));
+    hm->addEntry(models::MediaFileModel(p1));
     psm->setCurrentPosition(0);
     EXPECT_TRUE(ctl->playPrevious());
     EXPECT_EQ(ctl->getCurrentFilePath(), p0);
@@ -140,14 +142,14 @@ TEST(PlaybackControllerAdvancedTest, PlayPreviousFromHistoryFinishedResumesQueue
     { std::ofstream f1(p1); f1 << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
+    std::shared_ptr<models::HistoryModel> hm;
     auto eng = std::make_unique<CfgEngine>();
     CfgEngine* raw = eng.get();
-    auto ctl = makeController(qm, psm, hr, std::move(eng));
+    auto ctl = makeController(qm, psm, hm, std::move(eng));
     qm->addToEnd(models::MediaFileModel(p1));
     EXPECT_TRUE(ctl->play());
-    hr->addEntry(models::MediaFileModel(p0));
-    hr->addEntry(models::MediaFileModel(p1));
+    hm->addEntry(models::MediaFileModel(p0));
+    hm->addEntry(models::MediaFileModel(p1));
     psm->setCurrentPosition(0);
     EXPECT_TRUE(ctl->playPrevious());
     EXPECT_EQ(ctl->getCurrentFilePath(), p0);
@@ -160,8 +162,8 @@ TEST(PlaybackControllerAdvancedTest, TogglePlayPauseResumesOneOff) {
     { std::ofstream f(p); f << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
-    auto ctl = makeController(qm, psm, hr, std::make_unique<CfgEngine>());
+    std::shared_ptr<models::HistoryModel> hm;
+    auto ctl = makeController(qm, psm, hm, std::make_unique<CfgEngine>());
     EXPECT_TRUE(ctl->playMediaWithoutQueue(models::MediaFileModel(p)));
     EXPECT_TRUE(ctl->pause());
     EXPECT_TRUE(ctl->togglePlayPause());
@@ -173,10 +175,10 @@ TEST(PlaybackControllerAdvancedTest, TogglePlayPauseReloadsOneOffWhenPathLost) {
     { std::ofstream f(p); f << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
+    std::shared_ptr<models::HistoryModel> hm;
     auto eng = std::make_unique<CfgEngine>();
     CfgEngine* raw = eng.get();
-    auto ctl = makeController(qm, psm, hr, std::move(eng));
+    auto ctl = makeController(qm, psm, hm, std::move(eng));
     EXPECT_TRUE(ctl->playMediaWithoutQueue(models::MediaFileModel(p)));
     raw->stop();
     psm->setCurrentFilePath("");
@@ -189,10 +191,10 @@ TEST(PlaybackControllerAdvancedTest, TogglePlayPauseResumesOneOffWhenPathLoaded)
     { std::ofstream f(p); f << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
+    std::shared_ptr<models::HistoryModel> hm;
     auto eng = std::make_unique<CfgEngine>();
     CfgEngine* raw = eng.get();
-    auto ctl = makeController(qm, psm, hr, std::move(eng));
+    auto ctl = makeController(qm, psm, hm, std::move(eng));
     EXPECT_TRUE(ctl->playMediaWithoutQueue(models::MediaFileModel(p)));
     raw->stop();
     EXPECT_FALSE(ctl->isPlaying());
@@ -206,10 +208,10 @@ TEST(PlaybackControllerAdvancedTest, PositionCallbackUpdatesState) {
     { std::ofstream f(p); f << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
+    std::shared_ptr<models::HistoryModel> hm;
     auto eng = std::make_unique<CfgEngine>();
     CfgEngine* raw = eng.get();
-    auto ctl = makeController(qm, psm, hr, std::move(eng));
+    auto ctl = makeController(qm, psm, hm, std::move(eng));
     qm->addToEnd(models::MediaFileModel(p));
     EXPECT_TRUE(ctl->play());
     if (raw->posCb) raw->posCb(12, 200);
@@ -219,8 +221,8 @@ TEST(PlaybackControllerAdvancedTest, PositionCallbackUpdatesState) {
 TEST(PlaybackControllerAdvancedTest, GetVolumeReturnsPlaybackState) {
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
-    auto ctl = makeController(qm, psm, hr, std::make_unique<CfgEngine>());
+    std::shared_ptr<models::HistoryModel> hm;
+    auto ctl = makeController(qm, psm, hm, std::make_unique<CfgEngine>());
     ctl->setVolume(73);
     EXPECT_EQ(ctl->getVolume(), 73);
 }
@@ -232,10 +234,10 @@ TEST(PlaybackControllerAdvancedTest, QueueLoopAllFinishedWrapsToStartAlt) {
     { std::ofstream f2(p2); f2 << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
+    std::shared_ptr<models::HistoryModel> hm;
     auto eng = std::make_unique<CfgEngine>();
     CfgEngine* raw = eng.get();
-    auto ctl = makeController(qm, psm, hr, std::move(eng));
+    auto ctl = makeController(qm, psm, hm, std::move(eng));
     qm->addToEnd(models::MediaFileModel(p1));
     qm->addToEnd(models::MediaFileModel(p2));
     qm->setRepeatMode(models::RepeatMode::LoopAll);
@@ -249,16 +251,16 @@ TEST(PlaybackControllerAdvancedTest, QueueLoopAllFinishedWrapsToStartAlt) {
 TEST(PlaybackControllerAdvancedTest, PlayMediaWithoutQueueNonexistentReturnsFalse) {
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
-    auto ctl = makeController(qm, psm, hr, std::make_unique<CfgEngine>());
+    std::shared_ptr<models::HistoryModel> hm;
+    auto ctl = makeController(qm, psm, hm, std::make_unique<CfgEngine>());
     EXPECT_FALSE(ctl->playMediaWithoutQueue(models::MediaFileModel("/tmp/nope.mp3")));
 }
 
 TEST(PlaybackControllerAdvancedTest, TogglePlayPauseStoppedNoOneOffReturnsFalse) {
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
-    auto ctl = makeController(qm, psm, hr, std::make_unique<CfgEngine>());
+    std::shared_ptr<models::HistoryModel> hm;
+    auto ctl = makeController(qm, psm, hm, std::make_unique<CfgEngine>());
     EXPECT_FALSE(ctl->togglePlayPause());
 }
 TEST(PlaybackControllerAdvancedTest, PlayNextStopsWhenNoNext) {
@@ -266,8 +268,8 @@ TEST(PlaybackControllerAdvancedTest, PlayNextStopsWhenNoNext) {
     { std::ofstream f(p); f << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
-    auto ctl = makeController(qm, psm, hr, std::make_unique<CfgEngine>());
+    std::shared_ptr<models::HistoryModel> hm;
+    auto ctl = makeController(qm, psm, hm, std::make_unique<CfgEngine>());
     qm->addToEnd(models::MediaFileModel(p));
     EXPECT_TRUE(ctl->play());
     EXPECT_FALSE(ctl->playNext());
@@ -277,16 +279,16 @@ TEST(PlaybackControllerAdvancedTest, PlayNextStopsWhenNoNext) {
 TEST(PlaybackControllerAdvancedTest, PlayItemAtInvalidIndexFails) {
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
-    auto ctl = makeController(qm, psm, hr, std::make_unique<CfgEngine>());
+    std::shared_ptr<models::HistoryModel> hm;
+    auto ctl = makeController(qm, psm, hm, std::make_unique<CfgEngine>());
     EXPECT_FALSE(ctl->playItemAt(10));
 }
 
 TEST(PlaybackControllerAdvancedTest, StopPauseSeekNoEngineReturnFalse) {
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
-    auto ctl = makeController(qm, psm, hr, std::make_unique<CfgEngine>());
+    std::shared_ptr<models::HistoryModel> hm;
+    auto ctl = makeController(qm, psm, hm, std::make_unique<CfgEngine>());
     EXPECT_TRUE(ctl->stop());
     EXPECT_TRUE(ctl->pause());
     EXPECT_TRUE(ctl->seek(5));
@@ -299,10 +301,10 @@ TEST(PlaybackControllerAdvancedTest, OnErrorRemovesCurrentAndContinues) {
     { std::ofstream f2(p2); f2 << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
+    std::shared_ptr<models::HistoryModel> hm;
     auto eng = std::make_unique<CfgEngine>();
     CfgEngine* raw = eng.get();
-    auto ctl = makeController(qm, psm, hr, std::move(eng));
+    auto ctl = makeController(qm, psm, hm, std::move(eng));
     qm->addToEnd(models::MediaFileModel(p1));
     qm->addToEnd(models::MediaFileModel(p2));
     EXPECT_TRUE(ctl->play());
@@ -316,10 +318,10 @@ TEST(PlaybackControllerAdvancedTest, OneOffLoopOneSeekOk) {
     { std::ofstream f(p); f << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
+    std::shared_ptr<models::HistoryModel> hm;
     auto eng = std::make_unique<CfgEngine>();
     CfgEngine* raw = eng.get();
-    auto ctl = makeController(qm, psm, hr, std::move(eng));
+    auto ctl = makeController(qm, psm, hm, std::move(eng));
     qm->setRepeatMode(models::RepeatMode::LoopOne);
     EXPECT_TRUE(ctl->playMediaWithoutQueue(models::MediaFileModel(p)));
     raw->seekOk = true;
@@ -332,10 +334,10 @@ TEST(PlaybackControllerAdvancedTest, OneOffLoopOneSeekFailReloads) {
     { std::ofstream f(p); f << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
+    std::shared_ptr<models::HistoryModel> hm;
     auto eng = std::make_unique<CfgEngine>();
     CfgEngine* raw = eng.get();
-    auto ctl = makeController(qm, psm, hr, std::move(eng));
+    auto ctl = makeController(qm, psm, hm, std::move(eng));
     qm->setRepeatMode(models::RepeatMode::LoopOne);
     EXPECT_TRUE(ctl->playMediaWithoutQueue(models::MediaFileModel(p)));
     raw->seekOk = false;
@@ -348,10 +350,10 @@ TEST(PlaybackControllerAdvancedTest, QueueLoopOneFinishedSeeksAndReplays) {
     { std::ofstream f(p); f << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
+    std::shared_ptr<models::HistoryModel> hm;
     auto eng = std::make_unique<CfgEngine>();
     CfgEngine* raw = eng.get();
-    auto ctl = makeController(qm, psm, hr, std::move(eng));
+    auto ctl = makeController(qm, psm, hm, std::move(eng));
     qm->addToEnd(models::MediaFileModel(p));
     qm->setRepeatMode(models::RepeatMode::LoopOne);
     EXPECT_TRUE(ctl->play());
@@ -368,8 +370,8 @@ TEST(PlaybackControllerAdvancedTest, PlayItemAtJumpsAndPlays) {
     { std::ofstream f2(p2); f2 << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
-    auto ctl = makeController(qm, psm, hr, std::make_unique<CfgEngine>());
+    std::shared_ptr<models::HistoryModel> hm;
+    auto ctl = makeController(qm, psm, hm, std::make_unique<CfgEngine>());
     qm->addToEnd(models::MediaFileModel(p1));
     qm->addToEnd(models::MediaFileModel(p2));
     EXPECT_TRUE(ctl->playItemAt(1));
@@ -383,10 +385,10 @@ TEST(PlaybackControllerAdvancedTest, QueueLoopAllFinishedWrapsToStart) {
     { std::ofstream f2(p2); f2 << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
+    std::shared_ptr<models::HistoryModel> hm;
     auto eng = std::make_unique<CfgEngine>();
     CfgEngine* raw = eng.get();
-    auto ctl = makeController(qm, psm, hr, std::move(eng));
+    auto ctl = makeController(qm, psm, hm, std::move(eng));
     qm->addToEnd(models::MediaFileModel(p1));
     qm->addToEnd(models::MediaFileModel(p2));
     qm->setRepeatMode(models::RepeatMode::LoopAll);
@@ -413,11 +415,11 @@ TEST(PlaybackControllerAdvancedTest, PlayRecursionOnLoadFailRemovesBadItem) {
     { std::ofstream f1(p2); f1 << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
+    std::shared_ptr<models::HistoryModel> hm;
     auto eng = std::make_unique<CfgEngineSelective>();
     CfgEngineSelective* raw = eng.get();
     raw->failPath = p1;
-    auto ctl = makeController(qm, psm, hr, std::move(eng));
+    auto ctl = makeController(qm, psm, hm, std::move(eng));
     qm->addToEnd(models::MediaFileModel(p1));
     qm->addToEnd(models::MediaFileModel(p2));
     EXPECT_TRUE(ctl->play());
@@ -432,18 +434,18 @@ TEST(PlaybackControllerAdvancedTest, SkipHistoryOnQueuePreviousDoesNotAddHistory
     { std::ofstream f2(p2); f2 << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
-    auto ctl = makeController(qm, psm, hr, std::make_unique<CfgEngine>());
+    std::shared_ptr<models::HistoryModel> hm;
+    auto ctl = makeController(qm, psm, hm, std::make_unique<CfgEngine>());
     qm->addToEnd(models::MediaFileModel(p1));
     qm->addToEnd(models::MediaFileModel(p2));
     EXPECT_TRUE(ctl->play());
     qm->moveToNext();
     EXPECT_TRUE(ctl->play());
-    hr->clear();
+    hm->clear();
     psm->setCurrentPosition(0);
     EXPECT_TRUE(ctl->playPrevious());
     EXPECT_EQ(ctl->getCurrentFilePath(), p1);
-    EXPECT_EQ(hr->count(), 0u);
+    EXPECT_EQ(hm->count(), 0u);
 }
 
 TEST(PlaybackControllerAdvancedTest, SetVolumeSyncsEngineAndModel) {
@@ -451,10 +453,10 @@ TEST(PlaybackControllerAdvancedTest, SetVolumeSyncsEngineAndModel) {
     { std::ofstream f(p); f << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
+    std::shared_ptr<models::HistoryModel> hm;
     auto eng = std::make_unique<CfgEngine>();
     CfgEngine* raw = eng.get();
-    auto ctl = makeController(qm, psm, hr, std::move(eng));
+    auto ctl = makeController(qm, psm, hm, std::move(eng));
     psm->setVolume(77);
     qm->addToEnd(models::MediaFileModel(p));
     EXPECT_TRUE(ctl->play());
@@ -469,8 +471,8 @@ TEST(PlaybackControllerAdvancedTest, StopResetsStateAndClearsOneOff) {
     { std::ofstream f(p); f << ""; }
     std::shared_ptr<models::QueueModel> qm;
     std::shared_ptr<models::PlaybackStateModel> psm;
-    std::shared_ptr<repositories::HistoryRepository> hr;
-    auto ctl = makeController(qm, psm, hr, std::make_unique<CfgEngine>());
+    std::shared_ptr<models::HistoryModel> hm;
+    auto ctl = makeController(qm, psm, hm, std::make_unique<CfgEngine>());
     EXPECT_TRUE(ctl->playMediaWithoutQueue(models::MediaFileModel(p)));
     EXPECT_TRUE(ctl->stop());
     EXPECT_TRUE(ctl->isStopped());

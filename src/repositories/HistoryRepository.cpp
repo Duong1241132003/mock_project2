@@ -18,12 +18,15 @@ HistoryRepository::HistoryRepository(const std::string& storagePath, size_t maxE
     : m_storagePath(storagePath)
     , m_maxEntries(maxEntries)
 {
-    // History is in-memory only; no load from disk
+    // Load history from disk on startup
+    ensureStorageDirectoryExists();
+    loadFromDisk();
 }
 
 HistoryRepository::~HistoryRepository() 
 {
-    // No save to disk; history is session-only
+    // Save history to disk on shutdown
+    saveToDisk();
 }
 
 void HistoryRepository::addEntry(const models::MediaFileModel& media) 
@@ -86,6 +89,17 @@ std::vector<PlaybackHistoryEntry> HistoryRepository::getAllHistory() const
     std::lock_guard<std::mutex> lock(m_mutex);
     
     return std::vector<PlaybackHistoryEntry>(m_history.begin(), m_history.end());
+    return std::vector<PlaybackHistoryEntry>(m_history.begin(), m_history.end());
+}
+
+void HistoryRepository::setHistory(const std::vector<PlaybackHistoryEntry>& history)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    m_history.clear();
+    for (const auto& entry : history)
+    {
+        m_history.push_back(entry);
+    }
 }
 
 void HistoryRepository::clear() 
