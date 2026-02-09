@@ -136,6 +136,27 @@ void Application::setupUICallbacks()
     
     // Set controllers
     g_uiManager->setControllers(m_playbackController, m_queueController, m_libraryController, m_playlistController);
+
+    // Register Views
+    if (m_libraryScreen) {
+        g_uiManager->registerView(ui::NavTab::Library, m_libraryScreen.get());
+        m_libraryScreen->show(); // Initialize/Load data
+    }
+    
+    if (m_playlistScreen) {
+        g_uiManager->registerView(ui::NavTab::Playlists, m_playlistScreen.get());
+        m_playlistScreen->show();
+    }
+    
+    if (m_queuePanel) {
+        g_uiManager->registerView(ui::NavTab::Queue, m_queuePanel.get());
+        m_queuePanel->show();
+    }
+    
+    if (m_historyScreen) {
+        g_uiManager->registerView(ui::NavTab::History, m_historyScreen.get());
+        m_historyScreen->show();
+    }
     
     // Play callback - play without adding to queue (add via context menu when needed)
     g_uiManager->setOnPlay([this](int index) {
@@ -364,17 +385,39 @@ bool Application::createAllComponents()
     
     m_libraryScreen = std::make_unique<views::LibraryScreen>(
         m_libraryController,
-        m_queueController
+        m_queueController,
+        m_playbackController,
+        m_playlistController
     );
     
     m_playlistScreen = std::make_unique<views::PlaylistScreen>(
-        m_playlistController
+        m_playlistController,
+        m_playbackController,
+        m_queueController
     );
     
     m_queuePanel = std::make_unique<views::QueuePanel>(
         m_queueController,
+        m_playbackController,
         queueModel
     );
+    
+    m_historyScreen = std::make_unique<views::HistoryScreen>(
+        m_historyRepo,
+        m_queueController,
+        m_playbackController
+    );
+    
+    // Register views with UI Manager
+    if (g_uiManager) {
+        g_uiManager->registerView(ui::NavTab::Library, m_libraryScreen.get());
+        g_uiManager->registerView(ui::NavTab::Playlists, m_playlistScreen.get());
+        g_uiManager->registerView(ui::NavTab::Queue, m_queuePanel.get());
+        g_uiManager->registerView(ui::NavTab::History, m_historyScreen.get());
+        
+        // Show initial view
+        m_libraryScreen->show();
+    }
     
     return true;
 }
@@ -508,7 +551,10 @@ void Application::processEvents()
     {
         // Let ImGuiManager process events first
         if (g_uiManager) {
-            g_uiManager->processEvent(event);
+            if (g_uiManager->processEvent(event)) {
+                // Event consumed by UI (e.g., text input) - don't process further
+                continue;
+            }
         }
         
         switch (event.type) 
@@ -589,18 +635,38 @@ void Application::update()
         // Video support removed - no video state updates needed
     }
     
-    // Update media list reference
-    if (g_uiManager && m_libraryModel && g_scanComplete) {
-        std::lock_guard<std::mutex> lock(g_mediaMutex);
-        static std::vector<models::MediaFileModel> cachedMedia;
-        cachedMedia = m_libraryModel->getAllMedia();
-        g_uiManager->setMediaList(&cachedMedia);
+    
+    // Update media list reference in Library Screen when scan completes
+    static bool scanWasComplete = false;
+    if (g_scanComplete && !scanWasComplete) {
+        if (m_libraryScreen) {
+             // Refresh the library view now that data is available
+             // Note: m_libraryScreen->show() calls refresh, but if it's already shown (startup),
+             // we need to force a refresh.
+             // ImGuiManager doesn't expose "get current view", so we just call it directly.
+             // LibraryScreen::show() calls refreshMediaList() internally.
+             // LibraryScreen::refreshMediaList() pulls from controller.
+             // We can just call show() again or add refresh?
+             // LibraryScreen has NO public refreshMediaList? 
+             // Let's check LibraryScreen.h.
+             // It has update(), show().
+             // show() calls refreshMediaList().
+             // Let's just call show() again? Or we need to add public refresh.
+             // Wait, I saw displayMediaList removed.
+             // Let's check LibraryScreen.h content again.
+             // It has "searchMedia", "show", "hide".
+             // It has PRIVATE refreshMediaList? I need to check.
+             // If private, I can't call it.
+             // Usage of show() is safe.
+             m_libraryScreen->show(); 
+        }
+        scanWasComplete = true;
+    } else if (!g_scanComplete) {
+        scanWasComplete = false;
     }
     
-    // Sync playback history to UI
-    if (g_uiManager && m_historyRepo) {
-        auto historyList = m_historyRepo->getRecentHistory(100);
-        g_uiManager->setHistoryList(historyList);
+    if (g_uiManager && m_libraryModel && g_scanComplete) {
+        // Legacy setMediaList removed
     }
     
     // Thử kết nối lại phần cứng S32K144 theo chu kỳ để nhận bản tin từ UART

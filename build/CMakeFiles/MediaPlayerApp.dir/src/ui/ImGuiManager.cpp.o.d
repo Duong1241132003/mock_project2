@@ -314,6 +314,9 @@ CMakeFiles/MediaPlayerApp.dir/src/ui/ImGuiManager.cpp.o: \
  /usr/include/c++/13/backward/auto_ptr.h \
  /usr/include/c++/13/pstl/glue_memory_defs.h \
  /usr/include/c++/13/pstl/execution_defs.h /usr/include/c++/13/optional \
+ /usr/include/c++/13/map /usr/include/c++/13/bits/stl_tree.h \
+ /usr/include/c++/13/bits/stl_map.h \
+ /usr/include/c++/13/bits/stl_multimap.h \
  /home/duong/MediaPlayerApp/inc/repositories/HistoryRepository.h \
  /usr/include/c++/13/mutex /usr/include/c++/13/bits/chrono.h \
  /usr/include/c++/13/ratio /usr/include/c++/13/cstdint \
@@ -352,9 +355,7 @@ CMakeFiles/MediaPlayerApp.dir/src/ui/ImGuiManager.cpp.o: \
  /usr/include/c++/13/bits/sstream.tcc /usr/include/c++/13/codecvt \
  /usr/include/c++/13/bits/fs_dir.h /usr/include/c++/13/bits/fs_ops.h \
  /home/duong/MediaPlayerApp/inc/models/MetadataModel.h \
- /usr/include/c++/13/map /usr/include/c++/13/bits/stl_tree.h \
- /usr/include/c++/13/bits/stl_map.h \
- /usr/include/c++/13/bits/stl_multimap.h \
+ /home/duong/MediaPlayerApp/inc/views/IView.h \
  /home/duong/MediaPlayerApp/inc/controllers/PlaybackController.h \
  /home/duong/MediaPlayerApp/inc/services/IPlaybackEngine.h \
  /home/duong/MediaPlayerApp/inc/services/AudioPlaybackEngine.h \

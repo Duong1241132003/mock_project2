@@ -1015,6 +1015,33 @@ src/utils/AVSyncClock.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/utils/AVSyncClock.cpp.s
 .PHONY : src/utils/AVSyncClock.cpp.s
 
+src/views/HistoryScreen.o: src/views/HistoryScreen.cpp.o
+.PHONY : src/views/HistoryScreen.o
+
+# target to build an object file
+src/views/HistoryScreen.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/HistoryScreen.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o
+.PHONY : src/views/HistoryScreen.cpp.o
+
+src/views/HistoryScreen.i: src/views/HistoryScreen.cpp.i
+.PHONY : src/views/HistoryScreen.i
+
+# target to preprocess a source file
+src/views/HistoryScreen.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/HistoryScreen.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.i
+.PHONY : src/views/HistoryScreen.cpp.i
+
+src/views/HistoryScreen.s: src/views/HistoryScreen.cpp.s
+.PHONY : src/views/HistoryScreen.s
+
+# target to generate assembly for a file
+src/views/HistoryScreen.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/HistoryScreen.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.s
+.PHONY : src/views/HistoryScreen.cpp.s
+
 src/views/LibraryScreen.o: src/views/LibraryScreen.cpp.o
 .PHONY : src/views/LibraryScreen.o
 
@@ -1177,6 +1204,30 @@ src/views/ScanScreen.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.s
 .PHONY : src/views/ScanScreen.cpp.s
 
+tests/controllers/HardwareControllerBufferTest.o: tests/controllers/HardwareControllerBufferTest.cpp.o
+.PHONY : tests/controllers/HardwareControllerBufferTest.o
+
+# target to build an object file
+tests/controllers/HardwareControllerBufferTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerBufferTest.cpp.o
+.PHONY : tests/controllers/HardwareControllerBufferTest.cpp.o
+
+tests/controllers/HardwareControllerBufferTest.i: tests/controllers/HardwareControllerBufferTest.cpp.i
+.PHONY : tests/controllers/HardwareControllerBufferTest.i
+
+# target to preprocess a source file
+tests/controllers/HardwareControllerBufferTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerBufferTest.cpp.i
+.PHONY : tests/controllers/HardwareControllerBufferTest.cpp.i
+
+tests/controllers/HardwareControllerBufferTest.s: tests/controllers/HardwareControllerBufferTest.cpp.s
+.PHONY : tests/controllers/HardwareControllerBufferTest.s
+
+# target to generate assembly for a file
+tests/controllers/HardwareControllerBufferTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerBufferTest.cpp.s
+.PHONY : tests/controllers/HardwareControllerBufferTest.cpp.s
+
 tests/controllers/HardwareControllerInvalidTest.o: tests/controllers/HardwareControllerInvalidTest.cpp.o
 .PHONY : tests/controllers/HardwareControllerInvalidTest.o
 
@@ -1224,6 +1275,30 @@ tests/controllers/HardwareControllerParseTest.s: tests/controllers/HardwareContr
 tests/controllers/HardwareControllerParseTest.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerParseTest.cpp.s
 .PHONY : tests/controllers/HardwareControllerParseTest.cpp.s
+
+tests/controllers/HardwareControllerRefreshTest.o: tests/controllers/HardwareControllerRefreshTest.cpp.o
+.PHONY : tests/controllers/HardwareControllerRefreshTest.o
+
+# target to build an object file
+tests/controllers/HardwareControllerRefreshTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerRefreshTest.cpp.o
+.PHONY : tests/controllers/HardwareControllerRefreshTest.cpp.o
+
+tests/controllers/HardwareControllerRefreshTest.i: tests/controllers/HardwareControllerRefreshTest.cpp.i
+.PHONY : tests/controllers/HardwareControllerRefreshTest.i
+
+# target to preprocess a source file
+tests/controllers/HardwareControllerRefreshTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerRefreshTest.cpp.i
+.PHONY : tests/controllers/HardwareControllerRefreshTest.cpp.i
+
+tests/controllers/HardwareControllerRefreshTest.s: tests/controllers/HardwareControllerRefreshTest.cpp.s
+.PHONY : tests/controllers/HardwareControllerRefreshTest.s
+
+# target to generate assembly for a file
+tests/controllers/HardwareControllerRefreshTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerRefreshTest.cpp.s
+.PHONY : tests/controllers/HardwareControllerRefreshTest.cpp.s
 
 tests/controllers/HardwareControllerTest.o: tests/controllers/HardwareControllerTest.cpp.o
 .PHONY : tests/controllers/HardwareControllerTest.o
@@ -1713,6 +1788,9 @@ help:
 	@echo "... src/utils/AVSyncClock.o"
 	@echo "... src/utils/AVSyncClock.i"
 	@echo "... src/utils/AVSyncClock.s"
+	@echo "... src/views/HistoryScreen.o"
+	@echo "... src/views/HistoryScreen.i"
+	@echo "... src/views/HistoryScreen.s"
 	@echo "... src/views/LibraryScreen.o"
 	@echo "... src/views/LibraryScreen.i"
 	@echo "... src/views/LibraryScreen.s"
@@ -1731,12 +1809,18 @@ help:
 	@echo "... src/views/ScanScreen.o"
 	@echo "... src/views/ScanScreen.i"
 	@echo "... src/views/ScanScreen.s"
+	@echo "... tests/controllers/HardwareControllerBufferTest.o"
+	@echo "... tests/controllers/HardwareControllerBufferTest.i"
+	@echo "... tests/controllers/HardwareControllerBufferTest.s"
 	@echo "... tests/controllers/HardwareControllerInvalidTest.o"
 	@echo "... tests/controllers/HardwareControllerInvalidTest.i"
 	@echo "... tests/controllers/HardwareControllerInvalidTest.s"
 	@echo "... tests/controllers/HardwareControllerParseTest.o"
 	@echo "... tests/controllers/HardwareControllerParseTest.i"
 	@echo "... tests/controllers/HardwareControllerParseTest.s"
+	@echo "... tests/controllers/HardwareControllerRefreshTest.o"
+	@echo "... tests/controllers/HardwareControllerRefreshTest.i"
+	@echo "... tests/controllers/HardwareControllerRefreshTest.s"
 	@echo "... tests/controllers/HardwareControllerTest.o"
 	@echo "... tests/controllers/HardwareControllerTest.i"
 	@echo "... tests/controllers/HardwareControllerTest.s"

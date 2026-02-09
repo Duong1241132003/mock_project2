@@ -9,6 +9,8 @@
 #include "IView.h"
 #include "controllers/LibraryController.h"
 #include "controllers/QueueController.h"
+#include "controllers/PlaybackController.h"
+#include "controllers/PlaylistController.h"
 #include "models/MediaFileModel.h"
 
 namespace media_player 
@@ -21,7 +23,9 @@ class LibraryScreen : public IView
 public:
     LibraryScreen(
         std::shared_ptr<controllers::LibraryController> libraryController,
-        std::shared_ptr<controllers::QueueController> queueController
+        std::shared_ptr<controllers::QueueController> queueController,
+        std::shared_ptr<controllers::PlaybackController> playbackController,
+        std::shared_ptr<controllers::PlaylistController> playlistController
     );
     
     ~LibraryScreen();
@@ -31,6 +35,10 @@ public:
     void hide() override;
     void update() override;
     bool isVisible() const override;
+    
+    // New ImGui View Interface
+    void render(ui::ImGuiManager& painter) override;
+    bool handleInput(const SDL_Event& event) override;
     
     // Navigation
     void nextPage();
@@ -55,17 +63,34 @@ public:
     
 private:
     void refreshMediaList();
-    void displayMediaList();
     
+    // Search & Filter State
+    std::string m_searchQuery;
+    int m_sortField; // 0=Title, 1=Artist, 2=Album, 3=Duration
+    bool m_sortAscending;
+    int m_searchFilter; // 0=All, 1=Title, 2=Artist, 3=Album
+    bool m_isVisible;
+
+    // Context Menu State
+    bool m_showContextMenu;
+    int m_contextMenuX;
+    int m_contextMenuY;
+    int m_contextMenuIndex; // Index in m_currentMediaList (or filtered list?)
+                            // Better to store index of filtered list so we can retrieve media
+    
+    // Dependencies
     std::shared_ptr<controllers::LibraryController> m_libraryController;
     std::shared_ptr<controllers::QueueController> m_queueController;
+    std::shared_ptr<controllers::PlaybackController> m_playbackController;
+    std::shared_ptr<controllers::PlaylistController> m_playlistController; // Added
     
     std::vector<models::MediaFileModel> m_currentMediaList;
-    size_t m_currentPage;
-    size_t m_itemsPerPage;
-    int m_selectedIndex;
     
-    bool m_isVisible;
+    // UI State
+    int m_currentPage;
+    static constexpr int ITEMS_PER_PAGE = 25;
+    int m_selectedIndex;
+    int m_scrollOffset;
 };
 
 } // namespace views

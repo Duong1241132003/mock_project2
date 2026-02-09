@@ -1,5 +1,6 @@
 // Project includes
 #include "ui/ImGuiManager.h"
+#include "views/IView.h"
 #include "models/MediaFileModel.h"
 #include "controllers/PlaybackController.h"
 #include "controllers/QueueController.h"
@@ -24,43 +25,46 @@ namespace media_player
 namespace ui 
 {
 
-// Helper to extract RGBA from packed color
-static void unpackColor(uint32_t color, Uint8& r, Uint8& g, Uint8& b, Uint8& a) {
-    a = (color >> 24) & 0xFF;
-    r = (color >> 16) & 0xFF;
-    g = (color >> 8) & 0xFF;
-    b = color & 0xFF;
-}
+
 
 Theme Theme::light() {
     Theme t;
-    // Modern Light Theme
-    t.background      = 0xFFF5F6FA;  // Very soft gray/white background (Lynx White)
-    t.surface         = 0xFFFFFFFF;  // Pure white cards/panels
-    t.surfaceHover    = 0xFFE8EAF6;  // Very light indigo tint for hover
-    t.surfaceActive   = 0xFFDCE1E8;  // Light gray-blue active
+    // Background - White
+    t.background      = 0xFFFFFFFF; 
+    // Surface - Very Light Blue-Gray for sidebar/panels
+    t.surface         = 0xF0F4F8FF;  
+    t.surfaceHover    = 0xE1E8EFFF;  
+    t.surfaceActive   = 0xD0D7DEFF;  
     
-    // Primary - use a vibrant but professional blue (similar to iOS/macOS blue)
-    t.primary         = 0xFF007AFF;  
-    t.primaryHover    = 0xFF3395FF;
-    t.primaryActive   = 0xFF0056B3;
+    // Primary - Vibrant Blue (Google Blue / iOS Blue style)
+    t.primary         = 0x1A73E8FF;  
+    t.primaryHover    = 0x1557B0FF;
+    t.primaryActive   = 0x174EA6FF;
     
-    // Text - High contrast dark gray (not full black for softness)
-    t.textPrimary     = 0xFF2C3E50;  // Dark Blue-Gray (Midnight Blue)
-    t.textSecondary   = 0xFF7F8C8D;  // Medium Gray (Asbestos)
-    t.textDim         = 0xFF95A5A6;  // Light Gray (Concrete)
+    // Text - High Contrast
+    t.textPrimary     = 0x202124FF;  // Almost Black
+    t.textSecondary   = 0x5F6368FF;  // Dark Gray
+    t.textDim         = 0x9AA0A6FF;  // Medium Gray
     
     // Status
-    t.success         = 0xFF2ECC71;  // Emerald Green
-    t.warning         = 0xFFF1C40F;  // Sun Flower Yellow
-    t.error           = 0xFFE74C3C;  // Alizarin Red
+    t.success         = 0x1E8E3EFF;  // Green
+    t.warning         = 0xF9AB00FF;  // Yellow/Orange
+    t.error           = 0xD93025FF;  // Red
     
     // UI Elements
-    t.border          = 0xFFDCDCDC;  // Light gray border
-    t.scrollbar       = 0xFFF0F0F0;
-    t.scrollbarThumb  = 0xFFBDC3C7;
+    t.border          = 0xDADCE0FF;  // Light gray border
+    t.scrollbar       = 0xF1F3F4FF;
+    t.scrollbarThumb  = 0xBDC1C6FF;
     
     return t;
+}
+
+// Helper for color unpacking
+static void unpackColor(uint32_t color, Uint8& r, Uint8& g, Uint8& b, Uint8& a) {
+    r = (color >> 24) & 0xFF;
+    g = (color >> 16) & 0xFF;
+    b = (color >> 8) & 0xFF;
+    a = color & 0xFF;
 }
 
 ImGuiManager::ImGuiManager() {
@@ -73,7 +77,6 @@ ImGuiManager::~ImGuiManager() {
 }
 
 bool ImGuiManager::initialize(const std::string& title, int width, int height) {
-    m_width = width;
     m_height = height;
     
     // Initialize SDL_ttf
@@ -136,6 +139,10 @@ bool ImGuiManager::initialize(const std::string& title, int width, int height) {
     return true;
 }
 
+void ImGuiManager::registerView(NavTab tab, views::IView* view) {
+    m_views[tab] = view;
+}
+
 void ImGuiManager::shutdown() {
     if (m_fontSmall) {
         TTF_CloseFont(m_fontSmall);
@@ -174,6 +181,21 @@ void ImGuiManager::beginFrame() {
     // m_modalMouseClicked = false;
 
     m_state.scanDialogVisible = false;
+    
+    // Sync UI state from controllers (fix cho shuffle/loop và track info)
+    // Only sync when not clicking to avoid overwriting pending toggle from UI buttons
+    if (m_queueController && !m_mouseClicked) 
+    {
+        m_state.shuffleEnabled = m_queueController->isShuffleEnabled();
+        m_state.loopEnabled = m_queueController->isRepeatEnabled();
+        m_state.loopAllEnabled = m_queueController->isLoopAllEnabled();
+    }
+    
+    // Sync isPlaying state from controller to ensure UI reflects actual playback state
+    if (m_playbackController && !m_mouseClicked)
+    {
+        m_state.isPlaying = m_playbackController->isPlaying();
+    }
 }
 
 void ImGuiManager::endFrame() {
@@ -181,6 +203,8 @@ void ImGuiManager::endFrame() {
     
     // Reset click state after rendering so all UI elements can check it
     m_mouseClicked = false;
+    m_leftMouseClicked = false;
+    m_rightMouseClicked = false;
     m_modalMouseClicked = false;
 }
 
@@ -192,6 +216,8 @@ bool ImGuiManager::processEvent(const SDL_Event& event) {
             return true;
             
         case SDL_MOUSEBUTTONDOWN:
+            m_mouseX = event.button.x;
+            m_mouseY = event.button.y;
             if (event.button.button == SDL_BUTTON_LEFT)
             {
                 m_mouseDown = true;
@@ -228,7 +254,8 @@ bool ImGuiManager::processEvent(const SDL_Event& event) {
                 }
                 else
                 {
-                    m_mouseClicked = true;
+                    // Don't set m_mouseClicked here - only set it on MOUSEBUTTONUP
+                    // to avoid processing click twice (once on down, once on up)
                     m_modalMouseClicked = false;
                 }
                 m_dragStartX = event.button.x;
@@ -237,42 +264,55 @@ bool ImGuiManager::processEvent(const SDL_Event& event) {
             return true;
             
         case SDL_MOUSEBUTTONUP:
-            if (event.button.button == SDL_BUTTON_LEFT) {
-                m_mouseDown = false;
+            m_mouseX = event.button.x;
+            m_mouseY = event.button.y;
+            m_mouseDown = false;
+            
+            // Check if any modal/overlay is visible - block clicks to underlying views
+            if (m_state.scanDialogVisible || m_state.showChangePathDialog || 
+                m_state.showUsbDialog || m_state.showContextMenu ||
+                m_state.showAddToPlaylistDialog || m_state.showPropertiesDialog ||
+                m_state.showRenamePlaylistDialog) {
+                m_modalMouseClicked = true;
+                m_mouseClicked = false;  // Block click from reaching underlying views
+                m_leftMouseClicked = false;
+                m_rightMouseClicked = false;
+            } else {
+                m_mouseClicked = true;
+                if (event.button.button == SDL_BUTTON_LEFT) m_leftMouseClicked = true;
+                if (event.button.button == SDL_BUTTON_RIGHT) m_rightMouseClicked = true;
             }
+            
+            m_mouseDragging = false;
             return true;
             
         case SDL_MOUSEWHEEL:
-            if (m_state.currentTab == NavTab::Library) {
-                m_state.scrollOffset -= event.wheel.y * 30;
-                if (m_state.scrollOffset < 0) m_state.scrollOffset = 0;
-            } else if (m_state.currentTab == NavTab::Queue) {
-                m_state.queueScrollOffset -= event.wheel.y * 30;
-                if (m_state.queueScrollOffset < 0) m_state.queueScrollOffset = 0;
-            } else if (m_state.currentTab == NavTab::History) {
-                m_state.historyScrollOffset -= event.wheel.y * 30;
-                if (m_state.historyScrollOffset < 0) m_state.historyScrollOffset = 0;
-            }
-            return true;
+            // Let views handle scrolling - don't return early, fall through to dispatch
+            break;
         
         case SDL_TEXTINPUT:
             if (m_state.focusPathInput && (m_state.pathInputScreenVisible || m_state.showChangePathDialog)) {
                 m_state.libraryPathInput += event.text.text;
-            } else if (m_state.showCreatePlaylistDialog) {
-                m_state.newPlaylistName += event.text.text;
-            } else if (m_state.showRenamePlaylistDialog) {
-                m_state.renamePlaylistName += event.text.text;
-            } else if (m_state.currentTab == NavTab::Library) {
-                // Add text to search query
-                m_state.searchQuery += event.text.text;
-                m_state.currentPage = 0;
-                m_state.scrollOffset = 0;
+                return true; // Consumed by path input
             }
-            return true;
+            if (m_state.searchFocused) {
+                 // Append to search query
+                 // Note: ImGuiManager doesn't have direct access to filter logic, but 
+                 // LibraryScreen reads m_state.searchQuery every frame.
+                 m_state.searchQuery += event.text.text;
+                 return true; // Consumed by search
+            }
+            break; // Fall through to view dispatch
             
         case SDL_KEYDOWN:
-            if (!m_state.pathInputScreenVisible && !m_state.showChangePathDialog)
+            // Input focus management
+            if (!m_state.pathInputScreenVisible && !m_state.showChangePathDialog) {
+                // Keep focusPathInput false if dialog closed
+                // But don't force it false if search is focused?
+                // Actually search focus is separate.
                 m_state.focusPathInput = false;
+            }
+            
             if (m_state.focusPathInput && (m_state.pathInputScreenVisible || m_state.showChangePathDialog)) {
                 if (event.key.keysym.sym == SDLK_BACKSPACE && !m_state.libraryPathInput.empty()) {
                     m_state.libraryPathInput.pop_back();
@@ -286,54 +326,39 @@ bool ImGuiManager::processEvent(const SDL_Event& event) {
                     if (m_state.showChangePathDialog) m_state.showChangePathDialog = false;
                     SDL_StopTextInput();
                 }
-            } else if (m_state.showCreatePlaylistDialog) {
-                // Playlist Dialog Input
-                if (event.key.keysym.sym == SDLK_BACKSPACE && !m_state.newPlaylistName.empty()) {
-                    m_state.newPlaylistName.pop_back();
-                } else if (event.key.keysym.sym == SDLK_ESCAPE) {
-                    m_state.showCreatePlaylistDialog = false;
-                    m_state.newPlaylistName.clear();
-                    SDL_StopTextInput();
-                } else if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
-                    if (!m_state.newPlaylistName.empty() && m_playlistController) {
-                        m_playlistController->createPlaylist(m_state.newPlaylistName);
-                        m_state.showCreatePlaylistDialog = false;
-                        m_state.newPlaylistName.clear();
-                        SDL_StopTextInput();
-                    }
-                }
-            } else if (m_state.showRenamePlaylistDialog) {
-                if (event.key.keysym.sym == SDLK_BACKSPACE && !m_state.renamePlaylistName.empty()) {
-                    m_state.renamePlaylistName.pop_back();
-                } else if (event.key.keysym.sym == SDLK_ESCAPE) {
-                    m_state.showRenamePlaylistDialog = false;
-                    SDL_StopTextInput();
-                } else if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
-                    if (!m_state.renamePlaylistName.empty() && m_playlistController) {
-                        m_playlistController->renamePlaylist(m_state.renamePlaylistId, m_state.renamePlaylistName);
-                    }
-                    m_state.showRenamePlaylistDialog = false;
-                    SDL_StopTextInput();
-                }
-            } else {
-                // Global Shortcuts / Search
+                return true; // Consumed by path input
+            }
+            
+            if (m_state.searchFocused) {
                 if (event.key.keysym.sym == SDLK_BACKSPACE && !m_state.searchQuery.empty()) {
                     m_state.searchQuery.pop_back();
-                    m_state.currentPage = 0;
-                    m_state.scrollOffset = 0;
-                } else if (event.key.keysym.sym == SDLK_ESCAPE) {
-                    m_state.searchQuery.clear();
+                } else if (event.key.keysym.sym == SDLK_ESCAPE || event.key.keysym.sym == SDLK_RETURN) {
                     m_state.searchFocused = false;
-                    m_state.currentPage = 0;
-                    m_state.scrollOffset = 0;
+                    SDL_StopTextInput();
                 }
+                return true; // Consumed by search
             }
-            return true;
-            
-        default:
-            break;
+            break; // Fall through to view dispatch
     }
-    return false;
+    
+    // Dispatch input to active view ONLY if no modals are active
+    // Dispatch input to active view ONLY if no modals are active
+    if (!m_state.scanDialogVisible && !m_state.showChangePathDialog && 
+        !m_state.showUsbDialog && !m_state.showContextMenu &&
+        !m_state.showAddToPlaylistDialog && !m_state.showPropertiesDialog &&
+        !m_state.showRenamePlaylistDialog) 
+    {
+        auto it = m_views.find(m_state.currentTab);
+        if (it != m_views.end() && it->second) {
+            if (it->second->handleInput(event)) {
+                 return true; // View consumed input
+            }
+        }
+        return false; // No modal, view didn't handle -> return false (App handles shortcuts)
+    }
+    
+    // Modals active -> Consumed all input
+    return true;
 }
 
 void ImGuiManager::handleResize(int width, int height) {
@@ -395,42 +420,40 @@ void ImGuiManager::renderMainLayout() {
         return;
     }
     
-    // Render current view
-    switch (m_state.currentTab) {
-        case NavTab::Library:
-            renderLibraryPanel();
-            break;
-        case NavTab::Playlists:
-            renderPlaylistPanel();
-            break;
-        case NavTab::Queue:
-            renderQueuePanel();
-            break;
-        case NavTab::History:
-            renderHistoryPanel();
-            break;
-        case NavTab::Settings: {
-            drawText("Settings", contentX + 20, contentY + 20, m_theme.textPrimary, 24);
-            int sy = contentY + 60;
-            drawText("Thư mục thư viện:", contentX + 20, sy, m_theme.textSecondary, 14);
-            std::string currentPath = m_getCurrentLibraryPath ? m_getCurrentLibraryPath() : "";
-            if (currentPath.length() > 50) currentPath = "..." + currentPath.substr(currentPath.length() - 47);
-            drawText(currentPath, contentX + 20, sy + 22, m_theme.textPrimary, 12);
-            int btnX = contentX + 20;
-            int btnY = sy + 55;
-            int btnW = 140;
-            int btnH = 32;
-            bool changeHover = isMouseOver(btnX, btnY, btnW, btnH);
-            drawRect(btnX, btnY, btnW, btnH, changeHover ? m_theme.primaryHover : m_theme.primary);
-            drawText("Đổi đường dẫn", btnX + 18, btnY + 8, m_theme.textPrimary, 14);
-            if (changeHover && m_mouseClicked) {
-                m_state.libraryPathInput = m_getCurrentLibraryPath ? m_getCurrentLibraryPath() : "";
-                m_state.showChangePathDialog = true;
-                m_state.focusPathInput = true;
-                SDL_StartTextInput();
-                m_mouseClicked = false;
-            }
-            break;
+    // Render registered view if available
+    auto it = m_views.find(m_state.currentTab);
+    if (it != m_views.end() && it->second) {
+        it->second->render(*this);
+    } else {
+        // Fallback or specific handling for non-migrated tabs (e.g., Settings)
+        if (m_state.currentTab == NavTab::Settings) {
+             drawText("Settings", contentX + 20, contentY + 20, m_theme.textPrimary, 24);
+             // ... (keep settings logic for now or TODO) ...
+             // For brevity in this refactor, I'll just keep the existing Settings block or simplify it
+             // actually I should keep the Settings block from the original file
+             // Re-inserting the Settings block:
+             int sy = contentY + 60;
+             drawText("Thư mục thư viện:", contentX + 20, sy, m_theme.textSecondary, 14);
+             std::string currentPath = m_getCurrentLibraryPath ? m_getCurrentLibraryPath() : "";
+             if (currentPath.length() > 50) currentPath = "..." + currentPath.substr(currentPath.length() - 47);
+             drawText(currentPath, contentX + 20, sy + 22, m_theme.textPrimary, 12);
+             
+             int btnX = contentX + 20;
+             int btnY = sy + 55;
+             int btnW = 140; 
+             int btnH = 32;
+             
+             bool changeHover = isMouseOver(btnX, btnY, btnW, btnH);
+             drawRect(btnX, btnY, btnW, btnH, changeHover ? m_theme.primaryHover : m_theme.primary);
+             drawText("Đổi đường dẫn", btnX + 18, btnY + 8, m_theme.textPrimary, 14);
+             
+             if (changeHover && m_mouseClicked) {
+                 m_state.libraryPathInput = m_getCurrentLibraryPath ? m_getCurrentLibraryPath() : "";
+                 m_state.showChangePathDialog = true;
+                 m_state.focusPathInput = true;
+                 SDL_StartTextInput();
+                 m_mouseClicked = false;
+             }
         }
     }
     
@@ -525,7 +548,17 @@ void ImGuiManager::renderSidebar() {
         
         // Handle click
         if (hover && m_mouseClicked) {
-            m_state.currentTab = item.tab;
+             if (m_state.currentTab != item.tab) {
+                 // Hide old
+                 auto itOld = m_views.find(m_state.currentTab);
+                 if (itOld != m_views.end() && itOld->second) itOld->second->hide();
+                 
+                 m_state.currentTab = item.tab;
+                 
+                 // Show new
+                 auto itNew = m_views.find(m_state.currentTab);
+                 if (itNew != m_views.end() && itNew->second) itNew->second->show();
+             }
             m_state.searchFocused = false;
         }
         
@@ -569,336 +602,6 @@ void ImGuiManager::renderSidebar() {
     
     // Right border
     drawRect(SIDEBAR_WIDTH - 1, y, 1, h, m_theme.border);
-}
-
-void ImGuiManager::renderLibraryPanel() {
-    if (!m_mediaList) return;
-    
-    int x = SIDEBAR_WIDTH + 10;
-    int y = MENU_BAR_HEIGHT + 10;
-    int w = m_width - SIDEBAR_WIDTH - 20;
-    int h = m_height - MENU_BAR_HEIGHT - PLAYER_BAR_HEIGHT - 20;
-    
-    // 1. Calculate filtered list first
-    std::vector<size_t> filteredIndices;
-    filteredIndices.reserve(m_mediaList->size());
-    
-    for (size_t i = 0; i < m_mediaList->size(); i++) {
-        const auto& media = (*m_mediaList)[i];
-        
-        if (m_state.searchQuery.empty()) {
-            filteredIndices.push_back(i);
-        } else {
-            // Case-insensitive search
-            std::string query = m_state.searchQuery;
-            std::transform(query.begin(), query.end(), query.begin(), ::tolower);
-            
-            std::string title = media.getTitle().empty() ? media.getFileName() : media.getTitle();
-            std::transform(title.begin(), title.end(), title.begin(), ::tolower);
-            
-            std::string artist = media.getArtist();
-            std::transform(artist.begin(), artist.end(), artist.begin(), ::tolower);
-            
-            std::string album = media.getAlbum();
-            std::transform(album.begin(), album.end(), album.begin(), ::tolower);
-            
-            bool matches = false;
-            switch (m_state.searchFilter) {
-                case SearchFilter::All:
-                    matches = (title.find(query) != std::string::npos || 
-                               artist.find(query) != std::string::npos ||
-                               album.find(query) != std::string::npos);
-                    break;
-                case SearchFilter::Title:
-                    matches = (title.find(query) != std::string::npos);
-                    break;
-                case SearchFilter::Artist:
-                    matches = (artist.find(query) != std::string::npos);
-                    break;
-                case SearchFilter::Album:
-                    matches = (album.find(query) != std::string::npos);
-                    break;
-            }
-            if (matches) {
-                filteredIndices.push_back(i);
-            }
-        }
-    }
-    
-    int filteredCount = static_cast<int>(filteredIndices.size());
-    int totalPages = (filteredCount + UIState::ITEMS_PER_PAGE - 1) / UIState::ITEMS_PER_PAGE;
-    if (totalPages == 0) totalPages = 1;
-
-    // Sort Logic including Album (Field 3? Let's use 2 and move Duration to 3)
-    // 0=Title, 1=Artist, 2=Album, 3=Duration
-    if (m_state.sortField != -1 && !filteredIndices.empty()) { 
-         std::stable_sort(filteredIndices.begin(), filteredIndices.end(), 
-            [&](size_t a, size_t b) {
-                const auto& mA = (*m_mediaList)[a];
-                const auto& mB = (*m_mediaList)[b];
-                int cmp = 0;
-                if (m_state.sortField == 0) { // Title
-                    std::string tA = mA.getTitle().empty() ? mA.getFileName() : mA.getTitle();
-                    std::string tB = mB.getTitle().empty() ? mB.getFileName() : mB.getTitle();
-                    cmp = tA.compare(tB);
-                } else if (m_state.sortField == 1) { // Artist
-                    cmp = mA.getArtist().compare(mB.getArtist());
-                } else if (m_state.sortField == 2) { // Album
-                    cmp = mA.getAlbum().compare(mB.getAlbum());
-                } else if (m_state.sortField == 3) { // Duration
-                    int dA = mA.getDuration();
-                    int dB = mB.getDuration();
-                    cmp = (dA < dB) ? -1 : ((dA > dB) ? 1 : 0);
-                }
-                return m_state.sortAscending ? (cmp < 0) : (cmp > 0);
-            });
-    }
-
-    // 2. Header
-    drawText("Library", x, y, m_theme.textPrimary, 20);
-    
-    // Search filter buttons (only show when search query is not empty)
-    if (!m_state.searchQuery.empty()) {
-        int filterX = x + 90;
-        int filterY = y + 2;
-        int filterBtnW = 55;
-        int filterBtnH = 22;
-        int filterGap = 5;
-        
-        struct FilterBtn {
-            const char* label;
-            SearchFilter filter;
-        };
-        FilterBtn filters[] = {
-            {"All", SearchFilter::All},
-            {"Title", SearchFilter::Title},
-            {"Artist", SearchFilter::Artist},
-            {"Album", SearchFilter::Album}
-        };
-        
-        for (const auto& fb : filters) {
-            bool selected = (m_state.searchFilter == fb.filter);
-            bool hover = isMouseOver(filterX, filterY, filterBtnW, filterBtnH);
-            
-            uint32_t btnColor = selected ? m_theme.primary : 
-                               (hover ? m_theme.surfaceHover : m_theme.surface);
-            drawRect(filterX, filterY, filterBtnW, filterBtnH, btnColor);
-            drawRect(filterX, filterY, filterBtnW, filterBtnH, m_theme.border, false);
-            
-            uint32_t textColor = selected ? m_theme.textPrimary : m_theme.textSecondary;
-            drawText(fb.label, filterX + 8, filterY + 4, textColor, 11);
-            
-            if (hover && m_mouseClicked) {
-                m_state.searchFilter = fb.filter;
-                m_state.currentPage = 0;
-                m_mouseClicked = false;
-            }
-            
-            filterX += filterBtnW + filterGap;
-        }
-        
-        // Clear Search Button (X) - After filters
-        int clearBtnSize = 22;
-        int clearX = filterX + 5;
-        
-        bool clearHover = isMouseOver(clearX, filterY, clearBtnSize, clearBtnSize);
-        if (clearHover) {
-             drawRect(clearX, filterY, clearBtnSize, clearBtnSize, m_theme.surfaceActive);
-        }
-        drawRect(clearX, filterY, clearBtnSize, clearBtnSize, m_theme.border, false);
-        drawText("x", clearX + 7, filterY + 2, m_theme.textDim, 14);
-        
-        if (clearHover && m_mouseClicked) {
-            m_state.searchQuery.clear();
-            m_state.currentPage = 0;
-            m_state.scrollOffset = 0;
-            SDL_StopTextInput();
-            m_mouseClicked = false;
-        }
-    }
-    
-    std::string pageInfo = "Page " + std::to_string(m_state.currentPage + 1) + "/" + std::to_string(totalPages);
-    std::string countText = std::to_string(filteredCount) + " tracks";
-    
-    drawText(countText, x + w - 180, y + 4, m_theme.textDim, 12);
-    drawText(pageInfo, x + w - 80, y + 4, m_theme.textSecondary, 12);
-    
-    y += 40;
-    
-    // 3. Column headers
-    int colTitle = x;
-    int colArtist = x + w * 0.35;
-    int colAlbum = x + w * 0.6;
-    int colDuration = x + w - 70;
-    
-    drawRect(x, y, w, 30, m_theme.surface);
-    
-    // Title header
-    bool titleHover = isMouseOver(colTitle, y, static_cast<int>(w * 0.35), 30);
-    std::string titleHeader = "Title";
-    if (m_state.sortField == 0) titleHeader += m_state.sortAscending ? " ^" : " v";
-    drawText(titleHeader, colTitle + 50, y + 7, titleHover ? m_theme.textPrimary : m_theme.textSecondary, 12);
-    if (titleHover && m_mouseClicked) {
-        if (m_state.sortField == 0) m_state.sortAscending = !m_state.sortAscending;
-        else { m_state.sortField = 0; m_state.sortAscending = true; }
-    }
-    
-    // Artist header
-    bool artistHover = isMouseOver(colArtist, y, static_cast<int>(w * 0.25), 30);
-    std::string artistHeader = "Artist";
-    if (m_state.sortField == 1) artistHeader += m_state.sortAscending ? " ^" : " v";
-    drawText(artistHeader, colArtist, y + 7, artistHover ? m_theme.textPrimary : m_theme.textSecondary, 12);
-    if (artistHover && m_mouseClicked) {
-        if (m_state.sortField == 1) m_state.sortAscending = !m_state.sortAscending;
-        else { m_state.sortField = 1; m_state.sortAscending = true; }
-    }
-
-    // Album header
-    bool albumHover = isMouseOver(colAlbum, y, static_cast<int>(w * 0.25), 30);
-    std::string albumHeader = "Album";
-    if (m_state.sortField == 2) albumHeader += m_state.sortAscending ? " ^" : " v";
-    drawText(albumHeader, colAlbum, y + 7, albumHover ? m_theme.textPrimary : m_theme.textSecondary, 12);
-    if (albumHover && m_mouseClicked) {
-        if (m_state.sortField == 2) m_state.sortAscending = !m_state.sortAscending;
-        else { m_state.sortField = 2; m_state.sortAscending = true; }
-    }
-    
-    // Duration header
-    bool durHover = isMouseOver(colDuration, y, 70, 30);
-    std::string durHeader = "Time";
-    if (m_state.sortField == 3) durHeader += m_state.sortAscending ? " ^" : " v";
-    drawText(durHeader, colDuration, y + 7, durHover ? m_theme.textPrimary : m_theme.textSecondary, 12);
-    if (durHover && m_mouseClicked) {
-        if (m_state.sortField == 3) m_state.sortAscending = !m_state.sortAscending;
-        else { m_state.sortField = 3; m_state.sortAscending = true; }
-    }
-    
-    y += 30;
-    
-    // 4. Media list
-    int listH = h - 110; // Leave room for pagination buttons (40px buttons + padding)
-    
-    // Set Clip Rect (if we had SDL_RenderSetClipRect)
-    SDL_Rect clipRect = { x, y, w, listH };
-    SDL_RenderSetClipRect(m_renderer, &clipRect);
-
-    // int visibleItems = listH / ITEM_HEIGHT; // Unused since using pagination loop
-    
-    // Pagination logic
-    if (m_state.currentPage >= totalPages) m_state.currentPage = totalPages - 1;
-    if (m_state.currentPage < 0) m_state.currentPage = 0;
-    
-    int startIndex = m_state.currentPage * UIState::ITEMS_PER_PAGE;
-    int endIndex = std::min(startIndex + UIState::ITEMS_PER_PAGE, filteredCount);
-    
-    // Use visibleItems? No, we use Pagination now (25 items/page).
-    // Render the current page items
-    
-    for (int i = startIndex; i < endIndex; i++) {
-        size_t index = filteredIndices[i];
-        const auto& media = (*m_mediaList)[index];
-        
-        // Render item relative to y + Scroll Offset
-        int rowIdx = i - startIndex; // 0 to 24
-        int itemY = y + (rowIdx * ITEM_HEIGHT) - m_state.scrollOffset;
-        
-        // Culling (skip items outside view)
-        if (itemY + ITEM_HEIGHT < y || itemY > y + listH) continue;
-        
-        bool selected = (index == static_cast<size_t>(m_state.selectedMediaIndex));
-        bool hover = isMouseOver(x, itemY, w, ITEM_HEIGHT); // Note: isMouseOver needs to account for Clip Rect if implemented in engine, but here simple coord check
-        // Check if mouse inside List Area
-        bool mouseInList = isMouseOver(x, y, w, listH);
-        hover = hover && mouseInList;
-
-        uint32_t rowBg = selected ? m_theme.surfaceActive : 
-                        (hover ? m_theme.surfaceHover : 
-                        (i % 2 == 0 ? m_theme.background : m_theme.surface));
-        drawRect(x, itemY, w, ITEM_HEIGHT, rowBg);
-        
-        // Right click context menu
-        int mx, my;
-        uint32_t buttons = SDL_GetMouseState(&mx, &my);
-        if (hover && mouseInList && (buttons & SDL_BUTTON(SDL_BUTTON_RIGHT))) {
-             m_state.showContextMenu = true;
-             m_state.contextMenuX = mx;
-             m_state.contextMenuY = my;
-             m_state.selectedContextItemIndex = static_cast<int>(index);
-             m_state.contextMediaItem = (*m_mediaList)[index];
-             m_state.contextMenuSource = ui::ContextMenuSource::Library;
-        }
-        
-        if (index == static_cast<size_t>(m_state.selectedMediaIndex) && m_state.isPlaying) {
-            drawRect(x, itemY, 4, ITEM_HEIGHT, m_theme.success);
-            drawText(">", x + 15, itemY + 15, m_theme.success, 14);
-        } else {
-            const char* icon = media.isAudio() ? "~" : (media.isVideo() ? "*" : "?");
-            uint32_t iconColor = media.isUnsupported() ? m_theme.textDim : m_theme.textSecondary;
-            drawText(icon, x + 15, itemY + 15, iconColor, 14);
-        }
-        
-        uint32_t textCol = media.isUnsupported() ? m_theme.textDim : m_theme.textPrimary;
-        uint32_t subCol = media.isUnsupported() ? m_theme.textDim : m_theme.textSecondary;
-
-        std::string title = media.getTitle().empty() ? media.getFileName() : media.getTitle();
-        if (title.length() > 35) title = title.substr(0, 32) + "...";
-        drawText(title, colTitle + 50, itemY + 15, textCol, 14);
-        
-        std::string artist = media.getArtist().empty() ? "Unknown Artist" : media.getArtist();
-        if (artist.length() > 25) artist = artist.substr(0, 22) + "...";
-        drawText(artist, colArtist, itemY + 15, subCol, 14);
-        
-        std::string album = media.getAlbum();
-        if (album.length() > 25) album = album.substr(0, 22) + "...";
-        drawText(album, colAlbum, itemY + 15, subCol, 14);
-
-        int duration = media.getDuration();
-        std::string durationStr = "--:--";
-        if (duration > 0) {
-            int mins = duration / 60;
-            int secs = duration % 60;
-            std::ostringstream oss;
-            oss << mins << ":" << std::setfill('0') << std::setw(2) << secs;
-            durationStr = oss.str();
-        }
-        drawText(durationStr, colDuration, itemY + 15, m_theme.textDim, 12);
-        
-        // Prevent click if unsupported
-        if (hover && m_mouseClicked && !m_state.showContextMenu && !m_state.showAddToPlaylistDialog && !m_state.showPropertiesDialog && !m_state.showCreatePlaylistDialog && !m_state.showRenamePlaylistDialog) {
-            if (!media.isUnsupported()) {
-                m_state.selectedMediaIndex = static_cast<int>(index);
-                if (m_onPlay) {
-                    m_onPlay(static_cast<int>(index));
-                    m_mouseClicked = false; // Consume click to prevent play/pause toggle
-                }
-            } else {
-                // Consume click but do nothing for unsupported files
-                m_mouseClicked = false;
-            }
-        }
-    }
-    
-    // Reset Clip Rect
-    SDL_RenderSetClipRect(m_renderer, nullptr);
-
-    // 5. Pagination Buttons (Fixed at bottom of list area)
-    int pageBtnsY = y + listH + 10;
-    int prevBtnX = x + w/2 - 100;
-    int nextBtnX = x + w/2 + 20;
-
-    if (m_state.currentPage > 0) {
-        bool prevHover = isMouseOver(prevBtnX, pageBtnsY, 80, 28);
-        drawRect(prevBtnX, pageBtnsY, 80, 28, prevHover ? m_theme.primaryHover : m_theme.primary);
-        drawText("< Prev", prevBtnX + 15, pageBtnsY + 6, m_theme.textPrimary, 12);
-        if (prevHover && m_mouseClicked) m_state.currentPage--;
-    }
-
-    if (m_state.currentPage < totalPages - 1) {
-        bool nextHover = isMouseOver(nextBtnX, pageBtnsY, 80, 28);
-        drawRect(nextBtnX, pageBtnsY, 80, 28, nextHover ? m_theme.primaryHover : m_theme.primary);
-        drawText("Next >", nextBtnX + 15, pageBtnsY + 6, m_theme.textPrimary, 12);
-        if (nextHover && m_mouseClicked) m_state.currentPage++;
-    }
 }
 
 void ImGuiManager::renderPlayerBar() {
@@ -1064,487 +767,6 @@ void ImGuiManager::renderPlayerBar() {
     // Hardware connection status indicator removed as per user request
 }
 
-void ImGuiManager::renderQueuePanel() {
-    int x = SIDEBAR_WIDTH + 10;
-    int y = MENU_BAR_HEIGHT + 10;
-    int w = m_width - SIDEBAR_WIDTH - 20;
-    
-    // Header
-    std::string headerText = "Queue";
-    if (m_queueController) {
-        headerText += " (" + std::to_string(m_queueController->getQueueSize()) + " items)";
-    }
-    drawText(headerText, x, y, m_theme.textPrimary, 20);
-    
-    // Clear Queue Button (if not empty)
-    if (m_queueController && !m_queueController->isEmpty()) {
-        int clearBtnW = 100;
-        if (isMouseOver(x + w - clearBtnW, y, clearBtnW, 25)) {
-            drawRect(x + w - clearBtnW, y, clearBtnW, 25, m_theme.surfaceHover);
-            if (m_mouseClicked) {
-                m_queueController->clearQueue();
-            }
-        } else {
-            drawRect(x + w - clearBtnW, y, clearBtnW, 25, m_theme.surface);
-        }
-        drawText("Clear Queue", x + w - clearBtnW + 10, y + 5, m_theme.textDim, 12);
-    }
-
-    y += 40;
-    
-    // Now Playing section
-    drawText("Now Playing", x, y, m_theme.textSecondary, 14);
-    y += 25;
-    
-    drawRect(x, y, w, 60, m_theme.surface);
-    if (!m_state.currentTrackTitle.empty()) {
-        int npArtSize = 40;
-        drawRect(x + 10, y + 10, npArtSize, npArtSize, m_theme.surfaceHover);
-        drawText("~", x + 23, y + 20, m_theme.textDim, 20); // Placeholder art
-        
-        drawText(m_state.currentTrackTitle, x + 60, y + 12, m_theme.primary, 16);
-        drawText(m_state.currentTrackArtist, x + 60, y + 35, m_theme.textSecondary, 12);
-    } else {
-        drawText("No track playing", x + 20, y + 20, m_theme.textDim, 14);
-    }
-    y += 80;
-    
-    // Up Next section
-    drawText("Up Next", x, y, m_theme.textSecondary, 14);
-    y += 25;
-    
-    if (!m_queueController || m_queueController->isEmpty()) {
-        // Queue is empty message
-        drawRect(x, y, w, 100, m_theme.surface);
-        drawText("Queue is empty", x + 20, y + 40, m_theme.textDim, 14);
-        drawText("Play a song from Library to start", x + 20, y + 60, m_theme.textDim, 12);
-    } else {
-        // Queue List (playback order when shuffle on)
-        auto queueItems = m_queueController->getPlaybackOrderItems();
-        size_t currentLogicalIndex = m_queueController->getCurrentIndex();
-        int listH = m_height - y - PLAYER_BAR_HEIGHT - 20;
-        
-        // Items to display
-        // Calculate visible area for scrolling
-        
-        // Clip rect for list
-        SDL_Rect clipRect = { x, y, w, listH };
-        SDL_RenderSetClipRect(m_renderer, &clipRect);
-        
-        // Scrollable content height
-        // int totalContentH = queueItems.size() * ITEM_HEIGHT;
-        
-        for (size_t i = 0; i < queueItems.size(); i++) {
-            const auto& media = queueItems[i];
-            
-            // Calculate Y with scroll offset
-            int itemY = y + (i * ITEM_HEIGHT) - m_state.queueScrollOffset;
-            
-            // Culling
-            if (itemY + ITEM_HEIGHT < y || itemY > y + listH) continue;
-            
-            bool hover = isMouseOver(x, itemY, w, ITEM_HEIGHT);
-            // Check if mouse inside List Area
-            bool mouseInList = isMouseOver(x, y, w, listH);
-            hover = hover && mouseInList;
-            
-            drawRect(x, itemY, w, ITEM_HEIGHT, hover ? m_theme.surfaceHover : (i % 2 == 0 ? m_theme.background : m_theme.surface));
-            
-            // Context Menu (Right Click)
-            int mx, my;
-            uint32_t buttons = SDL_GetMouseState(&mx, &my);
-            if (hover && mouseInList && (buttons & SDL_BUTTON(SDL_BUTTON_RIGHT))) {
-                 m_state.showContextMenu = true;
-                 m_state.contextMenuX = mx;
-                 m_state.contextMenuY = my;
-                 m_state.contextMediaItem = media;
-                 m_state.contextMenuSource = ui::ContextMenuSource::Queue;
-            }
-            
-            // Index (position in playback order)
-            bool isCurrent = (m_state.isPlaying && static_cast<size_t>(i) == currentLogicalIndex);
-            std::string marker = isCurrent ? "> " : "";
-            drawText(marker + std::to_string(i + 1), x + 10, itemY + 15, m_theme.textDim, 12);
-            
-            // Title
-            std::string title = media.getTitle().empty() ? media.getFileName() : media.getTitle();
-            if (title.length() > 50) title = title.substr(0, 47) + "...";
-            uint32_t titleColor = isCurrent ? m_theme.success : m_theme.textPrimary;
-            drawText(title, x + 40, itemY + 15, titleColor, 14);
-            
-            // Artist
-            std::string artist = media.getArtist();
-            if (artist.length() > 30) artist = artist.substr(0, 27) + "...";
-            if (!artist.empty()) {
-                drawText(artist, x + w / 2, itemY + 15, m_theme.textSecondary, 12);
-            }
-            
-            // Duration
-            int duration = media.getDuration();
-            if (duration > 0) {
-                int mins = duration / 60;
-                int secs = duration % 60;
-                std::string timeStr = std::to_string(mins) + ":" + (secs < 10 ? "0" : "") + std::to_string(secs);
-                drawText(timeStr, x + w - 80, itemY + 15, m_theme.textDim, 12);
-            }
-            
-            // Remove button (right side)
-            int removeBtnX = x + w - 30;
-            if (isMouseOver(removeBtnX, itemY + 5, 20, 20) && mouseInList) {
-                drawText("x", removeBtnX + 6, itemY + 14, m_theme.primaryHover, 14);
-                if (m_mouseClicked && !m_state.showContextMenu && !m_state.showAddToPlaylistDialog && !m_state.showPropertiesDialog) {
-                    m_queueController->removeByPath(media.getFilePath());
-                    break;
-                }
-            } else {
-                if (hover) drawText("x", removeBtnX + 6, itemY + 14, m_theme.textDim, 14);
-            }
-            
-            // Click to Play (Jump to this item)
-            // Left click on item (not remove btn)
-            if (hover && m_mouseClicked && m_mouseX < removeBtnX && !m_state.showContextMenu && !m_state.showAddToPlaylistDialog && !m_state.showPropertiesDialog) {
-                 if (m_playbackController) {
-                     m_playbackController->playItemAt(i);
-                     
-                     // Cập nhật UI state trực tiếp để tránh delay 1 frame
-                     std::string title = media.getTitle().empty() ? media.getFileName() : media.getTitle();
-                     std::string artist = media.getArtist().empty() ? "Unknown Artist" : media.getArtist();
-                     m_state.currentTrackTitle = title;
-                     m_state.currentTrackArtist = artist;
-                     m_state.isPlaying = true;
-                     
-                     m_mouseClicked = false;
-                 }
-            }
-        }
-        
-        SDL_RenderSetClipRect(m_renderer, nullptr);
-    }
-}
-
-void ImGuiManager::renderPlaylistPanel() {
-    int x = SIDEBAR_WIDTH + 10;
-    int y = MENU_BAR_HEIGHT + 10;
-    int w = m_width - SIDEBAR_WIDTH - 20;
-    
-    // Header
-    drawText("Playlists", x, y, m_theme.textPrimary, 20);
-    y += 40;
-    
-    // New Playlist button
-    int btnW = 150;
-    int btnH = 35;
-    bool btnHover = isMouseOver(x, y, btnW, btnH);
-    drawRect(x, y, btnW, btnH, btnHover ? m_theme.primaryHover : m_theme.primary);
-    drawText("+ New Playlist", x + 15, y + 9, m_theme.textPrimary, 14);
-    y += 50;
-    
-    // Playlist list section
-    if (m_state.showCreatePlaylistDialog) {
-        // Dialog Overlay
-        drawRect(x + w/2 - 150, y, 300, 150, m_theme.surface);
-        drawRect(x + w/2 - 150, y, 300, 150, m_theme.border, false); // Border
-        
-        drawText("Create New Playlist", x + w/2 - 130, y + 20, m_theme.textPrimary, 16);
-        
-        // Input box
-        drawRect(x + w/2 - 130, y + 50, 260, 30, m_theme.background);
-        drawText(m_state.newPlaylistName.empty() ? "Enter name..." : m_state.newPlaylistName, 
-                 x + w/2 - 120, y + 58, m_theme.textPrimary, 14);
-        // Cursor
-        if (SDL_GetTicks() % 1000 < 500) {
-            int textW = m_state.newPlaylistName.length() * 8; // Approx width
-            drawRect(x + w/2 - 120 + textW, y + 55, 2, 20, m_theme.textPrimary);
-        }
-        
-        // Buttons
-        // Create
-        bool createHover = isMouseOver(x + w/2 + 20, y + 100, 100, 30);
-        drawRect(x + w/2 + 20, y + 100, 100, 30, createHover ? m_theme.primaryHover : m_theme.primary);
-        drawText("Create", x + w/2 + 45, y + 107, m_theme.textPrimary, 14);
-        if (createHover && m_mouseClicked && !m_state.newPlaylistName.empty() && m_playlistController) {
-            m_playlistController->createPlaylist(m_state.newPlaylistName);
-            m_state.showCreatePlaylistDialog = false;
-            m_state.newPlaylistName.clear();
-            SDL_StopTextInput();
-            m_mouseClicked = false; // Consume click
-        }
-        
-        // Cancel
-        bool cancelHover = isMouseOver(x + w/2 - 120, y + 100, 100, 30);
-        drawRect(x + w/2 - 120, y + 100, 100, 30, cancelHover ? m_theme.surfaceHover : m_theme.surfaceActive);
-        drawText("Cancel", x + w/2 - 95, y + 107, m_theme.textPrimary, 14);
-        if (cancelHover && m_mouseClicked) {
-            m_state.showCreatePlaylistDialog = false;
-            m_state.newPlaylistName.clear();
-            SDL_StopTextInput();
-            m_mouseClicked = false;
-        }
-        
-        return; // Don't match clicks below
-    } else {
-        // Handle "New Playlist" button click from header (simulated here for flow)
-        if (isMouseOver(x, y - 50, 150, 35) && m_mouseClicked) {
-             m_state.showCreatePlaylistDialog = true;
-             SDL_StartTextInput();
-             m_mouseClicked = false;
-        }
-    }
-    
-    if (m_playlistController) {
-        if (!m_state.selectedPlaylistId.empty()) {
-            auto playlistOpt = m_playlistController->getPlaylistById(m_state.selectedPlaylistId);
-            if (!playlistOpt) {
-                m_state.selectedPlaylistId.clear(); // Playlist deleted?
-                return;
-            }
-            const auto& playlist = *playlistOpt;
-            
-            // Header: < Back | Playlist Name | Rename
-            if (isMouseOver(x, y, 60, 30)) {
-                drawRect(x, y, 60, 30, m_theme.surfaceHover);
-                if (m_mouseClicked) {
-                    m_state.selectedPlaylistId.clear();
-                    m_mouseClicked = false;
-                    return;
-                }
-            }
-            drawText("< Back", x + 10, y + 8, m_theme.textPrimary, 14);
-            
-            drawText(playlist.getName(), x + 80, y + 5, m_theme.textPrimary, 20);
-            
-            // Rename Button
-            int renameX = x + w - 80;
-            if (isMouseOver(renameX, y, 80, 30)) {
-                drawRect(renameX, y, 80, 30, m_theme.surfaceHover);
-                if (m_mouseClicked) {
-                    // Trigger rename dialog
-                    m_state.showRenamePlaylistDialog = true;
-                    m_state.renamePlaylistId = playlist.getId();
-                    m_state.renamePlaylistName = playlist.getName();
-                    SDL_StartTextInput();
-                    m_mouseClicked = false;
-                }
-            }
-            drawText("Rename", renameX + 15, y + 8, m_theme.textPrimary, 12);
-            
-            y += 50;
-            
-            // List Items
-            const auto& items = playlist.getItems();
-            if (items.empty()) {
-                drawText("Playlist is empty. Add songs from Library.", x, y + 20, m_theme.textDim, 14);
-            }
-            
-            int itemY = y;
-            for (size_t i = 0; i < items.size(); ++i) {
-                if (itemY > m_height - PLAYER_BAR_HEIGHT - 40) break; // Clip
-                const auto& media = items[i];
-                
-                bool hover = isMouseOver(x, itemY, w, ITEM_HEIGHT);
-                bool fileExists = std::filesystem::exists(media.getFilePath());
-                uint32_t bg = (i % 2 == 0) ? m_theme.background : m_theme.surface;
-                if (hover) bg = m_theme.surfaceHover;
-                
-                drawRect(x, itemY, w, ITEM_HEIGHT, bg);
-                
-                drawText(std::to_string(i+1) + ".", x + 10, itemY + 15, m_theme.textSecondary, 12);
-                
-                std::string title = media.getTitle().empty() ? media.getFileName() : media.getTitle();
-                if (!fileExists) title += " (file not found)";
-                if (title.length() > 40) title = title.substr(0, 37) + "...";
-                uint32_t titleColor = fileExists ? m_theme.textPrimary : m_theme.textDim;
-                drawText(title, x + 40, itemY + 15, titleColor, 14);
-                
-                // Context Menu (Right Click)
-                int mx, my;
-                uint32_t buttons = SDL_GetMouseState(&mx, &my);
-                if (hover && (buttons & SDL_BUTTON(SDL_BUTTON_RIGHT))) {
-                     m_state.showContextMenu = true;
-                     m_state.contextMenuX = mx;
-                     m_state.contextMenuY = my;
-                     m_state.contextMediaItem = media;
-                     m_state.contextMenuSource = ui::ContextMenuSource::Playlist;
-                }
-
-                // Play Button (Double click or icon?)
-                // Click to play (Left Click)
-                if (hover && m_mouseClicked && !m_state.showContextMenu && !m_state.showAddToPlaylistDialog && !m_state.showPropertiesDialog && !m_state.showRenamePlaylistDialog && m_mouseX < x + w - 40 && !(buttons & SDL_BUTTON(SDL_BUTTON_RIGHT))) {
-                    // Check if file exists before attempting to play
-                    if (fileExists) {
-                        // Play this item OR play whole playlist starting here?
-                        // Standard logic: Play playlist starting at index.
-                        // Need QueueController->addPlaylistToQueue(playlist) then play index?
-                        // Or Replace Queue with Playlist?
-                        // Let's just Add item to queue and play for now.
-                        if (m_queueController && m_playbackController) {
-                            // Clear queue and play playlist? Or just append?
-                            // Usually "Play Playlist" replaces queue.
-                            m_queueController->clearQueue();
-                            m_queueController->addPlaylistToQueue(playlist);
-                            m_queueController->jumpToIndex(i); 
-                            m_playbackController->play(); 
-                        }
-                    }
-                    // File doesn't exist - do nothing (visual feedback already shown)
-                    m_mouseClicked = false;
-                }
-                
-                // Remove Button
-                int remX = x + w - 30;
-                if (isMouseOver(remX, itemY + 5, 20, 20)) {
-                    drawText("x", remX + 6, itemY + 14, m_theme.error, 14);
-                    if (m_mouseClicked && !m_state.showContextMenu && !m_state.showAddToPlaylistDialog && !m_state.showRenamePlaylistDialog) {
-                        m_playlistController->removeMediaFromPlaylist(playlist.getId(), i);
-                        break; // List modified
-                    }
-                } else if (hover) {
-                    drawText("x", remX + 6, itemY + 14, m_theme.textDim, 14);
-                }
-                
-                itemY += ITEM_HEIGHT;
-            }
-            
-        } else {
-            // LIST VIEW
-            auto playlists = m_playlistController->getAllPlaylists();
-            
-            int itemY = y;
-            for (const auto& playlist : playlists) {
-                bool hover = isMouseOver(x, itemY, w, ITEM_HEIGHT);
-                
-                drawRect(x, itemY, w, ITEM_HEIGHT, hover ? m_theme.surfaceHover : m_theme.surface);
-                drawText("#", x + 15, itemY + 15, m_theme.primary, 14);
-                drawText(playlist.getName(), x + 40, itemY + 15, m_theme.textPrimary, 14);
-                
-                std::string countStr = std::to_string(playlist.getItemCount()) + " tracks";
-                drawText(countStr, x + w - 100, itemY + 15, m_theme.textDim, 12);
-                
-                // Click to Enter Detail View (if not clicking delete)
-                if (hover && m_mouseClicked && m_mouseX < x + w - 40) {
-                    m_state.selectedPlaylistId = playlist.getId();
-                    m_mouseClicked = false;
-                }
-                
-                // Delete button
-                int delX = x + w - 30;
-                if (isMouseOver(delX, itemY + 5, 20, 20)) {
-                     drawText("x", delX + 6, itemY + 14, m_theme.primaryHover, 14);
-                     if (m_mouseClicked) {
-                         m_playlistController->deletePlaylist(playlist.getId());
-                         break; // Modifying list
-                     }
-                } else {
-                     if (hover) drawText("x", delX + 6, itemY + 14, m_theme.textDim, 14);
-                }
-                
-                itemY += ITEM_HEIGHT + 5;
-            }
-        }
-    }
-}
-
-void ImGuiManager::renderHistoryPanel() {
-    int x = SIDEBAR_WIDTH + 10;
-    int y = MENU_BAR_HEIGHT + 10;
-    int w = m_width - SIDEBAR_WIDTH - 20;
-    
-    // Header
-    drawText("History", x, y, m_theme.textPrimary, 20);
-    y += 40;
-    
-    // Recently Played section
-    drawText("Recently Played", x, y, m_theme.textSecondary, 14);
-    y += 25;
-    
-    // Check if we have history
-    if (m_state.currentTrackTitle.empty()) {
-        drawRect(x, y, w, 100, m_theme.surface);
-        drawText("No playback history yet", x + 20, y + 40, m_theme.textDim, 14);
-        drawText("Play some tracks to see them here", x + 20, y + 60, m_theme.textDim, 12);
-    } else {
-        // Show current/last played track
-        drawRect(x, y, w, 60, m_theme.surface);
-        drawText(">", x + 15, y + 18, m_theme.success, 18);
-        drawText(m_state.currentTrackTitle, x + 50, y + 12, m_theme.textPrimary, 16);
-        drawText(m_state.currentTrackArtist, x + 50, y + 35, m_theme.textSecondary, 12);
-        drawText("Now Playing", x + w - 100, y + 20, m_theme.success, 12);
-        y += 70;
-    }
-    
-    // History List (with scroll - supports up to 100 items)
-    if (!m_historyList.empty()) {
-        int listAreaH = m_height - MENU_BAR_HEIGHT - PLAYER_BAR_HEIGHT - y - 20;
-        int maxScroll = std::max(0, static_cast<int>(m_historyList.size() * ITEM_HEIGHT) - listAreaH);
-        if (m_state.historyScrollOffset > maxScroll) m_state.historyScrollOffset = maxScroll;
-        
-        SDL_Rect listClip = {x, y, w, listAreaH};
-        SDL_RenderSetClipRect(m_renderer, &listClip);
-        
-        int itemY = y - m_state.historyScrollOffset;
-        int index = 0;
-        
-        for (const auto& entry : m_historyList) {
-            if (itemY + ITEM_HEIGHT < y || itemY > m_height - PLAYER_BAR_HEIGHT - 20) {
-                itemY += ITEM_HEIGHT;
-                index++;
-                continue;
-            }
-            
-            bool mouseInList = isMouseOver(x, y, w, listAreaH);
-            bool hover = mouseInList && isMouseOver(x, itemY, w, ITEM_HEIGHT);
-             
-             // Alternating background
-            uint32_t bg = (index % 2 == 0) ? m_theme.background : m_theme.surface;
-            if (hover) bg = m_theme.surfaceHover;
-            
-            drawRect(x, itemY, w, ITEM_HEIGHT, bg);
-            
-            // Serial number (1-based)
-            drawText(std::to_string(index + 1), x + 15, itemY + 15, m_theme.textDim, 14);
-            
-            bool fileExists = std::filesystem::exists(entry.media.getFilePath());
-            std::string title = entry.media.getTitle().empty() ? entry.media.getFileName() : entry.media.getTitle();
-            if (!fileExists) title += " (file not found)";
-            if (title.length() > 50) title = title.substr(0, 47) + "...";
-            uint32_t titleColor = fileExists ? m_theme.textPrimary : m_theme.textDim;
-            drawText(title, x + 50, itemY + 15, titleColor, 14);
-            
-            std::string artist = entry.media.getArtist();
-            if (!artist.empty()) drawText(artist, x + w / 2, itemY + 15, fileExists ? m_theme.textSecondary : m_theme.textDim, 14);
-            
-            // Context Menu (Right Click)
-            int mx, my;
-            uint32_t buttons = SDL_GetMouseState(&mx, &my);
-            if (hover && (buttons & SDL_BUTTON(SDL_BUTTON_RIGHT))) {
-                 m_state.showContextMenu = true;
-                 m_state.contextMenuX = mx;
-                 m_state.contextMenuY = my;
-                 m_state.contextMediaItem = entry.media;
-                 m_state.contextMenuSource = ui::ContextMenuSource::Queue;
-            }
-            
-            // Click to Play (Left Click only)
-             if (hover && m_mouseClicked && !m_state.showContextMenu && !m_state.showAddToPlaylistDialog && !m_state.showPropertiesDialog && m_queueController && m_playbackController && !(buttons & SDL_BUTTON(SDL_BUTTON_RIGHT))) {
-                m_queueController->addToQueue(entry.media);
-                // Play the newly added item (at the end)
-                if (m_queueController->getQueueSize() > 0) {
-                     size_t newIndex = m_queueController->getQueueSize() - 1;
-                     m_playbackController->playItemAt(newIndex);
-                }
-                 m_mouseClicked = false;
-             }
-
-            itemY += ITEM_HEIGHT;
-            index++;
-        }
-        
-        SDL_RenderSetClipRect(m_renderer, nullptr);
-    } else {
-        drawText("No history available.", x, y + 20, m_theme.textDim, 14);
-    }
-}
-
 void ImGuiManager::renderScanProgress(const std::string& path, int current, int total) {
     int boxW = 450;
     int boxH = 170;
@@ -1669,9 +891,9 @@ void ImGuiManager::setMediaList(const std::vector<models::MediaFileModel>* media
     m_mediaList = mediaList;
 }
 
-void ImGuiManager::setHistoryList(const std::vector<repositories::PlaybackHistoryEntry>& historyList) {
-    m_historyList = historyList;
-}
+
+// Helper for color unpacking
+
 
 // Drawing helpers
 
@@ -1878,6 +1100,7 @@ void ImGuiManager::renderOverlays() {
     if (m_state.showContextMenu) {
         int menuW = 150;
         int menuH = 140; // 4 items (35 each)
+        if (menuH < 175) menuH = 175; // Increase height for extra options
         
         // Draw Menu Background
         drawRect(m_state.contextMenuX, m_state.contextMenuY, menuW, menuH, m_theme.surfaceHover);
@@ -1891,10 +1114,10 @@ void ImGuiManager::renderOverlays() {
         if (isSupported) {
             if (isMouseOver(m_state.contextMenuX, y, menuW, 35)) {
                 drawRect(m_state.contextMenuX, y, menuW, 35, m_theme.primary);
-                if (m_mouseClicked) {
+                if (m_modalMouseClicked) {
                     m_state.showContextMenu = false;
                     m_state.showAddToPlaylistDialog = true;
-                    m_mouseClicked = false;
+                    m_modalMouseClicked = false;
                 }
             }
             drawText("Add to Playlist", m_state.contextMenuX + 10, y + 8, m_theme.textPrimary, 14);
@@ -1905,12 +1128,12 @@ void ImGuiManager::renderOverlays() {
         if (isSupported) {
             if (isMouseOver(m_state.contextMenuX, y, menuW, 35)) {
                 drawRect(m_state.contextMenuX, y, menuW, 35, m_theme.primary);
-                if (m_mouseClicked) {
+                if (m_modalMouseClicked) {
                      if (m_queueController) {
                         m_queueController->addToQueue(m_state.contextMediaItem);
                      }
                     m_state.showContextMenu = false;
-                    m_mouseClicked = false;
+                    m_modalMouseClicked = false;
                 }
             }
             drawText("Add to Queue", m_state.contextMenuX + 10, y + 8, m_theme.textPrimary, 14);
@@ -1921,12 +1144,12 @@ void ImGuiManager::renderOverlays() {
         if (isSupported) {
             if (isMouseOver(m_state.contextMenuX, y, menuW, 35)) {
                 drawRect(m_state.contextMenuX, y, menuW, 35, m_theme.primary);
-                if (m_mouseClicked) {
+                if (m_modalMouseClicked) {
                      if (m_queueController) {
                         m_queueController->addToQueueNext(m_state.contextMediaItem);
                      }
                     m_state.showContextMenu = false;
-                    m_mouseClicked = false;
+                    m_modalMouseClicked = false;
                 }
             }
             drawText("Play Next", m_state.contextMenuX + 10, y + 8, m_theme.textPrimary, 14);
@@ -1936,7 +1159,7 @@ void ImGuiManager::renderOverlays() {
         // Item 4: Properties
         if (isMouseOver(m_state.contextMenuX, y, menuW, 35)) {
             drawRect(m_state.contextMenuX, y, menuW, 35, m_theme.primary);
-            if (m_mouseClicked) {
+            if (m_modalMouseClicked) {
                 m_state.showContextMenu = false;
                 m_state.showPropertiesDialog = true;
                 const auto& media = m_state.contextMediaItem;
@@ -1975,14 +1198,70 @@ void ImGuiManager::renderOverlays() {
                         if (meta->getBitrate() > 0) m_state.metadataEdit.bitrateStr = std::to_string(meta->getBitrate()) + " kbps";
                     }
                 }
-                m_mouseClicked = false;
+                m_modalMouseClicked = false;
             }
         }
         drawText("Properties", m_state.contextMenuX + 10, y + 8, m_theme.textPrimary, 14);
+        y += 35;
+
+        // Item 5: Remove (Context Specific)
+        if (m_state.contextMenuSource == ContextMenuSource::Queue) {
+             if (isMouseOver(m_state.contextMenuX, y, menuW, 35)) {
+                drawRect(m_state.contextMenuX, y, menuW, 35, m_theme.error); // Red for delete
+                if (m_modalMouseClicked) {
+                     if (m_queueController) {
+                        m_queueController->removeByPath(m_state.contextMediaItem.getFilePath());
+                     }
+                    m_state.showContextMenu = false;
+                    m_modalMouseClicked = false;
+                }
+            }
+            drawText("Remove from Queue", m_state.contextMenuX + 10, y + 8, m_theme.textPrimary, 14);
+        } else if (m_state.contextMenuSource == ContextMenuSource::Playlist) {
+             // For Playlist, we need to know WHICH playlist.
+             // ImGuiManager doesn't track "current context playlist ID" in UIState specifically, 
+             // but PlaylistScreen usually sets m_selectedPlaylistId.
+             // However, context menu is global. 
+             // Let's rely on m_state.selectedPlaylistId if available.
+             if (!m_state.selectedPlaylistId.empty()) {
+                 if (isMouseOver(m_state.contextMenuX, y, menuW, 35)) {
+                    drawRect(m_state.contextMenuX, y, menuW, 35, m_theme.error);
+                    if (m_modalMouseClicked) {
+                         if (m_playlistController) {
+                            // Removing by Media Item is ambiguous if duplicates were allowed,
+                            // but we just prevented duplicates in Queue.
+                            // For Playlist, we might need index?
+                            // m_playlistController->removeMediaFromPlaylist takes index. 
+                            // Oof. We only have the MediaFileModel.
+                            // Let's try to remove by ID/File. 
+                            // PlaylistController needs a removeMediaByPath or similiar?
+                            // Checked PlaylistController... only removeMediaFromPlaylist(id, index).
+                            // We need to find the index of this item in the playlist.
+                            // This is expensive but necessary here without refactoring context menu to pass index.
+                            // Actually, m_state.selectedContextItemIndex WAS legacy but we can use it?
+                            // Let's assume the view sets m_state.selectedContextItemIndex correctly!
+                            // QueuePanel used to set it? 
+                            // Let's check QueuePanel... it sets state.contextMediaItem.
+                            // Let's update PlaylistScreen to set selectedContextItemIndex when opening context menu.
+                            
+                            // For now, let's assume we implement "removeMediaFromPlaylist(id, media)" or use index if available.
+                            // Let's stick to using m_state.selectedContextItemIndex if >= 0.
+                            if (m_state.selectedContextItemIndex >= 0) {
+                                m_playlistController->removeMediaFromPlaylist(m_state.selectedPlaylistId, m_state.selectedContextItemIndex);
+                            }
+                         }
+                        m_state.showContextMenu = false;
+                        m_modalMouseClicked = false;
+                    }
+                }
+                drawText("Remove from Playlist", m_state.contextMenuX + 10, y + 8, m_theme.textPrimary, 14);
+             }
+        }
         
         // Close if clicked outside
-        if (m_mouseClicked && !isMouseOver(m_state.contextMenuX, m_state.contextMenuY, menuW, menuH)) {
+        if (m_modalMouseClicked && !isMouseOver(m_state.contextMenuX, m_state.contextMenuY, menuW, menuH)) {
             m_state.showContextMenu = false;
+            m_modalMouseClicked = false;
         }
     }
     
@@ -2008,11 +1287,11 @@ void ImGuiManager::renderOverlays() {
                 
                 if (isMouseOver(x + 20, listY, dlgW - 40, 30)) {
                     drawRect(x + 20, listY, dlgW - 40, 30, m_theme.surfaceHover);
-                    if (m_mouseClicked) {
+                    if (m_modalMouseClicked) {
                         // Add to this playlist
                          m_playlistController->addMediaToPlaylist(pl.getId(), m_state.contextMediaItem);
                         m_state.showAddToPlaylistDialog = false;
-                        m_mouseClicked = false;
+                        m_modalMouseClicked = false;
                     }
                 }
                 drawText(pl.getName(), x + 30, listY + 6, m_theme.textPrimary, 14);
@@ -2023,9 +1302,9 @@ void ImGuiManager::renderOverlays() {
         // Cancel Button
         if (isMouseOver(x + dlgW - 100, y + dlgH - 40, 80, 30)) {
              drawRect(x + dlgW - 100, y + dlgH - 40, 80, 30, m_theme.surfaceActive);
-             if (m_mouseClicked) {
+             if (m_modalMouseClicked) {
                  m_state.showAddToPlaylistDialog = false;
-                 m_mouseClicked = false;
+                 m_modalMouseClicked = false;
              }
         } else {
              drawRect(x + dlgW - 100, y + dlgH - 40, 80, 30, m_theme.surfaceHover);
@@ -2076,9 +1355,9 @@ void ImGuiManager::renderOverlays() {
         int closeY = y + dlgH - 40;
         if (isMouseOver(x + dlgW - 100, closeY, 80, 30)) {
              drawRect(x + dlgW - 100, closeY, 80, 30, m_theme.surfaceActive);
-             if (m_mouseClicked) {
+             if (m_modalMouseClicked) {
                  m_state.showPropertiesDialog = false;
-                 m_mouseClicked = false;
+                 m_modalMouseClicked = false;
              }
         } else {
              drawRect(x + dlgW - 100, closeY, 80, 30, m_theme.surfaceHover);
@@ -2110,13 +1389,13 @@ void ImGuiManager::renderOverlays() {
         // Save Button
         if (isMouseOver(x + dlgW - 180, y + dlgH - 40, 70, 30)) {
              drawRect(x + dlgW - 180, y + dlgH - 40, 70, 30, m_theme.primary);
-             if (m_mouseClicked) {
+             if (m_modalMouseClicked) {
                  if (!m_state.renamePlaylistName.empty() && m_playlistController) {
                      m_playlistController->renamePlaylist(m_state.renamePlaylistId, m_state.renamePlaylistName);
                  }
                  m_state.showRenamePlaylistDialog = false;
                  SDL_StopTextInput();
-                 m_mouseClicked = false;
+                 m_modalMouseClicked = false;
              }
         }
         drawText("Save", x + dlgW - 160, y + dlgH - 33, m_theme.textPrimary, 14);
@@ -2124,27 +1403,17 @@ void ImGuiManager::renderOverlays() {
         // Cancel Button - always draw background
         bool cancelHover = isMouseOver(x + dlgW - 100, y + dlgH - 40, 70, 30);
         drawRect(x + dlgW - 100, y + dlgH - 40, 70, 30, cancelHover ? m_theme.surfaceActive : m_theme.surfaceHover);
-        if (cancelHover && m_mouseClicked) {
+        if (cancelHover && m_modalMouseClicked) {
             m_state.showRenamePlaylistDialog = false;
             m_state.renamePlaylistName.clear();
             SDL_StopTextInput();
-            m_mouseClicked = false;
+            m_modalMouseClicked = false;
         }
         drawText("Cancel", x + dlgW - 90, y + dlgH - 33, m_theme.textPrimary, 14);
     }
 }
 
-bool ImGuiManager::isMouseOver(int x, int y, int w, int h) const {
-    return m_mouseX >= x && m_mouseX < x + w && m_mouseY >= y && m_mouseY < y + h;
-}
-
-bool ImGuiManager::isMouseClicked(int x, int y, int w, int h) const {
-    return m_mouseClicked && isMouseOver(x, y, w, h);
-}
-
-bool ImGuiManager::isMouseDragging() const {
-    return m_mouseDown;
-}
 
 } // namespace ui
 } // namespace media_player
+

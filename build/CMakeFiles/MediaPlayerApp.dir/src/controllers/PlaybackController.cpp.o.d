@@ -361,4 +361,5 @@ CMakeFiles/MediaPlayerApp.dir/src/controllers/PlaybackController.cpp.o: \
  /usr/include/c++/13/bits/deque.tcc \
  /home/duong/MediaPlayerApp/inc/utils/Observer.h \
  /usr/include/c++/13/algorithm \
- /usr/include/c++/13/pstl/glue_algorithm_defs.h
+ /usr/include/c++/13/pstl/glue_algorithm_defs.h \
+ /usr/include/c++/13/iostream

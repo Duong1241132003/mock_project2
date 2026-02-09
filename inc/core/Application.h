@@ -15,6 +15,7 @@
 #include "views/LibraryScreen.h"
 #include "views/PlaylistScreen.h"
 #include "views/QueuePanel.h"
+#include "views/HistoryScreen.h"
 #include "views/NowPlayingBar.h"
 #include "models/LibraryModel.h"
 #include "models/PlaybackStateModel.h"
@@ -91,6 +92,7 @@ private:
     std::unique_ptr<views::LibraryScreen> m_libraryScreen;
     std::unique_ptr<views::PlaylistScreen> m_playlistScreen;
     std::unique_ptr<views::QueuePanel> m_queuePanel;
+    std::unique_ptr<views::HistoryScreen> m_historyScreen;
     
     // UI state
     int m_selectedIndex = 0;

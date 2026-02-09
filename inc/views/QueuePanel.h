@@ -6,6 +6,7 @@
 
 // Project includes
 #include "IView.h"
+#include "controllers/PlaybackController.h"
 #include "controllers/QueueController.h"
 #include "models/QueueModel.h"
 
@@ -19,6 +20,7 @@ class QueuePanel : public IView
 public:
     QueuePanel(
         std::shared_ptr<controllers::QueueController> queueController,
+        std::shared_ptr<controllers::PlaybackController> playbackController,
         std::shared_ptr<models::QueueModel> queueModel
     );
     
@@ -29,6 +31,10 @@ public:
     void hide() override;
     void update() override;
     bool isVisible() const override;
+    
+    // Rendering
+    void render(ui::ImGuiManager& painter) override;
+    bool handleInput(const SDL_Event& event) override;
     
     // Queue actions
     void removeSelectedItem();
@@ -45,9 +51,12 @@ private:
     void displayQueue();
     
     std::shared_ptr<controllers::QueueController> m_queueController;
+    std::shared_ptr<controllers::PlaybackController> m_playbackController;
     std::shared_ptr<models::QueueModel> m_queueModel;
     
     bool m_isVisible;
+    int m_scrollOffset;
+    int m_selectedIndex = -1;
 };
 
 } // namespace views

@@ -17,11 +17,22 @@ QueueController::~QueueController()
 
 void QueueController::addToQueue(const models::MediaFileModel& media) 
 {
+    // Check for duplicates
+    for (const auto& item : m_queueModel->getAllItems()) {
+        if (item.getFilePath() == media.getFilePath()) {
+            return; // Already in queue
+        }
+    }
     m_queueModel->addToEnd(media);
 }
 
 void QueueController::addToQueueNext(const models::MediaFileModel& media) 
 {
+    for (const auto& item : m_queueModel->getAllItems()) {
+        if (item.getFilePath() == media.getFilePath()) {
+            return; 
+        }
+    }
     m_queueModel->addNext(media);
 }
 
@@ -39,7 +50,16 @@ void QueueController::addMultipleToQueue(const std::vector<models::MediaFileMode
 {
     for (const auto& media : mediaList) 
     {
-        m_queueModel->addToEnd(media);
+        bool exists = false;
+        for (const auto& item : m_queueModel->getAllItems()) {
+            if (item.getFilePath() == media.getFilePath()) {
+                exists = true;
+                break;
+            }
+        }
+        if (!exists) {
+            m_queueModel->addToEnd(media);
+        }
     }
 }
 

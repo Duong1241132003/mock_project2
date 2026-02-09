@@ -11,23 +11,23 @@
 #include <vector>
 #include <memory>
 #include <optional>
+#include <map> // Added for view registration
 
 #include "repositories/HistoryRepository.h"
 #include "models/MediaFileModel.h"
 #include "models/MetadataModel.h"
 
 // Forward declarations
-struct ImGuiContext;
-
-namespace media_player 
-{
-
-// Forward declarations
+namespace media_player { 
 namespace controllers { 
     class PlaybackController; 
     class QueueController;
     class LibraryController;
     class PlaylistController;
+}
+
+namespace views {
+    class IView;
 }
 
 namespace ui 
@@ -202,11 +202,7 @@ public:
     // Components
     void renderMenuBar();
     void renderSidebar();
-    void renderLibraryPanel();
     void renderPlayerBar();
-    void renderQueuePanel();
-    void renderPlaylistPanel();
-    void renderHistoryPanel();
     void renderScanProgress(const std::string& path, int current, int total);
     void renderPathInputScreen(const std::string& currentPathPlaceholder);
     void renderOverlays();
@@ -225,7 +221,6 @@ public:
     int getWidth() const { return m_width; }
 
     int getHeight() const { return m_height; }
-    size_t getHistoryListSize() const { return m_historyList.size(); }
     
     // Controllers (set by Application)
     void setControllers(
@@ -237,7 +232,6 @@ public:
     
     // Media list (set by Application)
     void setMediaList(const std::vector<models::MediaFileModel>* mediaList);
-    void setHistoryList(const std::vector<repositories::PlaybackHistoryEntry>& historyList);
     
     // Callbacks
     using PlayCallback = std::function<void(int index)>;
@@ -260,8 +254,11 @@ public:
     using CancelScanCallback = std::function<void()>;
     void setOnCancelScan(CancelScanCallback cb) { m_onCancelScan = std::move(cb); }
     
-private:
-    // Rendering helpers
+    // View Registration
+    void registerView(NavTab tab, views::IView* view);
+
+public:
+    // Rendering helpers (Make PUBLIC for Views to use)
     void drawRect(int x, int y, int w, int h, uint32_t color, bool filled = true);
     void drawRoundedRect(int x, int y, int w, int h, int radius, uint32_t color, bool filled = true);
     void drawText(const std::string& text, int x, int y, uint32_t color, int fontSize = 16);
@@ -270,10 +267,36 @@ private:
     void drawButton(const std::string& label, int x, int y, int w, int h, bool active = false);
     void drawSlider(float* value, int x, int y, int w, int h);
     
-    // Hit testing
-    bool isMouseOver(int x, int y, int w, int h) const;
-    bool isMouseClicked(int x, int y, int w, int h) const;
-    bool isMouseDragging() const;
+    // Hit testing (Make PUBLIC)
+    bool isMouseOver(int x, int y, int w, int h) const {
+        return m_mouseX >= x && m_mouseX < x + w && m_mouseY >= y && m_mouseY < y + h;
+    }
+    
+    bool isMouseClicked(int x, int y, int w, int h) const {
+        return m_mouseClicked && isMouseOver(x, y, w, h);
+    }
+
+    bool isLeftMouseClicked(int x, int y, int w, int h) const {
+        return m_leftMouseClicked && isMouseOver(x, y, w, h);
+    }
+
+    bool isRightMouseClicked(int x, int y, int w, int h) const {
+        return m_rightMouseClicked && isMouseOver(x, y, w, h);
+    }
+    
+    bool isModalMouseClicked() const { return m_modalMouseClicked; }
+    void consumeClick() { 
+        m_mouseClicked = false; 
+        m_leftMouseClicked = false;
+        m_rightMouseClicked = false;
+    }
+    
+    // Theme access
+    const Theme& getTheme() const { return m_theme; }
+
+private:
+    bool m_mouseDragging = false;
+
     
     // SDL resources
     SDL_Window* m_window = nullptr;
@@ -291,6 +314,8 @@ private:
     int m_mouseY = 0;
     bool m_mouseDown = false;
     bool m_mouseClicked = false;
+    bool m_leftMouseClicked = false;
+    bool m_rightMouseClicked = false;
     bool m_modalMouseClicked = false; // True when modal dialog consumes click
     int m_dragStartX = 0;
     int m_dragStartY = 0;
@@ -301,7 +326,6 @@ private:
     
     // Data references
     const std::vector<models::MediaFileModel>* m_mediaList = nullptr;
-    std::vector<repositories::PlaybackHistoryEntry> m_historyList;
     
     // Controllers
     std::shared_ptr<controllers::PlaybackController> m_playbackController;
@@ -324,7 +348,16 @@ private:
     static constexpr int SIDEBAR_WIDTH = 200;
     static constexpr int PLAYER_BAR_HEIGHT = 90;
     static constexpr int MENU_BAR_HEIGHT = 30;
-    static constexpr int ITEM_HEIGHT = 50;
+    static constexpr int ITEM_HEIGHT = 50; // Keep protected/private if views don't need it or make public getter?
+                                           // actually Views will need layout constants. Let's make them public static or just access via getters.
+
+public:
+    static constexpr int GetSidebarWidth() { return SIDEBAR_WIDTH; }
+    static constexpr int GetPlayerBarHeight() { return PLAYER_BAR_HEIGHT; }
+    static constexpr int GetMenuBarHeight() { return MENU_BAR_HEIGHT; }
+    
+private:
+    std::map<NavTab, views::IView*> m_views;
 };
 
 } // namespace ui

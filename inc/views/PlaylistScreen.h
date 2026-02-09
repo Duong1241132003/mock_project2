@@ -9,6 +9,8 @@
 // Project includes
 #include "IView.h"
 #include "controllers/PlaylistController.h"
+#include "controllers/PlaybackController.h"
+#include "controllers/QueueController.h"
 #include "models/PlaylistModel.h"
 
 namespace media_player 
@@ -19,8 +21,12 @@ namespace views
 class PlaylistScreen : public IView 
 {
 public:
-    explicit PlaylistScreen(std::shared_ptr<controllers::PlaylistController> playlistController);
-    ~PlaylistScreen();
+    PlaylistScreen(
+        std::shared_ptr<controllers::PlaylistController> playlistController,
+        std::shared_ptr<controllers::PlaybackController> playbackController,
+        std::shared_ptr<controllers::QueueController> queueController
+    );
+    ~PlaylistScreen() override;
     
     // IView interface
     void show() override;
@@ -28,29 +34,31 @@ public:
     void update() override;
     bool isVisible() const override;
     
-    // Playlist management
-    void createNewPlaylist(const std::string& name);
-    void deleteSelectedPlaylist();
-    void renameSelectedPlaylist(const std::string& newName);
+    // Rendering
+    void render(ui::ImGuiManager& painter) override;
+    bool handleInput(const SDL_Event& event) override;
     
-    // Playlist selection
-    void selectPlaylist(size_t index);
-    void viewPlaylistDetails();
-    
-    // Actions
-    void playPlaylist();
-    void addPlaylistToQueue();
+    // Actions - handled internally or via inputs
     
 private:
     void refreshPlaylistList();
-    void displayPlaylists();
     
     std::shared_ptr<controllers::PlaylistController> m_playlistController;
+    std::shared_ptr<controllers::PlaybackController> m_playbackController;
+    std::shared_ptr<controllers::QueueController> m_queueController; // Added
     
     std::vector<models::PlaylistModel> m_playlists;
-    int m_selectedPlaylistIndex;
+    std::string m_selectedPlaylistId; // Replaces index for robust selection
     
     bool m_isVisible;
+    
+    // UI State
+    bool m_showCreateDialog;
+    std::string m_newPlaylistName;
+    
+    bool m_showRenameDialog;
+    std::string m_renamePlaylistId;
+    std::string m_renamePlaylistName;
 };
 
 } // namespace views

@@ -1,5 +1,6 @@
 // Project includes
 #include "controllers/PlaybackController.h"
+#include <iostream>
 
 namespace media_player 
 {
@@ -231,10 +232,10 @@ bool PlaybackController::playPrevious()
     int position = m_playbackStateModel->getCurrentPosition();
     bool hasCurrent = (currentItem && !m_playbackStateModel->getCurrentFilePath().empty());
     
-    // First press (position > threshold): replay current (seek to 0) and remove it from history
     bool canReplay = hasCurrent && (isPlaying() || isPaused()) && (position > REWIND_THRESHOLD_SEC);
     if (canReplay)
     {
+        // Replay current and remove it from history (it was just added)
         if (m_historyRepo && currentItem)
             m_historyRepo->removeMostRecentEntryByFilePath(currentItem->getFilePath());
         return m_currentEngine ? m_currentEngine->seek(0) : false;
@@ -246,10 +247,12 @@ bool PlaybackController::playPrevious()
     {
         std::optional<repositories::PlaybackHistoryEntry> prevPlayed = m_historyRepo->getPlayedBefore(currentPath);
         if (!prevPlayed && !currentPath.empty())
-            prevPlayed = m_historyRepo->getLastPlayed(); // current was removed from history, so last in history is the previous
+            prevPlayed = m_historyRepo->getLastPlayed(); // current was removed from history or not passed, so last in history is the previous
         if (prevPlayed && std::filesystem::exists(prevPlayed->media.getFilePath()))
         {
+            // Remove from history - we are going "back" to it
             m_historyRepo->removeMostRecentEntryByFilePath(prevPlayed->media.getFilePath());
+            
             // Play directly without touching queue - when done, onFinished will resume queue
             cleanupCurrentEngine();
             if (!selectAndLoadEngine(prevPlayed->media))
@@ -290,6 +293,7 @@ bool PlaybackController::playItemAt(size_t index)
     }
     
     cleanupCurrentEngine();
+    std::cout << "[PlaybackController] playItemAt(" << index << ") calling play()" << std::endl;
     return play();
 }
 

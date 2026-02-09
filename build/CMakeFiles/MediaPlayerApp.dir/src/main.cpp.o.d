@@ -390,10 +390,11 @@ CMakeFiles/MediaPlayerApp.dir/src/main.cpp.o: \
  /home/duong/MediaPlayerApp/inc/views/LibraryScreen.h \
  /home/duong/MediaPlayerApp/inc/controllers/LibraryController.h \
  /home/duong/MediaPlayerApp/inc/controllers/QueueController.h \
- /home/duong/MediaPlayerApp/inc/views/PlaylistScreen.h \
- /home/duong/MediaPlayerApp/inc/controllers/PlaylistController.h \
- /home/duong/MediaPlayerApp/inc/views/QueuePanel.h \
- /home/duong/MediaPlayerApp/inc/views/NowPlayingBar.h \
  /home/duong/MediaPlayerApp/inc/controllers/PlaybackController.h \
+ /home/duong/MediaPlayerApp/inc/controllers/PlaylistController.h \
+ /home/duong/MediaPlayerApp/inc/views/PlaylistScreen.h \
+ /home/duong/MediaPlayerApp/inc/views/QueuePanel.h \
+ /home/duong/MediaPlayerApp/inc/views/HistoryScreen.h \
+ /home/duong/MediaPlayerApp/inc/views/NowPlayingBar.h \
  /home/duong/MediaPlayerApp/inc/ui/ImGuiManager.h \
  /usr/include/SDL2/SDL_ttf.h /usr/include/SDL2/SDL.h
