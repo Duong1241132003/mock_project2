@@ -60,7 +60,7 @@ bool SerialCommunication::open(const std::string& portName, int baudRate)
 
     if (::access(portName.c_str(), R_OK | W_OK) != 0)
     {
-        const int accessError = errno;
+        // const int accessError = errno; // Unused
         notifyError("Serial port permission denied");
         return false;
     }
@@ -130,6 +130,12 @@ bool SerialCommunication::open(const std::string& portName, int baudRate)
     
     m_isOpen = true;
     m_shouldStop = false;
+    
+    // Clean up old thread if it exists (e.g. from previous auto-disconnect)
+    if (m_readThread && m_readThread->joinable())
+    {
+        m_readThread->join();
+    }
     
     // Start read thread
     m_readThread = std::make_unique<std::thread>(&SerialCommunication::readThread, this);
@@ -240,13 +246,11 @@ void SerialCommunication::readThread()
                 if (m_shouldStop) break;
                 
                 // If just closed but thread running, wait a bit
-                // Release lock via scope exit
             }
             else
             {
                 fd = m_fileDescriptor;
                 // Read inside lock because m_fileDescriptor must be valid
-                // O_NDELAY is set so this shouldn't block for long
                  bytesRead = read(fd, buffer, sizeof(buffer) - 1);
             }
         } // Lock released here
@@ -261,11 +265,39 @@ void SerialCommunication::readThread()
                 
                 notifyData(data); // Callback outside lock
             }
+            else if (bytesRead == 0)
+            {
+                // EOF - Device disconnected
+                notifyError("Device disconnected (EOF)");
+                
+                // Mark as closed
+                std::lock_guard<std::mutex> lock(m_mutex);
+                m_isOpen = false;
+                if (m_fileDescriptor != -1)
+                {
+                    ::close(m_fileDescriptor);
+                    m_fileDescriptor = -1;
+                }
+                break; // Exit thread
+            }
             else if (bytesRead < 0) 
             {
                 if (errno != EAGAIN && errno != EWOULDBLOCK)
                 {
-                    notifyError("Read error");
+                    notifyError("Read error: " + std::string(std::strerror(errno)));
+                    
+                    // Critical error (e.g. unplugged) - close connection
+                    if (errno == EIO || errno == ENXIO || errno == EBADF)
+                    {
+                        std::lock_guard<std::mutex> lock(m_mutex);
+                        m_isOpen = false;
+                        if (m_fileDescriptor != -1)
+                        {
+                            ::close(m_fileDescriptor);
+                            m_fileDescriptor = -1;
+                        }
+                        break; // Exit thread
+                    }
                     
                     std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 }
@@ -273,7 +305,10 @@ void SerialCommunication::readThread()
         }
         else
         {
-            // If FD was invalid but thread running, wait to avoid spinning
+            // If FD was invalid but thread running, check if we should stop
+            if (m_shouldStop || !m_isOpen) break; 
+            
+            // Otherwise wait to avoid spinning
              std::this_thread::sleep_for(std::chrono::milliseconds(50));
         }
 
