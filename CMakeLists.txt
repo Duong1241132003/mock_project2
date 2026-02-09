@@ -45,13 +45,7 @@ file(GLOB_RECURSE SOURCES
     "src/ui/*.cpp"
 )
 
-# Remove video-related files (EXCEPT metadata)
-list(FILTER SOURCES EXCLUDE REGEX ".*VideoController\\.cpp$")
-list(FILTER SOURCES EXCLUDE REGEX ".*VideoPlaybackEngine\\.cpp$")
-list(FILTER SOURCES EXCLUDE REGEX ".*VideoPlayerScreen\\.cpp$")
-list(FILTER SOURCES EXCLUDE REGEX ".*VideoRenderPanel\\.cpp$")
-# Keep VideoMetadataReader and VideoMetadataModel
-# list(FILTER SOURCES EXCLUDE REGEX ".*VideoMetadataReader\\.cpp$")
+
 
 
 
@@ -93,7 +87,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 
 # Create necessary directories
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/logs)
+
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/playlists)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/library)

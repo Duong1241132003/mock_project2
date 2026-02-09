@@ -1,0 +1,7 @@
+/home/duong/MediaPlayerApp/CMakeFiles/MediaPlayerApp.dir
+/home/duong/MediaPlayerApp/CMakeFiles/edit_cache.dir
+/home/duong/MediaPlayerApp/CMakeFiles/rebuild_cache.dir
+/home/duong/MediaPlayerApp/CMakeFiles/list_install_components.dir
+/home/duong/MediaPlayerApp/CMakeFiles/install.dir
+/home/duong/MediaPlayerApp/CMakeFiles/install/local.dir
+/home/duong/MediaPlayerApp/CMakeFiles/install/strip.dir
