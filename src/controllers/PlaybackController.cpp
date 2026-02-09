@@ -245,20 +245,20 @@ bool PlaybackController::playPrevious()
     std::string currentPath = m_playbackStateModel->getCurrentFilePath();
     if (m_historyModel)
     {
-        // If stopped (no current file), play the most recent from history (index 0)
-        // If playing/paused (has current file), play the previous (index 1)
+        // Nếu đang phát, xóa bài hiện tại khỏi history trước, sau đó lấy bài đầu tiên
+        // Nếu đã dừng, lấy bài đầu tiên trong history
         std::optional<models::HistoryEntry> prevEntry;
-        if (currentPath.empty() || isStopped())
+        if (!currentPath.empty() && !isStopped())
         {
-            prevEntry = m_historyModel->getLastPlayed();  // index 0 - most recent
+            // Xóa bài đang phát khỏi history trước khi lấy bài previous
+            m_historyModel->removeMostRecentEntry(currentPath);
         }
-        else
-        {
-            prevEntry = m_historyModel->getPreviousPlayed();  // index 1 - before current
-        }
+        // Luôn lấy bài đầu tiên (sau khi đã xóa bài hiện tại nếu có)
+        prevEntry = m_historyModel->getLastPlayed();
+        
         if (prevEntry && std::filesystem::exists(prevEntry->media.getFilePath()))
         {
-            // Remove from history - we are going "back" to it
+            // Remove bài sẽ phát khỏi history - chúng ta đang "quay lại" nó
             m_historyModel->removeMostRecentEntry(prevEntry->media.getFilePath());
             
             // Play directly without touching queue - when done, onFinished will resume queue
