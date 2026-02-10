@@ -56,12 +56,12 @@ TEST_F(MediaFileModelTest, DetermineMediaTypeAudioWav) {
 
 TEST_F(MediaFileModelTest, DetermineMediaTypeVideo) {
     models::MediaFileModel file("/home/user/video/movie.mp4");
-    EXPECT_EQ(file.getType(), models::MediaType::VIDEO);
+    EXPECT_EQ(file.getType(), models::MediaType::UNSUPPORTED);
 }
 
 TEST_F(MediaFileModelTest, DetermineMediaTypeVideoAvi) {
     models::MediaFileModel file("/path/to/video.avi");
-    EXPECT_EQ(file.getType(), models::MediaType::VIDEO);
+    EXPECT_EQ(file.getType(), models::MediaType::UNSUPPORTED);
 }
 
 TEST_F(MediaFileModelTest, CheckCaseSensitivity) {
@@ -177,4 +177,3 @@ TEST_F(MediaFileModelTest, ExtensionWithMultipleDots) {
     EXPECT_EQ(file.getFileName(), "my.song.mp3");
     EXPECT_EQ(file.getExtension(), ".mp3");
 }
-

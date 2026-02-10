@@ -69,10 +69,24 @@ include CMakeFiles/RunTests.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/RunTests.dir/flags.make
 
+CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
+CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.o: tests/config/AppConfigTest.cpp
+CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.o -c /home/duong/MediaPlayerApp/tests/config/AppConfigTest.cpp
+
+CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/duong/MediaPlayerApp/tests/config/AppConfigTest.cpp > CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.i
+
+CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/duong/MediaPlayerApp/tests/config/AppConfigTest.cpp -o CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.s
+
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerBufferTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerBufferTest.cpp.o: tests/controllers/HardwareControllerBufferTest.cpp
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerBufferTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerBufferTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerBufferTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerBufferTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerBufferTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerBufferTest.cpp.o -c /home/duong/MediaPlayerApp/tests/controllers/HardwareControllerBufferTest.cpp
 
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerBufferTest.cpp.i: cmake_force
@@ -86,7 +100,7 @@ CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerBufferTest.cpp.s: cm
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerInvalidTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerInvalidTest.cpp.o: tests/controllers/HardwareControllerInvalidTest.cpp
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerInvalidTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerInvalidTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerInvalidTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerInvalidTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerInvalidTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerInvalidTest.cpp.o -c /home/duong/MediaPlayerApp/tests/controllers/HardwareControllerInvalidTest.cpp
 
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerInvalidTest.cpp.i: cmake_force
@@ -100,7 +114,7 @@ CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerInvalidTest.cpp.s: c
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerParseTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerParseTest.cpp.o: tests/controllers/HardwareControllerParseTest.cpp
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerParseTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerParseTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerParseTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerParseTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerParseTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerParseTest.cpp.o -c /home/duong/MediaPlayerApp/tests/controllers/HardwareControllerParseTest.cpp
 
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerParseTest.cpp.i: cmake_force
@@ -114,7 +128,7 @@ CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerParseTest.cpp.s: cma
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerRefreshTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerRefreshTest.cpp.o: tests/controllers/HardwareControllerRefreshTest.cpp
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerRefreshTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerRefreshTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerRefreshTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerRefreshTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerRefreshTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerRefreshTest.cpp.o -c /home/duong/MediaPlayerApp/tests/controllers/HardwareControllerRefreshTest.cpp
 
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerRefreshTest.cpp.i: cmake_force
@@ -128,7 +142,7 @@ CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerRefreshTest.cpp.s: c
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerTest.cpp.o: tests/controllers/HardwareControllerTest.cpp
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerTest.cpp.o -c /home/duong/MediaPlayerApp/tests/controllers/HardwareControllerTest.cpp
 
 CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerTest.cpp.i: cmake_force
@@ -142,7 +156,7 @@ CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerTest.cpp.s: cmake_fo
 CMakeFiles/RunTests.dir/tests/controllers/HistoryControllerTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/controllers/HistoryControllerTest.cpp.o: tests/controllers/HistoryControllerTest.cpp
 CMakeFiles/RunTests.dir/tests/controllers/HistoryControllerTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/HistoryControllerTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/HistoryControllerTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/controllers/HistoryControllerTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/controllers/HistoryControllerTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/controllers/HistoryControllerTest.cpp.o -c /home/duong/MediaPlayerApp/tests/controllers/HistoryControllerTest.cpp
 
 CMakeFiles/RunTests.dir/tests/controllers/HistoryControllerTest.cpp.i: cmake_force
@@ -156,7 +170,7 @@ CMakeFiles/RunTests.dir/tests/controllers/HistoryControllerTest.cpp.s: cmake_for
 CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerExtraTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerExtraTest.cpp.o: tests/controllers/LibraryControllerExtraTest.cpp
 CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerExtraTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerExtraTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerExtraTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerExtraTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerExtraTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerExtraTest.cpp.o -c /home/duong/MediaPlayerApp/tests/controllers/LibraryControllerExtraTest.cpp
 
 CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerExtraTest.cpp.i: cmake_force
@@ -170,7 +184,7 @@ CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerExtraTest.cpp.s: cmak
 CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerTest.cpp.o: tests/controllers/LibraryControllerTest.cpp
 CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerTest.cpp.o -c /home/duong/MediaPlayerApp/tests/controllers/LibraryControllerTest.cpp
 
 CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerTest.cpp.i: cmake_force
@@ -184,7 +198,7 @@ CMakeFiles/RunTests.dir/tests/controllers/LibraryControllerTest.cpp.s: cmake_for
 CMakeFiles/RunTests.dir/tests/controllers/MainControllerTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/controllers/MainControllerTest.cpp.o: tests/controllers/MainControllerTest.cpp
 CMakeFiles/RunTests.dir/tests/controllers/MainControllerTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/MainControllerTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/MainControllerTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/controllers/MainControllerTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/controllers/MainControllerTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/controllers/MainControllerTest.cpp.o -c /home/duong/MediaPlayerApp/tests/controllers/MainControllerTest.cpp
 
 CMakeFiles/RunTests.dir/tests/controllers/MainControllerTest.cpp.i: cmake_force
@@ -198,7 +212,7 @@ CMakeFiles/RunTests.dir/tests/controllers/MainControllerTest.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerAdvancedTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerAdvancedTest.cpp.o: tests/controllers/PlaybackControllerAdvancedTest.cpp
 CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerAdvancedTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerAdvancedTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerAdvancedTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerAdvancedTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerAdvancedTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerAdvancedTest.cpp.o -c /home/duong/MediaPlayerApp/tests/controllers/PlaybackControllerAdvancedTest.cpp
 
 CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerAdvancedTest.cpp.i: cmake_force
@@ -212,7 +226,7 @@ CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerAdvancedTest.cpp.s: 
 CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerEngineTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerEngineTest.cpp.o: tests/controllers/PlaybackControllerEngineTest.cpp
 CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerEngineTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerEngineTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerEngineTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerEngineTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerEngineTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerEngineTest.cpp.o -c /home/duong/MediaPlayerApp/tests/controllers/PlaybackControllerEngineTest.cpp
 
 CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerEngineTest.cpp.i: cmake_force
@@ -226,7 +240,7 @@ CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerEngineTest.cpp.s: cm
 CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerNavigationTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerNavigationTest.cpp.o: tests/controllers/PlaybackControllerNavigationTest.cpp
 CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerNavigationTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerNavigationTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerNavigationTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerNavigationTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerNavigationTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerNavigationTest.cpp.o -c /home/duong/MediaPlayerApp/tests/controllers/PlaybackControllerNavigationTest.cpp
 
 CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerNavigationTest.cpp.i: cmake_force
@@ -240,7 +254,7 @@ CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerNavigationTest.cpp.s
 CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerTest.cpp.o: tests/controllers/PlaybackControllerTest.cpp
 CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerTest.cpp.o -c /home/duong/MediaPlayerApp/tests/controllers/PlaybackControllerTest.cpp
 
 CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerTest.cpp.i: cmake_force
@@ -254,7 +268,7 @@ CMakeFiles/RunTests.dir/tests/controllers/PlaybackControllerTest.cpp.s: cmake_fo
 CMakeFiles/RunTests.dir/tests/controllers/PlaylistControllerTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/controllers/PlaylistControllerTest.cpp.o: tests/controllers/PlaylistControllerTest.cpp
 CMakeFiles/RunTests.dir/tests/controllers/PlaylistControllerTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/PlaylistControllerTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/PlaylistControllerTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/controllers/PlaylistControllerTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/controllers/PlaylistControllerTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/controllers/PlaylistControllerTest.cpp.o -c /home/duong/MediaPlayerApp/tests/controllers/PlaylistControllerTest.cpp
 
 CMakeFiles/RunTests.dir/tests/controllers/PlaylistControllerTest.cpp.i: cmake_force
@@ -268,7 +282,7 @@ CMakeFiles/RunTests.dir/tests/controllers/PlaylistControllerTest.cpp.s: cmake_fo
 CMakeFiles/RunTests.dir/tests/controllers/QueueControllerTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/controllers/QueueControllerTest.cpp.o: tests/controllers/QueueControllerTest.cpp
 CMakeFiles/RunTests.dir/tests/controllers/QueueControllerTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/QueueControllerTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/QueueControllerTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/controllers/QueueControllerTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/controllers/QueueControllerTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/controllers/QueueControllerTest.cpp.o -c /home/duong/MediaPlayerApp/tests/controllers/QueueControllerTest.cpp
 
 CMakeFiles/RunTests.dir/tests/controllers/QueueControllerTest.cpp.i: cmake_force
@@ -282,7 +296,7 @@ CMakeFiles/RunTests.dir/tests/controllers/QueueControllerTest.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/tests/controllers/SourceControllerExtraTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/controllers/SourceControllerExtraTest.cpp.o: tests/controllers/SourceControllerExtraTest.cpp
 CMakeFiles/RunTests.dir/tests/controllers/SourceControllerExtraTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/SourceControllerExtraTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/SourceControllerExtraTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/controllers/SourceControllerExtraTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/controllers/SourceControllerExtraTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/controllers/SourceControllerExtraTest.cpp.o -c /home/duong/MediaPlayerApp/tests/controllers/SourceControllerExtraTest.cpp
 
 CMakeFiles/RunTests.dir/tests/controllers/SourceControllerExtraTest.cpp.i: cmake_force
@@ -296,7 +310,7 @@ CMakeFiles/RunTests.dir/tests/controllers/SourceControllerExtraTest.cpp.s: cmake
 CMakeFiles/RunTests.dir/tests/controllers/SourceControllerTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/controllers/SourceControllerTest.cpp.o: tests/controllers/SourceControllerTest.cpp
 CMakeFiles/RunTests.dir/tests/controllers/SourceControllerTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/SourceControllerTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/RunTests.dir/tests/controllers/SourceControllerTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/controllers/SourceControllerTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/controllers/SourceControllerTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/controllers/SourceControllerTest.cpp.o -c /home/duong/MediaPlayerApp/tests/controllers/SourceControllerTest.cpp
 
 CMakeFiles/RunTests.dir/tests/controllers/SourceControllerTest.cpp.i: cmake_force
@@ -310,7 +324,7 @@ CMakeFiles/RunTests.dir/tests/controllers/SourceControllerTest.cpp.s: cmake_forc
 CMakeFiles/RunTests.dir/tests/models/HistoryModelTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/models/HistoryModelTest.cpp.o: tests/models/HistoryModelTest.cpp
 CMakeFiles/RunTests.dir/tests/models/HistoryModelTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/RunTests.dir/tests/models/HistoryModelTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/RunTests.dir/tests/models/HistoryModelTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/models/HistoryModelTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/models/HistoryModelTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/models/HistoryModelTest.cpp.o -c /home/duong/MediaPlayerApp/tests/models/HistoryModelTest.cpp
 
 CMakeFiles/RunTests.dir/tests/models/HistoryModelTest.cpp.i: cmake_force
@@ -324,7 +338,7 @@ CMakeFiles/RunTests.dir/tests/models/HistoryModelTest.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/tests/models/LibraryModelTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/models/LibraryModelTest.cpp.o: tests/models/LibraryModelTest.cpp
 CMakeFiles/RunTests.dir/tests/models/LibraryModelTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/RunTests.dir/tests/models/LibraryModelTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/RunTests.dir/tests/models/LibraryModelTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/models/LibraryModelTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/models/LibraryModelTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/models/LibraryModelTest.cpp.o -c /home/duong/MediaPlayerApp/tests/models/LibraryModelTest.cpp
 
 CMakeFiles/RunTests.dir/tests/models/LibraryModelTest.cpp.i: cmake_force
@@ -338,7 +352,7 @@ CMakeFiles/RunTests.dir/tests/models/LibraryModelTest.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/tests/models/MediaFileModelTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/models/MediaFileModelTest.cpp.o: tests/models/MediaFileModelTest.cpp
 CMakeFiles/RunTests.dir/tests/models/MediaFileModelTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/RunTests.dir/tests/models/MediaFileModelTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/RunTests.dir/tests/models/MediaFileModelTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/models/MediaFileModelTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/models/MediaFileModelTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/models/MediaFileModelTest.cpp.o -c /home/duong/MediaPlayerApp/tests/models/MediaFileModelTest.cpp
 
 CMakeFiles/RunTests.dir/tests/models/MediaFileModelTest.cpp.i: cmake_force
@@ -352,7 +366,7 @@ CMakeFiles/RunTests.dir/tests/models/MediaFileModelTest.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/tests/models/MetadataModelTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/models/MetadataModelTest.cpp.o: tests/models/MetadataModelTest.cpp
 CMakeFiles/RunTests.dir/tests/models/MetadataModelTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/RunTests.dir/tests/models/MetadataModelTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/RunTests.dir/tests/models/MetadataModelTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/models/MetadataModelTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/models/MetadataModelTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/models/MetadataModelTest.cpp.o -c /home/duong/MediaPlayerApp/tests/models/MetadataModelTest.cpp
 
 CMakeFiles/RunTests.dir/tests/models/MetadataModelTest.cpp.i: cmake_force
@@ -366,7 +380,7 @@ CMakeFiles/RunTests.dir/tests/models/MetadataModelTest.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.o: tests/models/PlaybackStateModelTest.cpp
 CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.o -c /home/duong/MediaPlayerApp/tests/models/PlaybackStateModelTest.cpp
 
 CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.i: cmake_force
@@ -380,7 +394,7 @@ CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/tests/models/PlaylistModelTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/models/PlaylistModelTest.cpp.o: tests/models/PlaylistModelTest.cpp
 CMakeFiles/RunTests.dir/tests/models/PlaylistModelTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/RunTests.dir/tests/models/PlaylistModelTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/RunTests.dir/tests/models/PlaylistModelTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/models/PlaylistModelTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/models/PlaylistModelTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/models/PlaylistModelTest.cpp.o -c /home/duong/MediaPlayerApp/tests/models/PlaylistModelTest.cpp
 
 CMakeFiles/RunTests.dir/tests/models/PlaylistModelTest.cpp.i: cmake_force
@@ -394,7 +408,7 @@ CMakeFiles/RunTests.dir/tests/models/PlaylistModelTest.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/tests/models/QueueModelTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/models/QueueModelTest.cpp.o: tests/models/QueueModelTest.cpp
 CMakeFiles/RunTests.dir/tests/models/QueueModelTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/RunTests.dir/tests/models/QueueModelTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/RunTests.dir/tests/models/QueueModelTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/models/QueueModelTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/models/QueueModelTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/models/QueueModelTest.cpp.o -c /home/duong/MediaPlayerApp/tests/models/QueueModelTest.cpp
 
 CMakeFiles/RunTests.dir/tests/models/QueueModelTest.cpp.i: cmake_force
@@ -405,10 +419,52 @@ CMakeFiles/RunTests.dir/tests/models/QueueModelTest.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/RunTests.dir/tests/models/QueueModelTest.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/duong/MediaPlayerApp/tests/models/QueueModelTest.cpp -o CMakeFiles/RunTests.dir/tests/models/QueueModelTest.cpp.s
 
+CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
+CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.o: tests/repositories/HistoryRepositoryTest.cpp
+CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.o -c /home/duong/MediaPlayerApp/tests/repositories/HistoryRepositoryTest.cpp
+
+CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/duong/MediaPlayerApp/tests/repositories/HistoryRepositoryTest.cpp > CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.i
+
+CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/duong/MediaPlayerApp/tests/repositories/HistoryRepositoryTest.cpp -o CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.s
+
+CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
+CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.o: tests/repositories/LibraryRepositoryTest.cpp
+CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.o -c /home/duong/MediaPlayerApp/tests/repositories/LibraryRepositoryTest.cpp
+
+CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/duong/MediaPlayerApp/tests/repositories/LibraryRepositoryTest.cpp > CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.i
+
+CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/duong/MediaPlayerApp/tests/repositories/LibraryRepositoryTest.cpp -o CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.s
+
+CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
+CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.o: tests/repositories/PlaylistRepositoryTest.cpp
+CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.o -c /home/duong/MediaPlayerApp/tests/repositories/PlaylistRepositoryTest.cpp
+
+CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/duong/MediaPlayerApp/tests/repositories/PlaylistRepositoryTest.cpp > CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.i
+
+CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/duong/MediaPlayerApp/tests/repositories/PlaylistRepositoryTest.cpp -o CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.s
+
 CMakeFiles/RunTests.dir/tests/services/AudioPlaybackEngineTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/services/AudioPlaybackEngineTest.cpp.o: tests/services/AudioPlaybackEngineTest.cpp
 CMakeFiles/RunTests.dir/tests/services/AudioPlaybackEngineTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/RunTests.dir/tests/services/AudioPlaybackEngineTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/RunTests.dir/tests/services/AudioPlaybackEngineTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/services/AudioPlaybackEngineTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/services/AudioPlaybackEngineTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/services/AudioPlaybackEngineTest.cpp.o -c /home/duong/MediaPlayerApp/tests/services/AudioPlaybackEngineTest.cpp
 
 CMakeFiles/RunTests.dir/tests/services/AudioPlaybackEngineTest.cpp.i: cmake_force
@@ -422,7 +478,7 @@ CMakeFiles/RunTests.dir/tests/services/AudioPlaybackEngineTest.cpp.s: cmake_forc
 CMakeFiles/RunTests.dir/tests/services/FileScannerTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/services/FileScannerTest.cpp.o: tests/services/FileScannerTest.cpp
 CMakeFiles/RunTests.dir/tests/services/FileScannerTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/RunTests.dir/tests/services/FileScannerTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/RunTests.dir/tests/services/FileScannerTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/services/FileScannerTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/services/FileScannerTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/services/FileScannerTest.cpp.o -c /home/duong/MediaPlayerApp/tests/services/FileScannerTest.cpp
 
 CMakeFiles/RunTests.dir/tests/services/FileScannerTest.cpp.i: cmake_force
@@ -436,7 +492,7 @@ CMakeFiles/RunTests.dir/tests/services/FileScannerTest.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/tests/services/MetadataReaderTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/services/MetadataReaderTest.cpp.o: tests/services/MetadataReaderTest.cpp
 CMakeFiles/RunTests.dir/tests/services/MetadataReaderTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/RunTests.dir/tests/services/MetadataReaderTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/RunTests.dir/tests/services/MetadataReaderTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/services/MetadataReaderTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/services/MetadataReaderTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/services/MetadataReaderTest.cpp.o -c /home/duong/MediaPlayerApp/tests/services/MetadataReaderTest.cpp
 
 CMakeFiles/RunTests.dir/tests/services/MetadataReaderTest.cpp.i: cmake_force
@@ -450,7 +506,7 @@ CMakeFiles/RunTests.dir/tests/services/MetadataReaderTest.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/tests/services/SerialCommunicationTest.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/services/SerialCommunicationTest.cpp.o: tests/services/SerialCommunicationTest.cpp
 CMakeFiles/RunTests.dir/tests/services/SerialCommunicationTest.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/RunTests.dir/tests/services/SerialCommunicationTest.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/RunTests.dir/tests/services/SerialCommunicationTest.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/services/SerialCommunicationTest.cpp.o -MF CMakeFiles/RunTests.dir/tests/services/SerialCommunicationTest.cpp.o.d -o CMakeFiles/RunTests.dir/tests/services/SerialCommunicationTest.cpp.o -c /home/duong/MediaPlayerApp/tests/services/SerialCommunicationTest.cpp
 
 CMakeFiles/RunTests.dir/tests/services/SerialCommunicationTest.cpp.i: cmake_force
@@ -464,7 +520,7 @@ CMakeFiles/RunTests.dir/tests/services/SerialCommunicationTest.cpp.s: cmake_forc
 CMakeFiles/RunTests.dir/tests/test_main.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/tests/test_main.cpp.o: tests/test_main.cpp
 CMakeFiles/RunTests.dir/tests/test_main.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/RunTests.dir/tests/test_main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/RunTests.dir/tests/test_main.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/tests/test_main.cpp.o -MF CMakeFiles/RunTests.dir/tests/test_main.cpp.o.d -o CMakeFiles/RunTests.dir/tests/test_main.cpp.o -c /home/duong/MediaPlayerApp/tests/test_main.cpp
 
 CMakeFiles/RunTests.dir/tests/test_main.cpp.i: cmake_force
@@ -478,7 +534,7 @@ CMakeFiles/RunTests.dir/tests/test_main.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.o: src/config/AppConfig.cpp
 CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.o -MF CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.o.d -o CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.o -c /home/duong/MediaPlayerApp/src/config/AppConfig.cpp
 
 CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.i: cmake_force
@@ -492,7 +548,7 @@ CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.o: src/controllers/HardwareController.cpp
 CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.o -MF CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.o.d -o CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.o -c /home/duong/MediaPlayerApp/src/controllers/HardwareController.cpp
 
 CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.i: cmake_force
@@ -506,7 +562,7 @@ CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/controllers/HistoryController.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/controllers/HistoryController.cpp.o: src/controllers/HistoryController.cpp
 CMakeFiles/RunTests.dir/src/controllers/HistoryController.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/RunTests.dir/src/controllers/HistoryController.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/RunTests.dir/src/controllers/HistoryController.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/controllers/HistoryController.cpp.o -MF CMakeFiles/RunTests.dir/src/controllers/HistoryController.cpp.o.d -o CMakeFiles/RunTests.dir/src/controllers/HistoryController.cpp.o -c /home/duong/MediaPlayerApp/src/controllers/HistoryController.cpp
 
 CMakeFiles/RunTests.dir/src/controllers/HistoryController.cpp.i: cmake_force
@@ -520,7 +576,7 @@ CMakeFiles/RunTests.dir/src/controllers/HistoryController.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/controllers/LibraryController.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/controllers/LibraryController.cpp.o: src/controllers/LibraryController.cpp
 CMakeFiles/RunTests.dir/src/controllers/LibraryController.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/RunTests.dir/src/controllers/LibraryController.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building CXX object CMakeFiles/RunTests.dir/src/controllers/LibraryController.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/controllers/LibraryController.cpp.o -MF CMakeFiles/RunTests.dir/src/controllers/LibraryController.cpp.o.d -o CMakeFiles/RunTests.dir/src/controllers/LibraryController.cpp.o -c /home/duong/MediaPlayerApp/src/controllers/LibraryController.cpp
 
 CMakeFiles/RunTests.dir/src/controllers/LibraryController.cpp.i: cmake_force
@@ -534,7 +590,7 @@ CMakeFiles/RunTests.dir/src/controllers/LibraryController.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/controllers/MainController.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/controllers/MainController.cpp.o: src/controllers/MainController.cpp
 CMakeFiles/RunTests.dir/src/controllers/MainController.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/RunTests.dir/src/controllers/MainController.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/RunTests.dir/src/controllers/MainController.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/controllers/MainController.cpp.o -MF CMakeFiles/RunTests.dir/src/controllers/MainController.cpp.o.d -o CMakeFiles/RunTests.dir/src/controllers/MainController.cpp.o -c /home/duong/MediaPlayerApp/src/controllers/MainController.cpp
 
 CMakeFiles/RunTests.dir/src/controllers/MainController.cpp.i: cmake_force
@@ -548,7 +604,7 @@ CMakeFiles/RunTests.dir/src/controllers/MainController.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/controllers/PlaybackController.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/controllers/PlaybackController.cpp.o: src/controllers/PlaybackController.cpp
 CMakeFiles/RunTests.dir/src/controllers/PlaybackController.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/RunTests.dir/src/controllers/PlaybackController.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/RunTests.dir/src/controllers/PlaybackController.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/controllers/PlaybackController.cpp.o -MF CMakeFiles/RunTests.dir/src/controllers/PlaybackController.cpp.o.d -o CMakeFiles/RunTests.dir/src/controllers/PlaybackController.cpp.o -c /home/duong/MediaPlayerApp/src/controllers/PlaybackController.cpp
 
 CMakeFiles/RunTests.dir/src/controllers/PlaybackController.cpp.i: cmake_force
@@ -562,7 +618,7 @@ CMakeFiles/RunTests.dir/src/controllers/PlaybackController.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/controllers/PlaylistController.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/controllers/PlaylistController.cpp.o: src/controllers/PlaylistController.cpp
 CMakeFiles/RunTests.dir/src/controllers/PlaylistController.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/RunTests.dir/src/controllers/PlaylistController.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Building CXX object CMakeFiles/RunTests.dir/src/controllers/PlaylistController.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/controllers/PlaylistController.cpp.o -MF CMakeFiles/RunTests.dir/src/controllers/PlaylistController.cpp.o.d -o CMakeFiles/RunTests.dir/src/controllers/PlaylistController.cpp.o -c /home/duong/MediaPlayerApp/src/controllers/PlaylistController.cpp
 
 CMakeFiles/RunTests.dir/src/controllers/PlaylistController.cpp.i: cmake_force
@@ -576,7 +632,7 @@ CMakeFiles/RunTests.dir/src/controllers/PlaylistController.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/controllers/QueueController.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/controllers/QueueController.cpp.o: src/controllers/QueueController.cpp
 CMakeFiles/RunTests.dir/src/controllers/QueueController.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building CXX object CMakeFiles/RunTests.dir/src/controllers/QueueController.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_41) "Building CXX object CMakeFiles/RunTests.dir/src/controllers/QueueController.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/controllers/QueueController.cpp.o -MF CMakeFiles/RunTests.dir/src/controllers/QueueController.cpp.o.d -o CMakeFiles/RunTests.dir/src/controllers/QueueController.cpp.o -c /home/duong/MediaPlayerApp/src/controllers/QueueController.cpp
 
 CMakeFiles/RunTests.dir/src/controllers/QueueController.cpp.i: cmake_force
@@ -590,7 +646,7 @@ CMakeFiles/RunTests.dir/src/controllers/QueueController.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.o: src/controllers/SourceController.cpp
 CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_42) "Building CXX object CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.o -MF CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.o.d -o CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.o -c /home/duong/MediaPlayerApp/src/controllers/SourceController.cpp
 
 CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.i: cmake_force
@@ -604,7 +660,7 @@ CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/core/Application.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/core/Application.cpp.o: src/core/Application.cpp
 CMakeFiles/RunTests.dir/src/core/Application.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/RunTests.dir/src/core/Application.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_43) "Building CXX object CMakeFiles/RunTests.dir/src/core/Application.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/core/Application.cpp.o -MF CMakeFiles/RunTests.dir/src/core/Application.cpp.o.d -o CMakeFiles/RunTests.dir/src/core/Application.cpp.o -c /home/duong/MediaPlayerApp/src/core/Application.cpp
 
 CMakeFiles/RunTests.dir/src/core/Application.cpp.i: cmake_force
@@ -618,7 +674,7 @@ CMakeFiles/RunTests.dir/src/core/Application.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/models/HistoryModel.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/models/HistoryModel.cpp.o: src/models/HistoryModel.cpp
 CMakeFiles/RunTests.dir/src/models/HistoryModel.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Building CXX object CMakeFiles/RunTests.dir/src/models/HistoryModel.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_44) "Building CXX object CMakeFiles/RunTests.dir/src/models/HistoryModel.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/models/HistoryModel.cpp.o -MF CMakeFiles/RunTests.dir/src/models/HistoryModel.cpp.o.d -o CMakeFiles/RunTests.dir/src/models/HistoryModel.cpp.o -c /home/duong/MediaPlayerApp/src/models/HistoryModel.cpp
 
 CMakeFiles/RunTests.dir/src/models/HistoryModel.cpp.i: cmake_force
@@ -632,7 +688,7 @@ CMakeFiles/RunTests.dir/src/models/HistoryModel.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/models/LibraryModel.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/models/LibraryModel.cpp.o: src/models/LibraryModel.cpp
 CMakeFiles/RunTests.dir/src/models/LibraryModel.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_41) "Building CXX object CMakeFiles/RunTests.dir/src/models/LibraryModel.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_45) "Building CXX object CMakeFiles/RunTests.dir/src/models/LibraryModel.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/models/LibraryModel.cpp.o -MF CMakeFiles/RunTests.dir/src/models/LibraryModel.cpp.o.d -o CMakeFiles/RunTests.dir/src/models/LibraryModel.cpp.o -c /home/duong/MediaPlayerApp/src/models/LibraryModel.cpp
 
 CMakeFiles/RunTests.dir/src/models/LibraryModel.cpp.i: cmake_force
@@ -646,7 +702,7 @@ CMakeFiles/RunTests.dir/src/models/LibraryModel.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/models/MediaFileModel.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/models/MediaFileModel.cpp.o: src/models/MediaFileModel.cpp
 CMakeFiles/RunTests.dir/src/models/MediaFileModel.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_42) "Building CXX object CMakeFiles/RunTests.dir/src/models/MediaFileModel.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_46) "Building CXX object CMakeFiles/RunTests.dir/src/models/MediaFileModel.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/models/MediaFileModel.cpp.o -MF CMakeFiles/RunTests.dir/src/models/MediaFileModel.cpp.o.d -o CMakeFiles/RunTests.dir/src/models/MediaFileModel.cpp.o -c /home/duong/MediaPlayerApp/src/models/MediaFileModel.cpp
 
 CMakeFiles/RunTests.dir/src/models/MediaFileModel.cpp.i: cmake_force
@@ -660,7 +716,7 @@ CMakeFiles/RunTests.dir/src/models/MediaFileModel.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/models/MetadataModel.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/models/MetadataModel.cpp.o: src/models/MetadataModel.cpp
 CMakeFiles/RunTests.dir/src/models/MetadataModel.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_43) "Building CXX object CMakeFiles/RunTests.dir/src/models/MetadataModel.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_47) "Building CXX object CMakeFiles/RunTests.dir/src/models/MetadataModel.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/models/MetadataModel.cpp.o -MF CMakeFiles/RunTests.dir/src/models/MetadataModel.cpp.o.d -o CMakeFiles/RunTests.dir/src/models/MetadataModel.cpp.o -c /home/duong/MediaPlayerApp/src/models/MetadataModel.cpp
 
 CMakeFiles/RunTests.dir/src/models/MetadataModel.cpp.i: cmake_force
@@ -674,7 +730,7 @@ CMakeFiles/RunTests.dir/src/models/MetadataModel.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/models/PlaybackStateModel.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/models/PlaybackStateModel.cpp.o: src/models/PlaybackStateModel.cpp
 CMakeFiles/RunTests.dir/src/models/PlaybackStateModel.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_44) "Building CXX object CMakeFiles/RunTests.dir/src/models/PlaybackStateModel.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_48) "Building CXX object CMakeFiles/RunTests.dir/src/models/PlaybackStateModel.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/models/PlaybackStateModel.cpp.o -MF CMakeFiles/RunTests.dir/src/models/PlaybackStateModel.cpp.o.d -o CMakeFiles/RunTests.dir/src/models/PlaybackStateModel.cpp.o -c /home/duong/MediaPlayerApp/src/models/PlaybackStateModel.cpp
 
 CMakeFiles/RunTests.dir/src/models/PlaybackStateModel.cpp.i: cmake_force
@@ -688,7 +744,7 @@ CMakeFiles/RunTests.dir/src/models/PlaybackStateModel.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/models/PlaylistModel.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/models/PlaylistModel.cpp.o: src/models/PlaylistModel.cpp
 CMakeFiles/RunTests.dir/src/models/PlaylistModel.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_45) "Building CXX object CMakeFiles/RunTests.dir/src/models/PlaylistModel.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_49) "Building CXX object CMakeFiles/RunTests.dir/src/models/PlaylistModel.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/models/PlaylistModel.cpp.o -MF CMakeFiles/RunTests.dir/src/models/PlaylistModel.cpp.o.d -o CMakeFiles/RunTests.dir/src/models/PlaylistModel.cpp.o -c /home/duong/MediaPlayerApp/src/models/PlaylistModel.cpp
 
 CMakeFiles/RunTests.dir/src/models/PlaylistModel.cpp.i: cmake_force
@@ -702,7 +758,7 @@ CMakeFiles/RunTests.dir/src/models/PlaylistModel.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/models/QueueModel.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/models/QueueModel.cpp.o: src/models/QueueModel.cpp
 CMakeFiles/RunTests.dir/src/models/QueueModel.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_46) "Building CXX object CMakeFiles/RunTests.dir/src/models/QueueModel.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_50) "Building CXX object CMakeFiles/RunTests.dir/src/models/QueueModel.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/models/QueueModel.cpp.o -MF CMakeFiles/RunTests.dir/src/models/QueueModel.cpp.o.d -o CMakeFiles/RunTests.dir/src/models/QueueModel.cpp.o -c /home/duong/MediaPlayerApp/src/models/QueueModel.cpp
 
 CMakeFiles/RunTests.dir/src/models/QueueModel.cpp.i: cmake_force
@@ -716,7 +772,7 @@ CMakeFiles/RunTests.dir/src/models/QueueModel.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/repositories/HistoryRepository.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/repositories/HistoryRepository.cpp.o: src/repositories/HistoryRepository.cpp
 CMakeFiles/RunTests.dir/src/repositories/HistoryRepository.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_47) "Building CXX object CMakeFiles/RunTests.dir/src/repositories/HistoryRepository.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_51) "Building CXX object CMakeFiles/RunTests.dir/src/repositories/HistoryRepository.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/repositories/HistoryRepository.cpp.o -MF CMakeFiles/RunTests.dir/src/repositories/HistoryRepository.cpp.o.d -o CMakeFiles/RunTests.dir/src/repositories/HistoryRepository.cpp.o -c /home/duong/MediaPlayerApp/src/repositories/HistoryRepository.cpp
 
 CMakeFiles/RunTests.dir/src/repositories/HistoryRepository.cpp.i: cmake_force
@@ -730,7 +786,7 @@ CMakeFiles/RunTests.dir/src/repositories/HistoryRepository.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/repositories/LibraryRepository.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/repositories/LibraryRepository.cpp.o: src/repositories/LibraryRepository.cpp
 CMakeFiles/RunTests.dir/src/repositories/LibraryRepository.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_48) "Building CXX object CMakeFiles/RunTests.dir/src/repositories/LibraryRepository.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_52) "Building CXX object CMakeFiles/RunTests.dir/src/repositories/LibraryRepository.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/repositories/LibraryRepository.cpp.o -MF CMakeFiles/RunTests.dir/src/repositories/LibraryRepository.cpp.o.d -o CMakeFiles/RunTests.dir/src/repositories/LibraryRepository.cpp.o -c /home/duong/MediaPlayerApp/src/repositories/LibraryRepository.cpp
 
 CMakeFiles/RunTests.dir/src/repositories/LibraryRepository.cpp.i: cmake_force
@@ -744,7 +800,7 @@ CMakeFiles/RunTests.dir/src/repositories/LibraryRepository.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/repositories/PlaylistRepository.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/repositories/PlaylistRepository.cpp.o: src/repositories/PlaylistRepository.cpp
 CMakeFiles/RunTests.dir/src/repositories/PlaylistRepository.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_49) "Building CXX object CMakeFiles/RunTests.dir/src/repositories/PlaylistRepository.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_53) "Building CXX object CMakeFiles/RunTests.dir/src/repositories/PlaylistRepository.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/repositories/PlaylistRepository.cpp.o -MF CMakeFiles/RunTests.dir/src/repositories/PlaylistRepository.cpp.o.d -o CMakeFiles/RunTests.dir/src/repositories/PlaylistRepository.cpp.o -c /home/duong/MediaPlayerApp/src/repositories/PlaylistRepository.cpp
 
 CMakeFiles/RunTests.dir/src/repositories/PlaylistRepository.cpp.i: cmake_force
@@ -758,7 +814,7 @@ CMakeFiles/RunTests.dir/src/repositories/PlaylistRepository.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/services/AudioPlaybackEngine.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/services/AudioPlaybackEngine.cpp.o: src/services/AudioPlaybackEngine.cpp
 CMakeFiles/RunTests.dir/src/services/AudioPlaybackEngine.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_50) "Building CXX object CMakeFiles/RunTests.dir/src/services/AudioPlaybackEngine.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_54) "Building CXX object CMakeFiles/RunTests.dir/src/services/AudioPlaybackEngine.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/services/AudioPlaybackEngine.cpp.o -MF CMakeFiles/RunTests.dir/src/services/AudioPlaybackEngine.cpp.o.d -o CMakeFiles/RunTests.dir/src/services/AudioPlaybackEngine.cpp.o -c /home/duong/MediaPlayerApp/src/services/AudioPlaybackEngine.cpp
 
 CMakeFiles/RunTests.dir/src/services/AudioPlaybackEngine.cpp.i: cmake_force
@@ -772,7 +828,7 @@ CMakeFiles/RunTests.dir/src/services/AudioPlaybackEngine.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/services/FileScanner.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/services/FileScanner.cpp.o: src/services/FileScanner.cpp
 CMakeFiles/RunTests.dir/src/services/FileScanner.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_51) "Building CXX object CMakeFiles/RunTests.dir/src/services/FileScanner.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_55) "Building CXX object CMakeFiles/RunTests.dir/src/services/FileScanner.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/services/FileScanner.cpp.o -MF CMakeFiles/RunTests.dir/src/services/FileScanner.cpp.o.d -o CMakeFiles/RunTests.dir/src/services/FileScanner.cpp.o -c /home/duong/MediaPlayerApp/src/services/FileScanner.cpp
 
 CMakeFiles/RunTests.dir/src/services/FileScanner.cpp.i: cmake_force
@@ -786,7 +842,7 @@ CMakeFiles/RunTests.dir/src/services/FileScanner.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.o: src/services/MetadataReader.cpp
 CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_52) "Building CXX object CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_56) "Building CXX object CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.o -MF CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.o.d -o CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.o -c /home/duong/MediaPlayerApp/src/services/MetadataReader.cpp
 
 CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.i: cmake_force
@@ -800,7 +856,7 @@ CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/services/SerialCommunication.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/services/SerialCommunication.cpp.o: src/services/SerialCommunication.cpp
 CMakeFiles/RunTests.dir/src/services/SerialCommunication.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_53) "Building CXX object CMakeFiles/RunTests.dir/src/services/SerialCommunication.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_57) "Building CXX object CMakeFiles/RunTests.dir/src/services/SerialCommunication.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/services/SerialCommunication.cpp.o -MF CMakeFiles/RunTests.dir/src/services/SerialCommunication.cpp.o.d -o CMakeFiles/RunTests.dir/src/services/SerialCommunication.cpp.o -c /home/duong/MediaPlayerApp/src/services/SerialCommunication.cpp
 
 CMakeFiles/RunTests.dir/src/services/SerialCommunication.cpp.i: cmake_force
@@ -814,7 +870,7 @@ CMakeFiles/RunTests.dir/src/services/SerialCommunication.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/ui/ImGuiManager.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/ui/ImGuiManager.cpp.o: src/ui/ImGuiManager.cpp
 CMakeFiles/RunTests.dir/src/ui/ImGuiManager.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_54) "Building CXX object CMakeFiles/RunTests.dir/src/ui/ImGuiManager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_58) "Building CXX object CMakeFiles/RunTests.dir/src/ui/ImGuiManager.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/ui/ImGuiManager.cpp.o -MF CMakeFiles/RunTests.dir/src/ui/ImGuiManager.cpp.o.d -o CMakeFiles/RunTests.dir/src/ui/ImGuiManager.cpp.o -c /home/duong/MediaPlayerApp/src/ui/ImGuiManager.cpp
 
 CMakeFiles/RunTests.dir/src/ui/ImGuiManager.cpp.i: cmake_force
@@ -828,7 +884,7 @@ CMakeFiles/RunTests.dir/src/ui/ImGuiManager.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.o: src/ui/UIManager.cpp
 CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_55) "Building CXX object CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_59) "Building CXX object CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.o -MF CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.o.d -o CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.o -c /home/duong/MediaPlayerApp/src/ui/UIManager.cpp
 
 CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.i: cmake_force
@@ -842,7 +898,7 @@ CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o: src/views/HistoryScreen.cpp
 CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_56) "Building CXX object CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_60) "Building CXX object CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o -MF CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o.d -o CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o -c /home/duong/MediaPlayerApp/src/views/HistoryScreen.cpp
 
 CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.i: cmake_force
@@ -856,7 +912,7 @@ CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o: src/views/LibraryScreen.cpp
 CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_57) "Building CXX object CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_61) "Building CXX object CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o -MF CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o.d -o CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o -c /home/duong/MediaPlayerApp/src/views/LibraryScreen.cpp
 
 CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.i: cmake_force
@@ -870,7 +926,7 @@ CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o: src/views/MainScreen.cpp
 CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_58) "Building CXX object CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_62) "Building CXX object CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o -MF CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o.d -o CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o -c /home/duong/MediaPlayerApp/src/views/MainScreen.cpp
 
 CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.i: cmake_force
@@ -884,7 +940,7 @@ CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.o: src/views/NowPlayingBar.cpp
 CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_59) "Building CXX object CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_63) "Building CXX object CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.o -MF CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.o.d -o CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.o -c /home/duong/MediaPlayerApp/src/views/NowPlayingBar.cpp
 
 CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.i: cmake_force
@@ -898,7 +954,7 @@ CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.o: src/views/PlaylistScreen.cpp
 CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_60) "Building CXX object CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_64) "Building CXX object CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.o -MF CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.o.d -o CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.o -c /home/duong/MediaPlayerApp/src/views/PlaylistScreen.cpp
 
 CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.i: cmake_force
@@ -912,7 +968,7 @@ CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.o: src/views/QueuePanel.cpp
 CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_61) "Building CXX object CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_65) "Building CXX object CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.o -MF CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.o.d -o CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.o -c /home/duong/MediaPlayerApp/src/views/QueuePanel.cpp
 
 CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.i: cmake_force
@@ -926,7 +982,7 @@ CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.o: src/views/ScanScreen.cpp
 CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_62) "Building CXX object CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_66) "Building CXX object CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.o -MF CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.o.d -o CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.o -c /home/duong/MediaPlayerApp/src/views/ScanScreen.cpp
 
 CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.i: cmake_force
@@ -939,6 +995,7 @@ CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.s: cmake_force
 
 # Object files for target RunTests
 RunTests_OBJECTS = \
+"CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.o" \
 "CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerBufferTest.cpp.o" \
 "CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerInvalidTest.cpp.o" \
 "CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerParseTest.cpp.o" \
@@ -963,6 +1020,9 @@ RunTests_OBJECTS = \
 "CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.o" \
 "CMakeFiles/RunTests.dir/tests/models/PlaylistModelTest.cpp.o" \
 "CMakeFiles/RunTests.dir/tests/models/QueueModelTest.cpp.o" \
+"CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.o" \
+"CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.o" \
+"CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.o" \
 "CMakeFiles/RunTests.dir/tests/services/AudioPlaybackEngineTest.cpp.o" \
 "CMakeFiles/RunTests.dir/tests/services/FileScannerTest.cpp.o" \
 "CMakeFiles/RunTests.dir/tests/services/MetadataReaderTest.cpp.o" \
@@ -1005,6 +1065,7 @@ RunTests_OBJECTS = \
 # External object files for target RunTests
 RunTests_EXTERNAL_OBJECTS =
 
+RunTests: CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.o
 RunTests: CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerBufferTest.cpp.o
 RunTests: CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerInvalidTest.cpp.o
 RunTests: CMakeFiles/RunTests.dir/tests/controllers/HardwareControllerParseTest.cpp.o
@@ -1029,6 +1090,9 @@ RunTests: CMakeFiles/RunTests.dir/tests/models/MetadataModelTest.cpp.o
 RunTests: CMakeFiles/RunTests.dir/tests/models/PlaybackStateModelTest.cpp.o
 RunTests: CMakeFiles/RunTests.dir/tests/models/PlaylistModelTest.cpp.o
 RunTests: CMakeFiles/RunTests.dir/tests/models/QueueModelTest.cpp.o
+RunTests: CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.o
+RunTests: CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.o
+RunTests: CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.o
 RunTests: CMakeFiles/RunTests.dir/tests/services/AudioPlaybackEngineTest.cpp.o
 RunTests: CMakeFiles/RunTests.dir/tests/services/FileScannerTest.cpp.o
 RunTests: CMakeFiles/RunTests.dir/tests/services/MetadataReaderTest.cpp.o
@@ -1076,7 +1140,7 @@ RunTests: /usr/lib/x86_64-linux-gnu/libSDL2.so
 RunTests: /usr/lib/x86_64-linux-gnu/libgmock.a
 RunTests: /usr/lib/x86_64-linux-gnu/libgtest.a
 RunTests: CMakeFiles/RunTests.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_63) "Linking CXX executable RunTests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_67) "Linking CXX executable RunTests"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/RunTests.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

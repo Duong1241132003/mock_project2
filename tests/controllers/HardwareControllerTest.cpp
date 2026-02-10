@@ -97,3 +97,27 @@ TEST_F(HardwareControllerTest, SendPlaybackStateNoOpWhenDisconnected) {
     EXPECT_CALL(*mockSerial, isOpen()).WillRepeatedly(Return(false));
     controller->sendPlaybackState(true);
 }
+
+TEST(HardwareControllerStandaloneTest, ErrorCallbackInvokedNoCrash) {
+    auto serial = std::make_shared<test::MockSerialCommunication>();
+    services::SerialErrorCallback errorCb;
+    EXPECT_CALL(*serial, setDataCallback(_));
+    EXPECT_CALL(*serial, setErrorCallback(_))
+        .WillOnce(Invoke([&](const services::SerialErrorCallback& cb) { errorCb = cb; }));
+    auto playbackState = std::make_shared<models::PlaybackStateModel>();
+    controllers::HardwareController controller(serial, playbackState);
+    ASSERT_TRUE(static_cast<bool>(errorCb));
+    errorCb("err");
+}
+
+TEST(HardwareControllerStandaloneTest, AutoConnectReturnsFalseWhenScanning) {
+    auto serial = std::make_shared<test::MockSerialCommunication>();
+    EXPECT_CALL(*serial, setDataCallback(_));
+    EXPECT_CALL(*serial, setErrorCallback(_));
+    EXPECT_CALL(*serial, isOpen()).WillRepeatedly(Return(false));
+    EXPECT_CALL(*serial, open(_, _)).WillRepeatedly(Return(false));
+    auto playbackState = std::make_shared<models::PlaybackStateModel>();
+    controllers::HardwareController controller(serial, playbackState);
+    controller.autoConnect();
+    EXPECT_FALSE(controller.autoConnect());
+}

@@ -55,3 +55,37 @@ TEST(HardwareControllerBufferTest, IncompleteMessageRetainedUntilCompleted) {
     serial->dataCb("!");
     EXPECT_EQ(vol, 10);
 }
+
+TEST(HardwareControllerBufferTest, GarbageBeforeMessageDoesNotPreventParsing) {
+    auto serial = std::make_shared<DummySerialBuf>();
+    auto playbackState = std::make_shared<models::PlaybackStateModel>();
+    controllers::HardwareController controller(serial, playbackState);
+    int btn = -1;
+    controller.setButtonCallback([&](controllers::HardwareButton b){ btn = static_cast<int>(b); });
+    ASSERT_TRUE(serial->dataCb);
+    serial->dataCb("garbage");
+    serial->dataCb("!BTN: 1 !");
+    EXPECT_EQ(btn, 1);
+}
+
+TEST(HardwareControllerBufferTest, InvalidAdcValueIgnored) {
+    auto serial = std::make_shared<DummySerialBuf>();
+    auto playbackState = std::make_shared<models::PlaybackStateModel>();
+    controllers::HardwareController controller(serial, playbackState);
+    int vol = -1;
+    controller.setVolumeCallback([&](int v){ vol = v; });
+    ASSERT_TRUE(serial->dataCb);
+    serial->dataCb("!ADC:101!");
+    EXPECT_EQ(vol, -1);
+}
+
+TEST(HardwareControllerBufferTest, InvalidButtonIdIgnored) {
+    auto serial = std::make_shared<DummySerialBuf>();
+    auto playbackState = std::make_shared<models::PlaybackStateModel>();
+    controllers::HardwareController controller(serial, playbackState);
+    int btn = -1;
+    controller.setButtonCallback([&](controllers::HardwareButton b){ btn = static_cast<int>(b); });
+    ASSERT_TRUE(serial->dataCb);
+    serial->dataCb("!BTN: 5 !");
+    EXPECT_EQ(btn, -1);
+}

@@ -31,7 +31,6 @@ public:
     // Paths
     static const std::string DEFAULT_COVER_PATH;
     static const std::string PLAYLIST_STORAGE_PATH;
-    static const std::string LOG_FILE_PATH;
     static const std::string LIBRARY_STORAGE_PATH;
     static const std::string HISTORY_STORAGE_PATH;
     
@@ -45,13 +44,6 @@ public:
     // Playback - Audio
     static constexpr int DEFAULT_VOLUME = 70;
     static constexpr int PLAYBACK_UPDATE_INTERVAL_MS = 100;
-    
-    // Playback - Video
-    static constexpr int VIDEO_FRAME_QUEUE_SIZE = 3;
-    static constexpr int AUDIO_FRAME_QUEUE_SIZE = 9;
-    static constexpr double AV_SYNC_THRESHOLD = 0.01;
-    static constexpr int DEFAULT_VIDEO_WIDTH = 1280;
-    static constexpr int DEFAULT_VIDEO_HEIGHT = 720;
     
     AppConfig(const AppConfig&) = delete;
     AppConfig& operator=(const AppConfig&) = delete;

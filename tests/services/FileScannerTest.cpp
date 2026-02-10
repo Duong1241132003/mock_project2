@@ -155,6 +155,13 @@ TEST_F(FileScannerTest, ScanFile) {
     // Should return empty or handle gracefully
 }
 
+TEST_F(FileScannerTest, ScanDirectoryAsyncInvalidPaths) {
+    scanner.scanDirectory("/nonexistent/path/scan");
+    EXPECT_FALSE(scanner.isScanning());
+    scanner.scanDirectory((testDir / "song1.mp3").string());
+    EXPECT_FALSE(scanner.isScanning());
+}
+
 TEST_F(FileScannerTest, IsScanningState) {
     // Initially not scanning
     EXPECT_FALSE(scanner.isScanning());
@@ -195,6 +202,26 @@ TEST_F(FileScannerTest, ProgressCallback) {
     EXPECT_FALSE(files.empty());
 }
 
+TEST_F(FileScannerTest, ProgressCallback3) {
+    for (int i = 0; i < 6; ++i) {
+        createFile(testDir / ("extra" + std::to_string(i) + ".mp3"));
+    }
+    std::atomic<bool> called{false};
+    std::atomic<int> lastCount{0};
+    std::atomic<int> lastTotal{0};
+    scanner.setProgressCallback([&](int, const std::string&) {});
+    scanner.setProgressCallback([&](int count, int total, const std::string&) {
+        called = true;
+        lastCount = count;
+        lastTotal = total;
+    });
+    auto files = scanner.scanDirectorySync(testDir.string());
+    EXPECT_FALSE(files.empty());
+    EXPECT_TRUE(called);
+    EXPECT_GE(lastCount, 10);
+    EXPECT_GE(lastTotal, 10);
+}
+
 TEST_F(FileScannerTest, MultipleScanOperations) {
     auto files1 = scanner.scanDirectorySync(testDir.string());
     auto files2 = scanner.scanDirectorySync(testDir.string());
@@ -232,4 +259,3 @@ TEST_F(FileScannerTest, DepthZero) {
         EXPECT_FALSE(file.getFilePath().find("subdir") != std::string::npos);
     }
 }
-

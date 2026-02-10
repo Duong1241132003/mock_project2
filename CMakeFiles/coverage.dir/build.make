@@ -74,8 +74,10 @@ CMakeFiles/coverage:
 	lcov --directory /home/duong/MediaPlayerApp/CMakeFiles/RunTests.dir/src/controllers --capture --output-file coverage_controllers.info --ignore-errors mismatch,gcov --rc geninfo_unexecuted_blocks=1 --rc lcov_branch_coverage=1
 	lcov --directory /home/duong/MediaPlayerApp/CMakeFiles/RunTests.dir/src/services --capture --output-file coverage_services.info --ignore-errors mismatch,gcov --rc geninfo_unexecuted_blocks=1 --rc lcov_branch_coverage=1
 	lcov --directory /home/duong/MediaPlayerApp/CMakeFiles/RunTests.dir/src/models --capture --output-file coverage_models.info --ignore-errors mismatch,gcov --rc geninfo_unexecuted_blocks=1 --rc lcov_branch_coverage=1
-	lcov --add-tracefile coverage_controllers.info --add-tracefile coverage_services.info --add-tracefile coverage_models.info --output-file coverage.info --rc lcov_branch_coverage=1 --ignore-errors mismatch
-	lcov --remove coverage.info '/usr/*' '*/tests/*' '*/build/*' '*.h' '*/inc/*' '*/src/views/*' '*/src/ui/*' '*/src/repositories/*' '*/src/utils/*' '*/src/config/*' '*/src/core/*' '*/AudioPlaybackEngine.cpp' '*/SerialCommunication.cpp' --output-file coverage.info --ignore-errors mismatch --rc geninfo_unexecuted_blocks=1 --rc lcov_branch_coverage=1 --ignore-errors unused
+	lcov --directory /home/duong/MediaPlayerApp/CMakeFiles/RunTests.dir/src/repositories --capture --output-file coverage_repositories.info --ignore-errors mismatch,gcov --rc geninfo_unexecuted_blocks=1 --rc lcov_branch_coverage=1
+	lcov --directory /home/duong/MediaPlayerApp/CMakeFiles/RunTests.dir/src/config --capture --output-file coverage_config.info --ignore-errors mismatch,gcov --rc geninfo_unexecuted_blocks=1 --rc lcov_branch_coverage=1
+	lcov --add-tracefile coverage_controllers.info --add-tracefile coverage_services.info --add-tracefile coverage_models.info --add-tracefile coverage_repositories.info --add-tracefile coverage_config.info --output-file coverage.info --rc lcov_branch_coverage=1 --ignore-errors mismatch
+	lcov --remove coverage.info '/usr/*' '*/tests/*' '*/build/*' '*.h' '*/inc/*' '*/src/views/*' '*/src/ui/*' '*/src/utils/*' '*/src/core/*' '*/AudioPlaybackEngine.cpp' '*/SerialCommunication.cpp' --output-file coverage.info --ignore-errors mismatch --rc geninfo_unexecuted_blocks=1 --rc lcov_branch_coverage=1 --ignore-errors unused
 	genhtml coverage.info --output-directory coverage_report --ignore-errors mismatch --branch-coverage
 
 coverage: CMakeFiles/coverage

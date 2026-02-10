@@ -1125,6 +1125,30 @@ src/views/ScanScreen.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.s
 .PHONY : src/views/ScanScreen.cpp.s
 
+tests/config/AppConfigTest.o: tests/config/AppConfigTest.cpp.o
+.PHONY : tests/config/AppConfigTest.o
+
+# target to build an object file
+tests/config/AppConfigTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.o
+.PHONY : tests/config/AppConfigTest.cpp.o
+
+tests/config/AppConfigTest.i: tests/config/AppConfigTest.cpp.i
+.PHONY : tests/config/AppConfigTest.i
+
+# target to preprocess a source file
+tests/config/AppConfigTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.i
+.PHONY : tests/config/AppConfigTest.cpp.i
+
+tests/config/AppConfigTest.s: tests/config/AppConfigTest.cpp.s
+.PHONY : tests/config/AppConfigTest.s
+
+# target to generate assembly for a file
+tests/config/AppConfigTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/config/AppConfigTest.cpp.s
+.PHONY : tests/config/AppConfigTest.cpp.s
+
 tests/controllers/HardwareControllerBufferTest.o: tests/controllers/HardwareControllerBufferTest.cpp.o
 .PHONY : tests/controllers/HardwareControllerBufferTest.o
 
@@ -1701,6 +1725,78 @@ tests/models/QueueModelTest.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/models/QueueModelTest.cpp.s
 .PHONY : tests/models/QueueModelTest.cpp.s
 
+tests/repositories/HistoryRepositoryTest.o: tests/repositories/HistoryRepositoryTest.cpp.o
+.PHONY : tests/repositories/HistoryRepositoryTest.o
+
+# target to build an object file
+tests/repositories/HistoryRepositoryTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.o
+.PHONY : tests/repositories/HistoryRepositoryTest.cpp.o
+
+tests/repositories/HistoryRepositoryTest.i: tests/repositories/HistoryRepositoryTest.cpp.i
+.PHONY : tests/repositories/HistoryRepositoryTest.i
+
+# target to preprocess a source file
+tests/repositories/HistoryRepositoryTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.i
+.PHONY : tests/repositories/HistoryRepositoryTest.cpp.i
+
+tests/repositories/HistoryRepositoryTest.s: tests/repositories/HistoryRepositoryTest.cpp.s
+.PHONY : tests/repositories/HistoryRepositoryTest.s
+
+# target to generate assembly for a file
+tests/repositories/HistoryRepositoryTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/repositories/HistoryRepositoryTest.cpp.s
+.PHONY : tests/repositories/HistoryRepositoryTest.cpp.s
+
+tests/repositories/LibraryRepositoryTest.o: tests/repositories/LibraryRepositoryTest.cpp.o
+.PHONY : tests/repositories/LibraryRepositoryTest.o
+
+# target to build an object file
+tests/repositories/LibraryRepositoryTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.o
+.PHONY : tests/repositories/LibraryRepositoryTest.cpp.o
+
+tests/repositories/LibraryRepositoryTest.i: tests/repositories/LibraryRepositoryTest.cpp.i
+.PHONY : tests/repositories/LibraryRepositoryTest.i
+
+# target to preprocess a source file
+tests/repositories/LibraryRepositoryTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.i
+.PHONY : tests/repositories/LibraryRepositoryTest.cpp.i
+
+tests/repositories/LibraryRepositoryTest.s: tests/repositories/LibraryRepositoryTest.cpp.s
+.PHONY : tests/repositories/LibraryRepositoryTest.s
+
+# target to generate assembly for a file
+tests/repositories/LibraryRepositoryTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/repositories/LibraryRepositoryTest.cpp.s
+.PHONY : tests/repositories/LibraryRepositoryTest.cpp.s
+
+tests/repositories/PlaylistRepositoryTest.o: tests/repositories/PlaylistRepositoryTest.cpp.o
+.PHONY : tests/repositories/PlaylistRepositoryTest.o
+
+# target to build an object file
+tests/repositories/PlaylistRepositoryTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.o
+.PHONY : tests/repositories/PlaylistRepositoryTest.cpp.o
+
+tests/repositories/PlaylistRepositoryTest.i: tests/repositories/PlaylistRepositoryTest.cpp.i
+.PHONY : tests/repositories/PlaylistRepositoryTest.i
+
+# target to preprocess a source file
+tests/repositories/PlaylistRepositoryTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.i
+.PHONY : tests/repositories/PlaylistRepositoryTest.cpp.i
+
+tests/repositories/PlaylistRepositoryTest.s: tests/repositories/PlaylistRepositoryTest.cpp.s
+.PHONY : tests/repositories/PlaylistRepositoryTest.s
+
+# target to generate assembly for a file
+tests/repositories/PlaylistRepositoryTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/tests/repositories/PlaylistRepositoryTest.cpp.s
+.PHONY : tests/repositories/PlaylistRepositoryTest.cpp.s
+
 tests/services/AudioPlaybackEngineTest.o: tests/services/AudioPlaybackEngineTest.cpp.o
 .PHONY : tests/services/AudioPlaybackEngineTest.o
 
@@ -1939,6 +2035,9 @@ help:
 	@echo "... src/views/ScanScreen.o"
 	@echo "... src/views/ScanScreen.i"
 	@echo "... src/views/ScanScreen.s"
+	@echo "... tests/config/AppConfigTest.o"
+	@echo "... tests/config/AppConfigTest.i"
+	@echo "... tests/config/AppConfigTest.s"
 	@echo "... tests/controllers/HardwareControllerBufferTest.o"
 	@echo "... tests/controllers/HardwareControllerBufferTest.i"
 	@echo "... tests/controllers/HardwareControllerBufferTest.s"
@@ -2011,6 +2110,15 @@ help:
 	@echo "... tests/models/QueueModelTest.o"
 	@echo "... tests/models/QueueModelTest.i"
 	@echo "... tests/models/QueueModelTest.s"
+	@echo "... tests/repositories/HistoryRepositoryTest.o"
+	@echo "... tests/repositories/HistoryRepositoryTest.i"
+	@echo "... tests/repositories/HistoryRepositoryTest.s"
+	@echo "... tests/repositories/LibraryRepositoryTest.o"
+	@echo "... tests/repositories/LibraryRepositoryTest.i"
+	@echo "... tests/repositories/LibraryRepositoryTest.s"
+	@echo "... tests/repositories/PlaylistRepositoryTest.o"
+	@echo "... tests/repositories/PlaylistRepositoryTest.i"
+	@echo "... tests/repositories/PlaylistRepositoryTest.s"
 	@echo "... tests/services/AudioPlaybackEngineTest.o"
 	@echo "... tests/services/AudioPlaybackEngineTest.i"
 	@echo "... tests/services/AudioPlaybackEngineTest.s"

@@ -46,6 +46,6 @@ TEST(LibraryControllerExtraTest, SortSearchCountsAndFilters) {
     EXPECT_FALSE(byAlbumAsc.empty());
     EXPECT_FALSE(searchRes.empty());
     EXPECT_EQ(page.size(), 2u);
-    EXPECT_EQ(videoFiles.size(), 1u);
+    EXPECT_EQ(videoFiles.size(), 0u);
     EXPECT_EQ(audioFiles.size(), all.size());
 }
