@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/MediaPlayerApp.dir/src/config/AppConfig.cpp.o"
   "CMakeFiles/MediaPlayerApp.dir/src/config/AppConfig.cpp.o.d"
+  "CMakeFiles/MediaPlayerApp.dir/src/controllers/ExploreController.cpp.o"
+  "CMakeFiles/MediaPlayerApp.dir/src/controllers/ExploreController.cpp.o.d"
   "CMakeFiles/MediaPlayerApp.dir/src/controllers/HardwareController.cpp.o"
   "CMakeFiles/MediaPlayerApp.dir/src/controllers/HardwareController.cpp.o.d"
   "CMakeFiles/MediaPlayerApp.dir/src/controllers/HistoryController.cpp.o"
@@ -21,6 +23,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/MediaPlayerApp.dir/src/core/Application.cpp.o.d"
   "CMakeFiles/MediaPlayerApp.dir/src/main.cpp.o"
   "CMakeFiles/MediaPlayerApp.dir/src/main.cpp.o.d"
+  "CMakeFiles/MediaPlayerApp.dir/src/models/ExploreModel.cpp.o"
+  "CMakeFiles/MediaPlayerApp.dir/src/models/ExploreModel.cpp.o.d"
   "CMakeFiles/MediaPlayerApp.dir/src/models/HistoryModel.cpp.o"
   "CMakeFiles/MediaPlayerApp.dir/src/models/HistoryModel.cpp.o.d"
   "CMakeFiles/MediaPlayerApp.dir/src/models/LibraryModel.cpp.o"

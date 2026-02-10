@@ -419,12 +419,22 @@ bool Application::createAllComponents()
         m_historyController
     );
     
-    // Tạo ExploreScreen — hiển thị thư viện theo cấu trúc folder
-    m_exploreScreen = std::make_unique<views::ExploreScreen>(
+    // Tạo ExploreModel — lưu trữ dữ liệu duyệt folder
+    m_exploreModel = std::make_shared<models::ExploreModel>();
+    
+    // Tạo ExploreController — business logic cho Explore
+    m_exploreController = std::make_shared<controllers::ExploreController>(
+        m_exploreModel,
         m_libraryController,
         m_queueController,
         m_playbackController,
         m_playlistController
+    );
+    
+    // Tạo ExploreScreen — View chỉ render, delegate logic xuống controller
+    m_exploreScreen = std::make_unique<views::ExploreScreen>(
+        m_exploreController,
+        m_exploreModel
     );
     
     // Load cached library immediately for fast startup
@@ -706,8 +716,9 @@ void Application::update()
              m_libraryScreen->show(); 
         }
         // Cập nhật root path cho ExploreScreen sau khi scan xong
-        if (m_exploreScreen) {
-             m_exploreScreen->setRootPath(loadLastScanPath());
+        // Cập nhật root path cho ExploreController sau khi scan xong
+        if (m_exploreController) {
+             m_exploreController->setRootPath(loadLastScanPath());
         }
         scanWasComplete = true;
     } else if (!g_scanComplete) {

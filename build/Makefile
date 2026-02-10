@@ -237,6 +237,33 @@ src/config/AppConfig.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.s
 .PHONY : src/config/AppConfig.cpp.s
 
+src/controllers/ExploreController.o: src/controllers/ExploreController.cpp.o
+.PHONY : src/controllers/ExploreController.o
+
+# target to build an object file
+src/controllers/ExploreController.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/ExploreController.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/ExploreController.cpp.o
+.PHONY : src/controllers/ExploreController.cpp.o
+
+src/controllers/ExploreController.i: src/controllers/ExploreController.cpp.i
+.PHONY : src/controllers/ExploreController.i
+
+# target to preprocess a source file
+src/controllers/ExploreController.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/ExploreController.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/ExploreController.cpp.i
+.PHONY : src/controllers/ExploreController.cpp.i
+
+src/controllers/ExploreController.s: src/controllers/ExploreController.cpp.s
+.PHONY : src/controllers/ExploreController.s
+
+# target to generate assembly for a file
+src/controllers/ExploreController.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/controllers/ExploreController.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/controllers/ExploreController.cpp.s
+.PHONY : src/controllers/ExploreController.cpp.s
+
 src/controllers/HardwareController.o: src/controllers/HardwareController.cpp.o
 .PHONY : src/controllers/HardwareController.o
 
@@ -503,6 +530,33 @@ src/main.s: src/main.cpp.s
 src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
+
+src/models/ExploreModel.o: src/models/ExploreModel.cpp.o
+.PHONY : src/models/ExploreModel.o
+
+# target to build an object file
+src/models/ExploreModel.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/ExploreModel.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/ExploreModel.cpp.o
+.PHONY : src/models/ExploreModel.cpp.o
+
+src/models/ExploreModel.i: src/models/ExploreModel.cpp.i
+.PHONY : src/models/ExploreModel.i
+
+# target to preprocess a source file
+src/models/ExploreModel.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/ExploreModel.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/ExploreModel.cpp.i
+.PHONY : src/models/ExploreModel.cpp.i
+
+src/models/ExploreModel.s: src/models/ExploreModel.cpp.s
+.PHONY : src/models/ExploreModel.s
+
+# target to generate assembly for a file
+src/models/ExploreModel.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/models/ExploreModel.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/models/ExploreModel.cpp.s
+.PHONY : src/models/ExploreModel.cpp.s
 
 src/models/HistoryModel.o: src/models/HistoryModel.cpp.o
 .PHONY : src/models/HistoryModel.o
@@ -1963,6 +2017,9 @@ help:
 	@echo "... src/config/AppConfig.o"
 	@echo "... src/config/AppConfig.i"
 	@echo "... src/config/AppConfig.s"
+	@echo "... src/controllers/ExploreController.o"
+	@echo "... src/controllers/ExploreController.i"
+	@echo "... src/controllers/ExploreController.s"
 	@echo "... src/controllers/HardwareController.o"
 	@echo "... src/controllers/HardwareController.i"
 	@echo "... src/controllers/HardwareController.s"
@@ -1993,6 +2050,9 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/models/ExploreModel.o"
+	@echo "... src/models/ExploreModel.i"
+	@echo "... src/models/ExploreModel.s"
 	@echo "... src/models/HistoryModel.o"
 	@echo "... src/models/HistoryModel.i"
 	@echo "... src/models/HistoryModel.s"

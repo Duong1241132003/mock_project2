@@ -115,21 +115,16 @@ CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.o: \
  /usr/include/c++/13/bits/atomic_lockfree_defines.h \
  /usr/include/c++/13/backward/auto_ptr.h \
  /usr/include/c++/13/pstl/glue_memory_defs.h \
- /usr/include/c++/13/pstl/execution_defs.h /usr/include/c++/13/vector \
- /usr/include/c++/13/bits/stl_vector.h \
- /usr/include/c++/13/initializer_list \
- /usr/include/c++/13/bits/stl_bvector.h \
- /usr/include/c++/13/bits/range_access.h \
- /usr/include/c++/13/bits/vector.tcc \
- /usr/include/c++/13/bits/memory_resource.h /usr/include/c++/13/cstddef \
- /usr/include/c++/13/bits/uses_allocator_args.h \
- /usr/include/c++/13/string /usr/include/c++/13/bits/char_traits.h \
+ /usr/include/c++/13/pstl/execution_defs.h /usr/include/c++/13/string \
+ /usr/include/c++/13/bits/char_traits.h \
  /usr/include/c++/13/bits/localefwd.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++locale.h \
  /usr/include/c++/13/clocale /usr/include/locale.h \
  /usr/include/x86_64-linux-gnu/bits/locale.h /usr/include/c++/13/cctype \
  /usr/include/ctype.h /usr/include/c++/13/bits/ostream_insert.h \
  /usr/include/c++/13/bits/cxxabi_forced.h \
+ /usr/include/c++/13/bits/range_access.h \
+ /usr/include/c++/13/initializer_list \
  /usr/include/c++/13/bits/basic_string.h /usr/include/c++/13/string_view \
  /usr/include/c++/13/bits/string_view.tcc \
  /usr/include/c++/13/ext/string_conversions.h /usr/include/c++/13/cstdlib \
@@ -154,14 +149,15 @@ CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.o: \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
  /usr/include/c++/13/bits/charconv.h \
- /usr/include/c++/13/bits/basic_string.tcc /usr/include/c++/13/stack \
- /usr/include/c++/13/deque /usr/include/c++/13/bits/stl_deque.h \
- /usr/include/c++/13/bits/deque.tcc /usr/include/c++/13/bits/stl_stack.h \
+ /usr/include/c++/13/bits/basic_string.tcc \
+ /usr/include/c++/13/bits/memory_resource.h /usr/include/c++/13/cstddef \
+ /usr/include/c++/13/bits/uses_allocator_args.h \
  /home/duong/MediaPlayerApp/inc/views/IView.h \
- /home/duong/MediaPlayerApp/inc/controllers/LibraryController.h \
- /usr/include/c++/13/optional \
- /usr/include/c++/13/bits/enable_special_members.h \
- /home/duong/MediaPlayerApp/inc/models/LibraryModel.h \
+ /home/duong/MediaPlayerApp/inc/controllers/ExploreController.h \
+ /usr/include/c++/13/vector /usr/include/c++/13/bits/stl_vector.h \
+ /usr/include/c++/13/bits/stl_bvector.h \
+ /usr/include/c++/13/bits/vector.tcc \
+ /home/duong/MediaPlayerApp/inc/models/ExploreModel.h \
  /home/duong/MediaPlayerApp/inc/models/MediaFileModel.h \
  /usr/include/c++/13/chrono /usr/include/c++/13/bits/chrono.h \
  /usr/include/c++/13/ratio /usr/include/c++/13/cstdint \
@@ -195,6 +191,10 @@ CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.o: \
  /usr/include/c++/13/bits/sstream.tcc /usr/include/c++/13/codecvt \
  /usr/include/c++/13/bits/fs_dir.h /usr/include/c++/13/bits/fs_ops.h \
  /home/duong/MediaPlayerApp/inc/models/MediaFileModel.h \
+ /home/duong/MediaPlayerApp/inc/controllers/LibraryController.h \
+ /usr/include/c++/13/optional \
+ /usr/include/c++/13/bits/enable_special_members.h \
+ /home/duong/MediaPlayerApp/inc/models/LibraryModel.h \
  /home/duong/MediaPlayerApp/inc/repositories/LibraryRepository.h \
  /usr/include/c++/13/mutex /usr/include/c++/13/bits/std_mutex.h \
  /usr/include/c++/13/bits/unique_lock.h /usr/include/c++/13/map \
@@ -206,24 +206,7 @@ CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.o: \
  /home/duong/MediaPlayerApp/inc/repositories/IRepository.h \
  /home/duong/MediaPlayerApp/inc/services/IMetadataReader.h \
  /home/duong/MediaPlayerApp/inc/models/MetadataModel.h \
- /home/duong/MediaPlayerApp/inc/controllers/QueueController.h \
- /home/duong/MediaPlayerApp/inc/models/QueueModel.h \
- /home/duong/MediaPlayerApp/inc/models/PlaylistModel.h \
- /home/duong/MediaPlayerApp/inc/controllers/PlaybackController.h \
- /home/duong/MediaPlayerApp/inc/services/IPlaybackEngine.h \
- /usr/include/c++/13/functional /usr/include/c++/13/bits/std_function.h \
- /usr/include/c++/13/unordered_map \
- /usr/include/c++/13/bits/unordered_map.h \
- /usr/include/c++/13/bits/hashtable.h \
- /usr/include/c++/13/bits/hashtable_policy.h /usr/include/c++/13/array \
- /usr/include/c++/13/compare /usr/include/c++/13/bits/stl_algo.h \
- /usr/include/c++/13/bits/algorithmfwd.h \
- /usr/include/c++/13/bits/stl_heap.h \
- /usr/include/c++/13/bits/uniform_int_dist.h \
- /home/duong/MediaPlayerApp/inc/services/AudioPlaybackEngine.h \
- /usr/include/c++/13/atomic /usr/include/c++/13/thread \
- /usr/include/c++/13/bits/std_thread.h \
- /usr/include/c++/13/bits/this_thread_sleep.h /usr/include/SDL2/SDL.h \
+ /home/duong/MediaPlayerApp/inc/ui/ImGuiManager.h /usr/include/SDL2/SDL.h \
  /usr/include/SDL2/SDL_main.h /usr/include/SDL2/SDL_stdinc.h \
  /usr/include/SDL2/SDL_config.h \
  /usr/include/x86_64-linux-gnu/SDL2/_real_SDL_config.h \
@@ -369,18 +352,18 @@ CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.o: \
  /usr/include/SDL2/SDL_render.h /usr/include/SDL2/SDL_shape.h \
  /usr/include/SDL2/SDL_system.h /usr/include/SDL2/SDL_timer.h \
  /usr/include/SDL2/SDL_version.h /usr/include/SDL2/SDL_locale.h \
- /usr/include/SDL2/SDL_misc.h /usr/include/SDL2/SDL_mixer.h \
- /home/duong/MediaPlayerApp/inc/services/IPlaybackEngine.h \
- /home/duong/MediaPlayerApp/inc/models/PlaybackStateModel.h \
- /home/duong/MediaPlayerApp/inc/models/HistoryModel.h \
- /home/duong/MediaPlayerApp/inc/utils/Observer.h \
- /usr/include/c++/13/algorithm \
- /usr/include/c++/13/pstl/glue_algorithm_defs.h \
- /home/duong/MediaPlayerApp/inc/controllers/PlaylistController.h \
- /home/duong/MediaPlayerApp/inc/repositories/PlaylistRepository.h \
- /home/duong/MediaPlayerApp/inc/config/AppConfig.h \
- /home/duong/MediaPlayerApp/inc/ui/ImGuiManager.h \
- /usr/include/SDL2/SDL_ttf.h /usr/include/SDL2/SDL.h \
+ /usr/include/SDL2/SDL_misc.h /usr/include/SDL2/SDL_ttf.h \
+ /usr/include/SDL2/SDL.h /usr/include/c++/13/functional \
+ /usr/include/c++/13/bits/std_function.h \
+ /usr/include/c++/13/unordered_map \
+ /usr/include/c++/13/bits/unordered_map.h \
+ /usr/include/c++/13/bits/hashtable.h \
+ /usr/include/c++/13/bits/hashtable_policy.h /usr/include/c++/13/array \
+ /usr/include/c++/13/compare /usr/include/c++/13/bits/stl_algo.h \
+ /usr/include/c++/13/bits/algorithmfwd.h \
+ /usr/include/c++/13/bits/stl_heap.h \
+ /usr/include/c++/13/bits/uniform_int_dist.h \
  /home/duong/MediaPlayerApp/inc/repositories/HistoryRepository.h \
- /usr/include/c++/13/set /usr/include/c++/13/bits/stl_set.h \
- /usr/include/c++/13/bits/stl_multiset.h
+ /usr/include/c++/13/deque /usr/include/c++/13/bits/stl_deque.h \
+ /usr/include/c++/13/bits/deque.tcc /usr/include/c++/13/algorithm \
+ /usr/include/c++/13/pstl/glue_algorithm_defs.h

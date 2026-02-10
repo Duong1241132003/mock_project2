@@ -21,7 +21,9 @@
 #include "models/LibraryModel.h"
 #include "models/PlaybackStateModel.h"
 #include "models/HistoryModel.h"
+#include "models/ExploreModel.h"
 #include "controllers/HistoryController.h"
+#include "controllers/ExploreController.h"
 #include "services/FileScanner.h"
 #include "ui/ImGuiManager.h"
 #include "repositories/HistoryRepository.h"
@@ -80,11 +82,13 @@ private:
     std::shared_ptr<controllers::PlaylistController> m_playlistController;
     std::shared_ptr<controllers::QueueController> m_queueController;
     std::shared_ptr<controllers::HistoryController> m_historyController;
+    std::shared_ptr<controllers::ExploreController> m_exploreController;
     
     // Models for UI access
     std::shared_ptr<models::LibraryModel> m_libraryModel;
     std::shared_ptr<models::PlaybackStateModel> m_playbackStateModel;
     std::shared_ptr<models::HistoryModel> m_historyModel;
+    std::shared_ptr<models::ExploreModel> m_exploreModel;
 
     std::shared_ptr<services::FileScanner> m_fileScanner;
     std::shared_ptr<repositories::HistoryRepository> m_historyRepo;

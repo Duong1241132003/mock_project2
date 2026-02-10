@@ -3,17 +3,29 @@
 
 // System includes
 #include <memory>
-#include <vector>
 #include <string>
-#include <stack>
 
 // Project includes
-#include "IView.h"
-#include "controllers/LibraryController.h"
-#include "controllers/QueueController.h"
-#include "controllers/PlaybackController.h"
-#include "controllers/PlaylistController.h"
-#include "models/MediaFileModel.h"
+#include "views/IView.h"
+
+// Forward declarations
+namespace media_player 
+{
+namespace controllers 
+{
+    class ExploreController;
+}
+
+namespace models 
+{
+    class ExploreModel;
+}
+
+namespace ui 
+{
+    class ImGuiManager;
+}
+}
 
 namespace media_player 
 {
@@ -21,64 +33,37 @@ namespace views
 {
 
 /**
- * @brief Màn hình Explore — hiển thị thư viện nhạc theo cấu trúc thư mục.
+ * @brief View cho tính năng Explore — hiển thị thư viện theo cấu trúc folder.
  * 
- * Cho phép người dùng duyệt qua các folder đã quét, click vào folder 
- * để xem nội dung (subfolder + file nhạc bên trong).
+ * Theo chuẩn MVC, View chỉ render UI và delegate tất cả action 
+ * xuống ExploreController. Dữ liệu hiển thị được đọc từ ExploreModel.
  */
 class ExploreScreen : public IView 
 {
 public:
+    /**
+     * @brief Constructs ExploreScreen với controller dependency.
+     * @param exploreController Controller xử lý business logic
+     * @param exploreModel Model chứa dữ liệu hiển thị
+     */
     ExploreScreen(
-        std::shared_ptr<controllers::LibraryController> libraryController,
-        std::shared_ptr<controllers::QueueController> queueController,
-        std::shared_ptr<controllers::PlaybackController> playbackController,
-        std::shared_ptr<controllers::PlaylistController> playlistController
+        std::shared_ptr<controllers::ExploreController> exploreController,
+        std::shared_ptr<models::ExploreModel> exploreModel
     );
     
-    ~ExploreScreen();
+    ~ExploreScreen() override;
     
-    // IView interface
+    // ==================== IView Interface ====================
+    
     void show() override;
     void hide() override;
     void update() override;
     bool isVisible() const override;
-    
-    // ImGui View Interface
     void render(ui::ImGuiManager& painter) override;
     bool handleInput(const SDL_Event& event) override;
-    
-    /**
-     * @brief Cập nhật root path khi scan hoàn tất.
-     * @param rootPath Đường dẫn gốc (folder đã quét)
-     */
-    void setRootPath(const std::string& rootPath);
-    
+
 private:
-    // Cấu trúc đại diện cho một folder entry trong danh sách hiển thị
-    struct FolderEntry
-    {
-        std::string name;      // Tên folder
-        std::string fullPath;  // Đường dẫn đầy đủ
-        int fileCount;         // Số file media bên trong (đệ quy)
-    };
-    
-    /**
-     * @brief Navigate vào folder cụ thể.
-     * Cập nhật danh sách subfolder và file trong folder đó.
-     */
-    void navigateToFolder(const std::string& folderPath);
-    
-    /**
-     * @brief Quay lại folder cha.
-     */
-    void navigateUp();
-    
-    /**
-     * @brief Xây dựng danh sách subfolder và file từ media list.
-     * Lọc từ LibraryController::getAllMedia() theo path prefix.
-     */
-    void buildCurrentView();
+    // ==================== Render Helpers ====================
     
     /**
      * @brief Render breadcrumb navigation bar.
@@ -86,50 +71,26 @@ private:
     void renderBreadcrumb(ui::ImGuiManager& painter, int x, int y, int w);
     
     /**
-     * @brief Render danh sách folder.
-     */
-    void renderFolderList(ui::ImGuiManager& painter, int x, int& y, int w, int listH, bool inputBlocked);
-    
-    /**
-     * @brief Render danh sách file media.
-     */
-    void renderFileList(ui::ImGuiManager& painter, int x, int& y, int w, int listH, bool inputBlocked);
-    
-    /**
-     * @brief Render context menu cho file (giống LibraryScreen).
+     * @brief Render context menu cho file.
      */
     void renderContextMenu(ui::ImGuiManager& painter);
     
-    // State
-    bool m_isVisible;
-    std::string m_rootPath;           // Đường dẫn gốc (scan root)
-    std::string m_currentPath;        // Folder đang xem hiện tại
-    std::vector<std::string> m_pathStack; // Lịch sử navigation để back
+    // ==================== Dependencies ====================
     
-    // Dữ liệu hiển thị cho folder hiện tại
-    std::vector<FolderEntry> m_currentFolders;  // Subfolder
-    std::vector<models::MediaFileModel> m_currentFiles; // File nhạc
+    std::shared_ptr<controllers::ExploreController> m_exploreController; ///< Controller
+    std::shared_ptr<models::ExploreModel> m_exploreModel;               ///< Model (read-only)
     
-    // Toàn bộ media list (cache từ controller)
-    std::vector<models::MediaFileModel> m_allMedia;
+    // ==================== View State (UI-only, không phải data) ====================
     
-    // Scroll state
-    int m_scrollOffset;
+    bool m_isVisible;          ///< Trạng thái hiển thị
+    int m_scrollOffset;        ///< Scroll offset cho danh sách
+    std::string m_searchQuery; ///< Cache search query từ global state
     
-    // Search state (đồng bộ với global search)
-    std::string m_searchQuery;
-    
-    // Context Menu State
-    bool m_showContextMenu;
-    int m_contextMenuX;
-    int m_contextMenuY;
-    int m_contextMenuIndex; // Index trong m_currentFiles
-    
-    // Dependencies
-    std::shared_ptr<controllers::LibraryController> m_libraryController;
-    std::shared_ptr<controllers::QueueController> m_queueController;
-    std::shared_ptr<controllers::PlaybackController> m_playbackController;
-    std::shared_ptr<controllers::PlaylistController> m_playlistController;
+    // Context menu state (UI state, nằm ở View)
+    bool m_showContextMenu;    ///< Đang hiển thị context menu
+    int m_contextMenuX;        ///< Vị trí X context menu
+    int m_contextMenuY;        ///< Vị trí Y context menu
+    int m_contextMenuIndex;    ///< Index file đang chọn trong context menu
 };
 
 } // namespace views

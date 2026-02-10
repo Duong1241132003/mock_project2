@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.o"
   "CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.o.d"
+  "CMakeFiles/RunTests.dir/src/controllers/ExploreController.cpp.o"
+  "CMakeFiles/RunTests.dir/src/controllers/ExploreController.cpp.o.d"
   "CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.o"
   "CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.o.d"
   "CMakeFiles/RunTests.dir/src/controllers/HistoryController.cpp.o"
@@ -19,6 +21,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.o.d"
   "CMakeFiles/RunTests.dir/src/core/Application.cpp.o"
   "CMakeFiles/RunTests.dir/src/core/Application.cpp.o.d"
+  "CMakeFiles/RunTests.dir/src/models/ExploreModel.cpp.o"
+  "CMakeFiles/RunTests.dir/src/models/ExploreModel.cpp.o.d"
   "CMakeFiles/RunTests.dir/src/models/HistoryModel.cpp.o"
   "CMakeFiles/RunTests.dir/src/models/HistoryModel.cpp.o.d"
   "CMakeFiles/RunTests.dir/src/models/LibraryModel.cpp.o"

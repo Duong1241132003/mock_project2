@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/duong/MediaPlayerApp/src/config/AppConfig.cpp" "CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.o" "gcc" "CMakeFiles/RunTests.dir/src/config/AppConfig.cpp.o.d"
+  "/home/duong/MediaPlayerApp/src/controllers/ExploreController.cpp" "CMakeFiles/RunTests.dir/src/controllers/ExploreController.cpp.o" "gcc" "CMakeFiles/RunTests.dir/src/controllers/ExploreController.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/controllers/HardwareController.cpp" "CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.o" "gcc" "CMakeFiles/RunTests.dir/src/controllers/HardwareController.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/controllers/HistoryController.cpp" "CMakeFiles/RunTests.dir/src/controllers/HistoryController.cpp.o" "gcc" "CMakeFiles/RunTests.dir/src/controllers/HistoryController.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/controllers/LibraryController.cpp" "CMakeFiles/RunTests.dir/src/controllers/LibraryController.cpp.o" "gcc" "CMakeFiles/RunTests.dir/src/controllers/LibraryController.cpp.o.d"
@@ -18,6 +19,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/duong/MediaPlayerApp/src/controllers/QueueController.cpp" "CMakeFiles/RunTests.dir/src/controllers/QueueController.cpp.o" "gcc" "CMakeFiles/RunTests.dir/src/controllers/QueueController.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/controllers/SourceController.cpp" "CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.o" "gcc" "CMakeFiles/RunTests.dir/src/controllers/SourceController.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/core/Application.cpp" "CMakeFiles/RunTests.dir/src/core/Application.cpp.o" "gcc" "CMakeFiles/RunTests.dir/src/core/Application.cpp.o.d"
+  "/home/duong/MediaPlayerApp/src/models/ExploreModel.cpp" "CMakeFiles/RunTests.dir/src/models/ExploreModel.cpp.o" "gcc" "CMakeFiles/RunTests.dir/src/models/ExploreModel.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/models/HistoryModel.cpp" "CMakeFiles/RunTests.dir/src/models/HistoryModel.cpp.o" "gcc" "CMakeFiles/RunTests.dir/src/models/HistoryModel.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/models/LibraryModel.cpp" "CMakeFiles/RunTests.dir/src/models/LibraryModel.cpp.o" "gcc" "CMakeFiles/RunTests.dir/src/models/LibraryModel.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/models/MediaFileModel.cpp" "CMakeFiles/RunTests.dir/src/models/MediaFileModel.cpp.o" "gcc" "CMakeFiles/RunTests.dir/src/models/MediaFileModel.cpp.o.d"
