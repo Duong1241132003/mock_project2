@@ -51,6 +51,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/RunTests.dir/src/ui/ImGuiManager.cpp.o.d"
   "CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.o"
   "CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.o.d"
+  "CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.o"
+  "CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.o.d"
   "CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o"
   "CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o.d"
   "CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o"

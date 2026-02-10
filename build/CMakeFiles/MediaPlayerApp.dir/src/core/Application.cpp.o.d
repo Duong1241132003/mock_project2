@@ -397,6 +397,8 @@ CMakeFiles/MediaPlayerApp.dir/src/core/Application.cpp.o: \
  /home/duong/MediaPlayerApp/inc/views/QueuePanel.h \
  /home/duong/MediaPlayerApp/inc/views/HistoryScreen.h \
  /home/duong/MediaPlayerApp/inc/controllers/HistoryController.h \
+ /home/duong/MediaPlayerApp/inc/views/ExploreScreen.h \
+ /usr/include/c++/13/stack /usr/include/c++/13/bits/stl_stack.h \
  /home/duong/MediaPlayerApp/inc/views/NowPlayingBar.h \
  /home/duong/MediaPlayerApp/inc/ui/ImGuiManager.h \
  /usr/include/SDL2/SDL_ttf.h /usr/include/SDL2/SDL.h \

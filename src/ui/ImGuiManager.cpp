@@ -431,7 +431,7 @@ void ImGuiManager::renderMenuBar() {
     drawText("Media Player", 10, 6, m_theme.textPrimary, 14);
     
     // Search box - only show when Library tab is active
-    if (m_state.currentTab == NavTab::Library) {
+    if (m_state.currentTab == NavTab::Library || m_state.currentTab == NavTab::Explore) {
         int searchX = m_width - 250;
         int searchW = 200;
         int searchY = 4;
@@ -478,6 +478,7 @@ void ImGuiManager::renderSidebar() {
     
     NavItem items[] = {
         {">", "Library", NavTab::Library},
+        {"E", "Explore", NavTab::Explore},
         {"#", "Playlists", NavTab::Playlists},
         {"=", "Queue", NavTab::Queue},
         {"@", "History", NavTab::History}

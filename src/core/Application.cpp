@@ -419,6 +419,14 @@ bool Application::createAllComponents()
         m_historyController
     );
     
+    // Tạo ExploreScreen — hiển thị thư viện theo cấu trúc folder
+    m_exploreScreen = std::make_unique<views::ExploreScreen>(
+        m_libraryController,
+        m_queueController,
+        m_playbackController,
+        m_playlistController
+    );
+    
     // Load cached library immediately for fast startup
     if (m_libraryModel && libraryRepo)
     {
@@ -433,6 +441,7 @@ bool Application::createAllComponents()
     // Register views with UI Manager
     if (g_uiManager) {
         g_uiManager->registerView(ui::NavTab::Library, m_libraryScreen.get());
+        g_uiManager->registerView(ui::NavTab::Explore, m_exploreScreen.get());
         g_uiManager->registerView(ui::NavTab::Playlists, m_playlistScreen.get());
         g_uiManager->registerView(ui::NavTab::Queue, m_queuePanel.get());
         g_uiManager->registerView(ui::NavTab::History, m_historyScreen.get());
@@ -695,6 +704,10 @@ void Application::update()
              // If private, I can't call it.
              // Usage of show() is safe.
              m_libraryScreen->show(); 
+        }
+        // Cập nhật root path cho ExploreScreen sau khi scan xong
+        if (m_exploreScreen) {
+             m_exploreScreen->setRootPath(loadLastScanPath());
         }
         scanWasComplete = true;
     } else if (!g_scanComplete) {

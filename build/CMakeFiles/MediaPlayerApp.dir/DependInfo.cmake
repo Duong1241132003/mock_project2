@@ -35,6 +35,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/duong/MediaPlayerApp/src/services/SerialCommunication.cpp" "CMakeFiles/MediaPlayerApp.dir/src/services/SerialCommunication.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/services/SerialCommunication.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/ui/ImGuiManager.cpp" "CMakeFiles/MediaPlayerApp.dir/src/ui/ImGuiManager.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/ui/ImGuiManager.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/ui/UIManager.cpp" "CMakeFiles/MediaPlayerApp.dir/src/ui/UIManager.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/ui/UIManager.cpp.o.d"
+  "/home/duong/MediaPlayerApp/src/views/ExploreScreen.cpp" "CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/views/HistoryScreen.cpp" "CMakeFiles/MediaPlayerApp.dir/src/views/HistoryScreen.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/views/HistoryScreen.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/views/LibraryScreen.cpp" "CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.o.d"
   "/home/duong/MediaPlayerApp/src/views/MainScreen.cpp" "CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.o" "gcc" "CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.o.d"

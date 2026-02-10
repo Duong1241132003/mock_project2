@@ -79,6 +79,7 @@ enum class SearchFilter {
 // Navigation tabs
 enum class NavTab {
     Library,
+    Explore,
     Playlists,
     Queue,
     History,

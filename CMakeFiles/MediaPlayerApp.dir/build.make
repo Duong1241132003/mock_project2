@@ -433,10 +433,24 @@ CMakeFiles/MediaPlayerApp.dir/src/ui/UIManager.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/MediaPlayerApp.dir/src/ui/UIManager.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/duong/MediaPlayerApp/src/ui/UIManager.cpp -o CMakeFiles/MediaPlayerApp.dir/src/ui/UIManager.cpp.s
 
+CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.o: CMakeFiles/MediaPlayerApp.dir/flags.make
+CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.o: src/views/ExploreScreen.cpp
+CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.o: CMakeFiles/MediaPlayerApp.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.o -MF CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.o.d -o CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.o -c /home/duong/MediaPlayerApp/src/views/ExploreScreen.cpp
+
+CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/duong/MediaPlayerApp/src/views/ExploreScreen.cpp > CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.i
+
+CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/duong/MediaPlayerApp/src/views/ExploreScreen.cpp -o CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.s
+
 CMakeFiles/MediaPlayerApp.dir/src/views/HistoryScreen.cpp.o: CMakeFiles/MediaPlayerApp.dir/flags.make
 CMakeFiles/MediaPlayerApp.dir/src/views/HistoryScreen.cpp.o: src/views/HistoryScreen.cpp
 CMakeFiles/MediaPlayerApp.dir/src/views/HistoryScreen.cpp.o: CMakeFiles/MediaPlayerApp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/MediaPlayerApp.dir/src/views/HistoryScreen.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/MediaPlayerApp.dir/src/views/HistoryScreen.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MediaPlayerApp.dir/src/views/HistoryScreen.cpp.o -MF CMakeFiles/MediaPlayerApp.dir/src/views/HistoryScreen.cpp.o.d -o CMakeFiles/MediaPlayerApp.dir/src/views/HistoryScreen.cpp.o -c /home/duong/MediaPlayerApp/src/views/HistoryScreen.cpp
 
 CMakeFiles/MediaPlayerApp.dir/src/views/HistoryScreen.cpp.i: cmake_force
@@ -450,7 +464,7 @@ CMakeFiles/MediaPlayerApp.dir/src/views/HistoryScreen.cpp.s: cmake_force
 CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.o: CMakeFiles/MediaPlayerApp.dir/flags.make
 CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.o: src/views/LibraryScreen.cpp
 CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.o: CMakeFiles/MediaPlayerApp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.o -MF CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.o.d -o CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.o -c /home/duong/MediaPlayerApp/src/views/LibraryScreen.cpp
 
 CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.i: cmake_force
@@ -464,7 +478,7 @@ CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.s: cmake_force
 CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.o: CMakeFiles/MediaPlayerApp.dir/flags.make
 CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.o: src/views/MainScreen.cpp
 CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.o: CMakeFiles/MediaPlayerApp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.o -MF CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.o.d -o CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.o -c /home/duong/MediaPlayerApp/src/views/MainScreen.cpp
 
 CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.i: cmake_force
@@ -478,7 +492,7 @@ CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.s: cmake_force
 CMakeFiles/MediaPlayerApp.dir/src/views/NowPlayingBar.cpp.o: CMakeFiles/MediaPlayerApp.dir/flags.make
 CMakeFiles/MediaPlayerApp.dir/src/views/NowPlayingBar.cpp.o: src/views/NowPlayingBar.cpp
 CMakeFiles/MediaPlayerApp.dir/src/views/NowPlayingBar.cpp.o: CMakeFiles/MediaPlayerApp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/MediaPlayerApp.dir/src/views/NowPlayingBar.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/MediaPlayerApp.dir/src/views/NowPlayingBar.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MediaPlayerApp.dir/src/views/NowPlayingBar.cpp.o -MF CMakeFiles/MediaPlayerApp.dir/src/views/NowPlayingBar.cpp.o.d -o CMakeFiles/MediaPlayerApp.dir/src/views/NowPlayingBar.cpp.o -c /home/duong/MediaPlayerApp/src/views/NowPlayingBar.cpp
 
 CMakeFiles/MediaPlayerApp.dir/src/views/NowPlayingBar.cpp.i: cmake_force
@@ -492,7 +506,7 @@ CMakeFiles/MediaPlayerApp.dir/src/views/NowPlayingBar.cpp.s: cmake_force
 CMakeFiles/MediaPlayerApp.dir/src/views/PlaylistScreen.cpp.o: CMakeFiles/MediaPlayerApp.dir/flags.make
 CMakeFiles/MediaPlayerApp.dir/src/views/PlaylistScreen.cpp.o: src/views/PlaylistScreen.cpp
 CMakeFiles/MediaPlayerApp.dir/src/views/PlaylistScreen.cpp.o: CMakeFiles/MediaPlayerApp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/MediaPlayerApp.dir/src/views/PlaylistScreen.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/MediaPlayerApp.dir/src/views/PlaylistScreen.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MediaPlayerApp.dir/src/views/PlaylistScreen.cpp.o -MF CMakeFiles/MediaPlayerApp.dir/src/views/PlaylistScreen.cpp.o.d -o CMakeFiles/MediaPlayerApp.dir/src/views/PlaylistScreen.cpp.o -c /home/duong/MediaPlayerApp/src/views/PlaylistScreen.cpp
 
 CMakeFiles/MediaPlayerApp.dir/src/views/PlaylistScreen.cpp.i: cmake_force
@@ -506,7 +520,7 @@ CMakeFiles/MediaPlayerApp.dir/src/views/PlaylistScreen.cpp.s: cmake_force
 CMakeFiles/MediaPlayerApp.dir/src/views/QueuePanel.cpp.o: CMakeFiles/MediaPlayerApp.dir/flags.make
 CMakeFiles/MediaPlayerApp.dir/src/views/QueuePanel.cpp.o: src/views/QueuePanel.cpp
 CMakeFiles/MediaPlayerApp.dir/src/views/QueuePanel.cpp.o: CMakeFiles/MediaPlayerApp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/MediaPlayerApp.dir/src/views/QueuePanel.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/MediaPlayerApp.dir/src/views/QueuePanel.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MediaPlayerApp.dir/src/views/QueuePanel.cpp.o -MF CMakeFiles/MediaPlayerApp.dir/src/views/QueuePanel.cpp.o.d -o CMakeFiles/MediaPlayerApp.dir/src/views/QueuePanel.cpp.o -c /home/duong/MediaPlayerApp/src/views/QueuePanel.cpp
 
 CMakeFiles/MediaPlayerApp.dir/src/views/QueuePanel.cpp.i: cmake_force
@@ -520,7 +534,7 @@ CMakeFiles/MediaPlayerApp.dir/src/views/QueuePanel.cpp.s: cmake_force
 CMakeFiles/MediaPlayerApp.dir/src/views/ScanScreen.cpp.o: CMakeFiles/MediaPlayerApp.dir/flags.make
 CMakeFiles/MediaPlayerApp.dir/src/views/ScanScreen.cpp.o: src/views/ScanScreen.cpp
 CMakeFiles/MediaPlayerApp.dir/src/views/ScanScreen.cpp.o: CMakeFiles/MediaPlayerApp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/MediaPlayerApp.dir/src/views/ScanScreen.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/MediaPlayerApp.dir/src/views/ScanScreen.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MediaPlayerApp.dir/src/views/ScanScreen.cpp.o -MF CMakeFiles/MediaPlayerApp.dir/src/views/ScanScreen.cpp.o.d -o CMakeFiles/MediaPlayerApp.dir/src/views/ScanScreen.cpp.o -c /home/duong/MediaPlayerApp/src/views/ScanScreen.cpp
 
 CMakeFiles/MediaPlayerApp.dir/src/views/ScanScreen.cpp.i: cmake_force
@@ -534,7 +548,7 @@ CMakeFiles/MediaPlayerApp.dir/src/views/ScanScreen.cpp.s: cmake_force
 CMakeFiles/MediaPlayerApp.dir/src/main.cpp.o: CMakeFiles/MediaPlayerApp.dir/flags.make
 CMakeFiles/MediaPlayerApp.dir/src/main.cpp.o: src/main.cpp
 CMakeFiles/MediaPlayerApp.dir/src/main.cpp.o: CMakeFiles/MediaPlayerApp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/MediaPlayerApp.dir/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/MediaPlayerApp.dir/src/main.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MediaPlayerApp.dir/src/main.cpp.o -MF CMakeFiles/MediaPlayerApp.dir/src/main.cpp.o.d -o CMakeFiles/MediaPlayerApp.dir/src/main.cpp.o -c /home/duong/MediaPlayerApp/src/main.cpp
 
 CMakeFiles/MediaPlayerApp.dir/src/main.cpp.i: cmake_force
@@ -573,6 +587,7 @@ MediaPlayerApp_OBJECTS = \
 "CMakeFiles/MediaPlayerApp.dir/src/services/SerialCommunication.cpp.o" \
 "CMakeFiles/MediaPlayerApp.dir/src/ui/ImGuiManager.cpp.o" \
 "CMakeFiles/MediaPlayerApp.dir/src/ui/UIManager.cpp.o" \
+"CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.o" \
 "CMakeFiles/MediaPlayerApp.dir/src/views/HistoryScreen.cpp.o" \
 "CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.o" \
 "CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.o" \
@@ -611,6 +626,7 @@ MediaPlayerApp: CMakeFiles/MediaPlayerApp.dir/src/services/MetadataReader.cpp.o
 MediaPlayerApp: CMakeFiles/MediaPlayerApp.dir/src/services/SerialCommunication.cpp.o
 MediaPlayerApp: CMakeFiles/MediaPlayerApp.dir/src/ui/ImGuiManager.cpp.o
 MediaPlayerApp: CMakeFiles/MediaPlayerApp.dir/src/ui/UIManager.cpp.o
+MediaPlayerApp: CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.o
 MediaPlayerApp: CMakeFiles/MediaPlayerApp.dir/src/views/HistoryScreen.cpp.o
 MediaPlayerApp: CMakeFiles/MediaPlayerApp.dir/src/views/LibraryScreen.cpp.o
 MediaPlayerApp: CMakeFiles/MediaPlayerApp.dir/src/views/MainScreen.cpp.o
@@ -622,7 +638,7 @@ MediaPlayerApp: CMakeFiles/MediaPlayerApp.dir/src/main.cpp.o
 MediaPlayerApp: CMakeFiles/MediaPlayerApp.dir/build.make
 MediaPlayerApp: /usr/lib/x86_64-linux-gnu/libSDL2.so
 MediaPlayerApp: CMakeFiles/MediaPlayerApp.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Linking CXX executable MediaPlayerApp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/duong/MediaPlayerApp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Linking CXX executable MediaPlayerApp"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/MediaPlayerApp.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

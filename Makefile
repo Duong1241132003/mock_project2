@@ -936,6 +936,33 @@ src/ui/UIManager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.s
 .PHONY : src/ui/UIManager.cpp.s
 
+src/views/ExploreScreen.o: src/views/ExploreScreen.cpp.o
+.PHONY : src/views/ExploreScreen.o
+
+# target to build an object file
+src/views/ExploreScreen.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.o
+.PHONY : src/views/ExploreScreen.cpp.o
+
+src/views/ExploreScreen.i: src/views/ExploreScreen.cpp.i
+.PHONY : src/views/ExploreScreen.i
+
+# target to preprocess a source file
+src/views/ExploreScreen.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.i
+.PHONY : src/views/ExploreScreen.cpp.i
+
+src/views/ExploreScreen.s: src/views/ExploreScreen.cpp.s
+.PHONY : src/views/ExploreScreen.s
+
+# target to generate assembly for a file
+src/views/ExploreScreen.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MediaPlayerApp.dir/build.make CMakeFiles/MediaPlayerApp.dir/src/views/ExploreScreen.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RunTests.dir/build.make CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.s
+.PHONY : src/views/ExploreScreen.cpp.s
+
 src/views/HistoryScreen.o: src/views/HistoryScreen.cpp.o
 .PHONY : src/views/HistoryScreen.o
 
@@ -2014,6 +2041,9 @@ help:
 	@echo "... src/ui/UIManager.o"
 	@echo "... src/ui/UIManager.i"
 	@echo "... src/ui/UIManager.s"
+	@echo "... src/views/ExploreScreen.o"
+	@echo "... src/views/ExploreScreen.i"
+	@echo "... src/views/ExploreScreen.s"
 	@echo "... src/views/HistoryScreen.o"
 	@echo "... src/views/HistoryScreen.i"
 	@echo "... src/views/HistoryScreen.s"

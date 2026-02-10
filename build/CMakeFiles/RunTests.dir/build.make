@@ -895,10 +895,24 @@ CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/duong/MediaPlayerApp/src/ui/UIManager.cpp -o CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.s
 
+CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.o: CMakeFiles/RunTests.dir/flags.make
+CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.o: /home/duong/MediaPlayerApp/src/views/ExploreScreen.cpp
+CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_60) "Building CXX object CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.o -MF CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.o.d -o CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.o -c /home/duong/MediaPlayerApp/src/views/ExploreScreen.cpp
+
+CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/duong/MediaPlayerApp/src/views/ExploreScreen.cpp > CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.i
+
+CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/duong/MediaPlayerApp/src/views/ExploreScreen.cpp -o CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.s
+
 CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o: /home/duong/MediaPlayerApp/src/views/HistoryScreen.cpp
 CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_60) "Building CXX object CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_61) "Building CXX object CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o -MF CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o.d -o CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o -c /home/duong/MediaPlayerApp/src/views/HistoryScreen.cpp
 
 CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.i: cmake_force
@@ -912,7 +926,7 @@ CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o: /home/duong/MediaPlayerApp/src/views/LibraryScreen.cpp
 CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_61) "Building CXX object CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_62) "Building CXX object CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o -MF CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o.d -o CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o -c /home/duong/MediaPlayerApp/src/views/LibraryScreen.cpp
 
 CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.i: cmake_force
@@ -926,7 +940,7 @@ CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o: /home/duong/MediaPlayerApp/src/views/MainScreen.cpp
 CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_62) "Building CXX object CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_63) "Building CXX object CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o -MF CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o.d -o CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o -c /home/duong/MediaPlayerApp/src/views/MainScreen.cpp
 
 CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.i: cmake_force
@@ -940,7 +954,7 @@ CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.o: /home/duong/MediaPlayerApp/src/views/NowPlayingBar.cpp
 CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_63) "Building CXX object CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_64) "Building CXX object CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.o -MF CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.o.d -o CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.o -c /home/duong/MediaPlayerApp/src/views/NowPlayingBar.cpp
 
 CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.i: cmake_force
@@ -954,7 +968,7 @@ CMakeFiles/RunTests.dir/src/views/NowPlayingBar.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.o: /home/duong/MediaPlayerApp/src/views/PlaylistScreen.cpp
 CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_64) "Building CXX object CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_65) "Building CXX object CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.o -MF CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.o.d -o CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.o -c /home/duong/MediaPlayerApp/src/views/PlaylistScreen.cpp
 
 CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.i: cmake_force
@@ -968,7 +982,7 @@ CMakeFiles/RunTests.dir/src/views/PlaylistScreen.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.o: /home/duong/MediaPlayerApp/src/views/QueuePanel.cpp
 CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_65) "Building CXX object CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_66) "Building CXX object CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.o -MF CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.o.d -o CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.o -c /home/duong/MediaPlayerApp/src/views/QueuePanel.cpp
 
 CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.i: cmake_force
@@ -982,7 +996,7 @@ CMakeFiles/RunTests.dir/src/views/QueuePanel.cpp.s: cmake_force
 CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.o: CMakeFiles/RunTests.dir/flags.make
 CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.o: /home/duong/MediaPlayerApp/src/views/ScanScreen.cpp
 CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.o: CMakeFiles/RunTests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_66) "Building CXX object CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/duong/MediaPlayerApp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_67) "Building CXX object CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.o -MF CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.o.d -o CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.o -c /home/duong/MediaPlayerApp/src/views/ScanScreen.cpp
 
 CMakeFiles/RunTests.dir/src/views/ScanScreen.cpp.i: cmake_force
@@ -1054,6 +1068,7 @@ RunTests_OBJECTS = \
 "CMakeFiles/RunTests.dir/src/services/SerialCommunication.cpp.o" \
 "CMakeFiles/RunTests.dir/src/ui/ImGuiManager.cpp.o" \
 "CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.o" \
+"CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.o" \
 "CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o" \
 "CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o" \
 "CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o" \
@@ -1124,6 +1139,7 @@ RunTests: CMakeFiles/RunTests.dir/src/services/MetadataReader.cpp.o
 RunTests: CMakeFiles/RunTests.dir/src/services/SerialCommunication.cpp.o
 RunTests: CMakeFiles/RunTests.dir/src/ui/ImGuiManager.cpp.o
 RunTests: CMakeFiles/RunTests.dir/src/ui/UIManager.cpp.o
+RunTests: CMakeFiles/RunTests.dir/src/views/ExploreScreen.cpp.o
 RunTests: CMakeFiles/RunTests.dir/src/views/HistoryScreen.cpp.o
 RunTests: CMakeFiles/RunTests.dir/src/views/LibraryScreen.cpp.o
 RunTests: CMakeFiles/RunTests.dir/src/views/MainScreen.cpp.o
@@ -1140,7 +1156,7 @@ RunTests: /usr/lib/x86_64-linux-gnu/libSDL2.so
 RunTests: /usr/lib/x86_64-linux-gnu/libgmock.a
 RunTests: /usr/lib/x86_64-linux-gnu/libgtest.a
 RunTests: CMakeFiles/RunTests.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/duong/MediaPlayerApp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_67) "Linking CXX executable RunTests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/duong/MediaPlayerApp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_68) "Linking CXX executable RunTests"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/RunTests.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
